@@ -2,6 +2,9 @@
 
 full-stack-zio
 
+[![Build Status](https://travis-ci.org/oen9/full-stack-zio.svg?branch=master)](https://travis-ci.org/oen9/full-stack-zio)
+[![CircleCI](https://circleci.com/gh/oen9/full-stack-zio.svg?style=svg)](https://circleci.com/gh/oen9/full-stack-zio)
+
 ## Waiting for scalajs-1.0.0 support
 
 - "io.suzaku" %%% "diode" % "1.1.7"
