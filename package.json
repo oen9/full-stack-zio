@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "react-dom": "16.12.0",
+    "react": "16.12.0"
+  },
+  "devDependencies": {
+    "webpack": "4.41.2"
+  }
+}
