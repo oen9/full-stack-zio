@@ -1,4 +1,5 @@
 package example.services
+
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.raw.XMLHttpRequest
 import scala.util.Try
@@ -23,11 +24,17 @@ object AjaxClient {
   private[this] def decodeFoo(t: Try[XMLHttpRequest]): Try[Foo] = {
     import example.shared.Dto._
     //import io.circe.generic.extras.auto._
-    //import io.circe.parser.decode
-
+    import io.circe.parser.decode
+    import io.circe.{ Decoder, HCursor }
+    implicit val decodeFoo: Decoder[Foo] = new Decoder[Foo] {
+      final def apply(c: HCursor): Decoder.Result[Foo] = for {
+          i <- c.downField("i").as[Int]
+        } yield {
+          new Foo(i)
+        }
+    }
     t match {
-      //case Success(req) => decode[Foo](req.responseText).toTry
-      case Success(req) => Try(Foo(6))
+      case Success(req) => decode[Foo](req.responseText).toTry
       case Failure(e) => Failure(e)
     }
   }

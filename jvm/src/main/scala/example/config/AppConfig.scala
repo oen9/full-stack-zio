@@ -1,14 +1,11 @@
 package example.config
 
-import pureconfig.error.ConfigReaderFailures
 import pureconfig.generic.auto._
 import pureconfig.ConfigSource
 import zio.Task
 import zio.macros.annotation.accessible
 import zio.macros.annotation.mockable
 import zio.ZIO
-
-class AppConfigException(failures: ConfigReaderFailures) extends RuntimeException(failures.prettyPrint())
 
 case class Http(port: Int, host: String)
 case class AppConfigData(http: Http, assets: String)

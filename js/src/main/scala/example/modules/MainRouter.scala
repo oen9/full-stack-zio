@@ -1,8 +1,8 @@
 package example.modules
 
 import example.bridges.PathToRegexp
-//import example.services.ReactDiode
-//import example.services.AppCircuit
+import example.services.ReactDiode
+import example.services.AppCircuit
 import scalajs.js
 import slinky.core.annotations.react
 import slinky.reactrouter.Route
@@ -19,9 +19,9 @@ import slinky.core.FunctionalComponent
       Route(exact = true, path = Loc.about, component = About.component),
       Route(exact = true, path = Loc.page3, component = DynamicPage.component)
     )
-    //ReactDiode.diodeContext.Provider(AppCircuit)(
+    ReactDiode.diodeContext.Provider(AppCircuit)(
       Layout(routerSwitch)
-    //)
+    )
   }
 
   case class MenuItem(idx: String, label: String, location: String)

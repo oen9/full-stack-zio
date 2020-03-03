@@ -33,7 +33,7 @@ lazy val jsSettings = Seq(
     "me.shadaj" %%% "slinky-web" % "0.6.4",
     "me.shadaj" %%% "slinky-react-router" % "0.6.4",
     // waiting for scalajs-1.0.0 support
-    //"io.suzaku" %%% "diode" % "1.1.7"
+    "io.suzaku" %%% "diode" % "1.1.8"
   ),
   npmDependencies in Compile ++= Seq(
     "react" -> "16.13.0",
