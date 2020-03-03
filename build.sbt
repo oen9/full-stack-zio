@@ -1,6 +1,7 @@
 val http4sVersion = "0.21.1"
 val logbackVersion = "1.2.3"
 val zioVersion = "1.0.0-RC17"
+val zioMacrosVersion = "0.6.2"
 scalaVersion := "2.13.1"
 
 lazy val sharedSettings = Seq(
@@ -9,14 +10,14 @@ lazy val sharedSettings = Seq(
   organization     := "com.github.oen9",
   organizationName := "oen9",
   libraryDependencies ++= Seq(
-    "com.lihaoyi" %%% "scalatags" % "0.8.6",
     "org.typelevel" %% "cats-core" % "2.1.1",
-
     "io.circe" %%% "circe-parser" % "0.13.0",
     // waiting for scalajs-1.0.0 support
     // "io.circe" %%% "circe-generic-extras" % "0.13.0",
     // "io.circe" %%% "circe-generic" % "0.13.0",
     // "io.circe" %%% "circe-literal" % "0.13.0",
+    //"io.scalaland" %%% "chimney" % "0.3.2",
+    //"com.softwaremill.quicklens" %%% "quicklens" % "1.4.12"
   ),
   scalacOptions ++= Seq(
     "-Xlint",
@@ -30,9 +31,9 @@ lazy val sharedSettings = Seq(
 
 lazy val jsSettings = Seq(
   libraryDependencies ++= Seq(
+    "com.lihaoyi" %%% "scalatags" % "0.8.6",
     "me.shadaj" %%% "slinky-web" % "0.6.4",
     "me.shadaj" %%% "slinky-react-router" % "0.6.4",
-    // waiting for scalajs-1.0.0 support
     "io.suzaku" %%% "diode" % "1.1.8"
   ),
   npmDependencies in Compile ++= Seq(
@@ -53,8 +54,8 @@ lazy val jsSettings = Seq(
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
     "dev.zio" %% "zio" % zioVersion,
-    "dev.zio" %% "zio-macros-core" % "0.6.2",
-    "dev.zio" %% "zio-macros-test" % "0.6.2",
+    "dev.zio" %% "zio-macros-core" % zioMacrosVersion,
+    "dev.zio" %% "zio-macros-test" % zioMacrosVersion,
     "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC10",
 
     "org.http4s" %% "http4s-blaze-server" % http4sVersion,
