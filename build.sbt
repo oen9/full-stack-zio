@@ -36,23 +36,27 @@ lazy val jsSettings = Seq(
     //"io.suzaku" %%% "diode" % "1.1.7"
   ),
   npmDependencies in Compile ++= Seq(
-    "react" -> "16.12.0",
-    "react-dom" -> "16.12.0",
-    "react-popper" -> "1.3.6",
+    "react" -> "16.13.0",
+    "react-dom" -> "16.13.0",
+    "react-popper" -> "1.3.7",
     "react-router-dom" -> "5.1.2",
-    "path-to-regexp" -> "6.0.0",
-    "bootstrap" -> "4.3.1",
+    "path-to-regexp" -> "6.1.0",
+    "bootstrap" -> "4.4.1",
     "jquery" -> "3.4.1"
   ),
   scalaJSUseMainModuleInitializer := true,
-  version.in(webpack) := "4.41.2",
+  version.in(webpack) := "4.41.6",
   webpackBundlingMode := BundlingMode.Application,
   webpackBundlingMode.in(fastOptJS) := BundlingMode.LibraryOnly(),
 )
 
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel" %% "cats-effect" % "2.1.1",
+    "dev.zio" %% "zio" % zioVersion,
+    "dev.zio" %% "zio-macros-core" % "0.6.2",
+    "dev.zio" %% "zio-macros-test" % "0.6.2",
+    "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC10",
+
     "org.http4s" %% "http4s-blaze-server" % http4sVersion,
     "org.http4s" %% "http4s-circe" % http4sVersion,
     "org.http4s" %% "http4s-dsl" % http4sVersion,
@@ -60,12 +64,17 @@ lazy val jvmSettings = Seq(
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     "com.github.pureconfig" %% "pureconfig" % "0.12.2",
 
+    "dev.zio" %% "zio-test" % zioVersion % Test,
+    "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
+
     // remove after scalajs-1.0.0 support
     "io.circe" %%% "circe-generic-extras" % "0.13.0",
     "io.circe" %%% "circe-generic" % "0.13.0",
     "io.circe" %%% "circe-literal" % "0.13.0",
   ),
-  target := baseDirectory.value / ".." / "target"
+  testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
+  target := baseDirectory.value / ".." / "target",
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full)
 )
 
 lazy val app =

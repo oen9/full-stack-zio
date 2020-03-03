@@ -1,38 +1,72 @@
 package example
 
-import cats.effect._
+
+import zio._
+import zio.clock.Clock
+import zio.random.Random
+import zio.blocking.Blocking
+import zio.interop.catz._
 import cats.implicits._
-import example.config.AppConfig
-import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.implicits._
+
 import org.http4s.server.middleware.CORSConfig
-import scala.concurrent.duration._
+import org.http4s.implicits._
+import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.CORS
 
-import org.http4s.server.Server
+import example.config.AppConfig
+import java.io.StringWriter
+import java.io.PrintWriter
+import scala.concurrent.duration._
 
-object Hello extends IOApp {
+object Hello extends App {
+  type AppEnv = AppConfig with Blocking with Random with Clock
+  type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
-  val originConfig = CORSConfig(
-    anyOrigin = true,
-    allowCredentials = false,
-    maxAge = 1.day.toSeconds)
+  def run(args: List[String]): ZIO[zio.ZEnv,Nothing,Int] = {
+    def createLiveEnv(zenv: zio.ZEnv): AppEnv = new AppConfig.Live
+                                                  with Blocking
+                                                  with Random
+                                                  with Clock {
+      val blocking: Blocking.Service[Any] = zenv.blocking
+      val clock: Clock.Service[Any] = zenv.clock
+      val random: Random.Service[Any] = zenv.random
+    }
 
-  override def run(args: List[String]): IO[ExitCode] = {
-    createServer[IO]().use(_ => IO.never).as(ExitCode.Success)
+    app
+      .provideSome[zio.ZEnv](createLiveEnv)
+      .flatMapError {
+        case e: Throwable =>
+          val sw = new StringWriter
+          e.printStackTrace(new PrintWriter(sw))
+          zio.console.putStrLn(sw.toString())
+      }
+      .fold(_ => 1, _ => 0)
   }
 
-  def createServer[F[_] : ContextShift : ConcurrentEffect : Timer](): Resource[F, Server[F]] = {
-    for {
-      conf <- Resource.liftF(AppConfig.read())
-      blocker <- Blocker[F]
-      staticEndpoints = StaticEndpoints[F](conf.assets, blocker)
-      restEndpoints = RestEndpoints[F]()
-      httpApp = (staticEndpoints.endpoints() <+> restEndpoints.endpoints()).orNotFound
-      server <- BlazeServerBuilder[F]
+  def app(): ZIO[AppEnv, Throwable, Unit] = for {
+    conf <- AppConfig.>.load
+
+    originConfig = CORSConfig(
+      anyOrigin = true,
+      allowCredentials = false,
+      maxAge = 1.day.toSeconds)
+
+    ec <- zio.blocking.blockingExecutor 
+    catsBlocker = cats.effect.Blocker.liftExecutionContext(ec.asEC)
+
+    httpApp = (
+      RestEndpoints.routes[AppEnv]
+      <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker)
+    ).orNotFound
+
+    server <- ZIO.runtime[AppEnv].flatMap { implicit rts =>
+      BlazeServerBuilder[AppTask]
         .bindHttp(conf.http.port, conf.http.host)
         .withHttpApp(CORS(httpApp))
-        .resource
-    } yield server
-  }
+        .serve
+        .compile
+        .drain
+    }
+  } yield server
+
 }
