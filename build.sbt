@@ -1,6 +1,6 @@
 val http4sVersion = "0.21.1"
 val logbackVersion = "1.2.3"
-val zioVersion = "1.0.0-RC17"
+val zioVersion = "1.0.0-RC18-1"
 val zioMacrosVersion = "0.6.2"
 scalaVersion := "2.13.1"
 
@@ -16,8 +16,8 @@ lazy val sharedSettings = Seq(
     // "io.circe" %%% "circe-generic-extras" % "0.13.0",
     // "io.circe" %%% "circe-generic" % "0.13.0",
     // "io.circe" %%% "circe-literal" % "0.13.0",
-    //"io.scalaland" %%% "chimney" % "0.3.2",
-    //"com.softwaremill.quicklens" %%% "quicklens" % "1.4.12"
+    // "io.scalaland" %%% "chimney" % "0.4.1",
+    // "com.softwaremill.quicklens" %%% "quicklens" % "1.4.12"
   ),
   scalacOptions ++= Seq(
     "-Xlint",
@@ -54,9 +54,9 @@ lazy val jsSettings = Seq(
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
     "dev.zio" %% "zio" % zioVersion,
-    "dev.zio" %% "zio-macros-core" % zioMacrosVersion,
-    "dev.zio" %% "zio-macros-test" % zioMacrosVersion,
-    "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC10",
+    //"dev.zio" %% "zio-macros-core" % zioMacrosVersion,
+    //"dev.zio" %% "zio-macros-test" % zioMacrosVersion,
+    "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC11",
 
     "org.http4s" %% "http4s-blaze-server" % http4sVersion,
     "org.http4s" %% "http4s-circe" % http4sVersion,

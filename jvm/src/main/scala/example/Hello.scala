@@ -1,9 +1,6 @@
 package example
 
-
 import zio._
-import zio.clock.Clock
-import zio.random.Random
 import zio.blocking.Blocking
 import zio.interop.catz._
 import cats.implicits._
@@ -13,45 +10,36 @@ import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.CORS
 
-import example.config.AppConfig
+import example.config.appConfig
 import java.io.StringWriter
 import java.io.PrintWriter
 import scala.concurrent.duration._
 
 object Hello extends App {
-  type AppEnv = AppConfig with Blocking with Random with Clock
+  type AppEnv = ZEnv with appConfig.AppConfig
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
   def run(args: List[String]): ZIO[zio.ZEnv,Nothing,Int] = {
-    def createLiveEnv(zenv: zio.ZEnv): AppEnv = new AppConfig.Live
-                                                  with Blocking
-                                                  with Random
-                                                  with Clock {
-      val blocking: Blocking.Service[Any] = zenv.blocking
-      val clock: Clock.Service[Any] = zenv.clock
-      val random: Random.Service[Any] = zenv.random
-    }
-
     app
-      .provideSome[zio.ZEnv](createLiveEnv)
       .flatMapError {
         case e: Throwable =>
           val sw = new StringWriter
           e.printStackTrace(new PrintWriter(sw))
           zio.console.putStrLn(sw.toString())
       }
+      .provideCustomLayer(appConfig.AppConfig.live)
       .fold(_ => 1, _ => 0)
   }
 
   def app(): ZIO[AppEnv, Throwable, Unit] = for {
-    conf <- AppConfig.>.load
+    conf <- appConfig.load
 
     originConfig = CORSConfig(
       anyOrigin = true,
       allowCredentials = false,
       maxAge = 1.day.toSeconds)
 
-    ec <- zio.blocking.blockingExecutor 
+    ec <- ZIO.accessM[Blocking](b => ZIO.succeed(b.get.blockingExecutor))
     catsBlocker = cats.effect.Blocker.liftExecutionContext(ec.asEC)
 
     httpApp = (

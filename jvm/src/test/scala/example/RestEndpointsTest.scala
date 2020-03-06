@@ -15,8 +15,8 @@ import io.circe.generic.extras.auto._
 
 import example.shared.Dto.Event
 
-object RestEndpointsTest extends DefaultRunnableSpec(
-  suite("RestEndpoints")(
+object RestEndpointsTest extends DefaultRunnableSpec {
+  def spec = suite("RestEndpoints")(
     testM("GET /json/random") {
       import RestEndpoints._
       val expected = Vector(Foo(3), Foo(5), Foo(7), Foo(11))
@@ -34,7 +34,7 @@ object RestEndpointsTest extends DefaultRunnableSpec(
           .map(_ => reqRandom())
           .sequence
           .map(_.flatten)
-      } yield assert(responses, equalTo(expected))
+      } yield assert(responses)(equalTo(expected))
     }
   )
-)
+}
