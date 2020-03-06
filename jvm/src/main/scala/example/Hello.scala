@@ -2,6 +2,7 @@ package example
 
 import zio._
 import zio.blocking.Blocking
+import zio.logging._
 import zio.interop.catz._
 import cats.implicits._
 
@@ -16,7 +17,9 @@ import java.io.PrintWriter
 import scala.concurrent.duration._
 
 object Hello extends App {
-  type AppEnv = ZEnv with appConfig.AppConfig
+  type AppEnv = ZEnv
+                  with appConfig.AppConfig
+                  with Logging
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
   def run(args: List[String]): ZIO[zio.ZEnv,Nothing,Int] = {
@@ -27,7 +30,9 @@ object Hello extends App {
           e.printStackTrace(new PrintWriter(sw))
           zio.console.putStrLn(sw.toString())
       }
-      .provideCustomLayer(appConfig.AppConfig.live)
+      .provideCustomLayer(
+        slf4j.Slf4jLogger.make((_, msg) => msg) ++
+        appConfig.AppConfig.live)
       .fold(_ => 1, _ => 0)
   }
 

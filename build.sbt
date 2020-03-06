@@ -57,6 +57,7 @@ lazy val jvmSettings = Seq(
     //"dev.zio" %% "zio-macros-core" % zioMacrosVersion,
     //"dev.zio" %% "zio-macros-test" % zioMacrosVersion,
     "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC11",
+    "dev.zio" %% "zio-logging-slf4j" % "0.2.3",
 
     "org.http4s" %% "http4s-blaze-server" % http4sVersion,
     "org.http4s" %% "http4s-circe" % http4sVersion,

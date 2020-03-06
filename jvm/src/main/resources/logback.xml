@@ -1,16 +1,32 @@
 <configuration>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <!-- On Windows machines setting withJansi to true enables ANSI
-         color code interpretation by the Jansi library. This requires
-         org.fusesource.jansi:jansi:1.8 on the class path.  Note that
-         Unix-based operating systems such as Linux and Mac OS X
-         support ANSI color codes by default. -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
     <withJansi>true</withJansi>
     <encoder>
-      <pattern>[%thread] %highlight(%-5level) %cyan(%logger{15}) - %msg %n</pattern>
+      <pattern>%yellow([%date]) %highlight([%-5level]) %green([%thread]) %cyan([%logger]) - %magenta(%msg) %n</pattern>
     </encoder>
   </appender>
-  <root level="INFO">
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>/var/tmp/oen/full-stack-zio-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxFileSize>100MB</maxFileSize>
+      <maxHistory>60</maxHistory>
+      <totalSizeCap>2GB</totalSizeCap>
+    </rollingPolicy>
+    <immediateFlush>true</immediateFlush>
+    <encoder>
+      <pattern>[%date] [%-5level] [%thread] [%logger] - %msg %n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="example" level="trace" />
+
+  <root level="info">
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
   </root>
+
 </configuration>
