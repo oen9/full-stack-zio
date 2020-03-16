@@ -13,12 +13,11 @@ import org.http4s.implicits._
 import example.shared.Dto.Foo
 import io.circe.generic.extras.auto._
 
-import example.shared.Dto.Event
+import example.shared.Dto._
 
 object RestEndpointsTest extends DefaultRunnableSpec {
   def spec = suite("RestEndpoints")(
     testM("GET /json/random") {
-      import RestEndpoints._
       val expected = Vector(Foo(3), Foo(5), Foo(7), Foo(11))
       val req = Request[RIO[TestEnvironment, *]](Method.GET, uri"/json/random")
 
