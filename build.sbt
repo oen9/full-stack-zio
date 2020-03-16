@@ -1,6 +1,6 @@
 val http4sVersion = "0.21.1"
 val logbackVersion = "1.2.3"
-val zioVersion = "1.0.0-RC18-1"
+val zioVersion = "1.0.0-RC18-2"
 scalaVersion := "2.13.1"
 
 lazy val sharedSettings = Seq(
@@ -53,8 +53,8 @@ lazy val jsSettings = Seq(
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
     "dev.zio" %% "zio" % zioVersion,
-    "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC11",
-    "dev.zio" %% "zio-logging-slf4j" % "0.2.3",
+    "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC12",
+    "dev.zio" %% "zio-logging-slf4j" % "0.2.4",
 
     "org.http4s" %% "http4s-blaze-server" % http4sVersion,
     "org.http4s" %% "http4s-circe" % http4sVersion,

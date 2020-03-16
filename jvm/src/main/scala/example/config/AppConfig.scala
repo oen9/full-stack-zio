@@ -15,11 +15,11 @@ object appConfig {
       def load: Task[AppConfigData]
     }
 
-    val live: ZLayer.NoDeps[Nothing, AppConfig] = ZLayer.succeed(new Service {
+    val live: Layer[Nothing, AppConfig] = ZLayer.succeed(new Service {
       def load: ZIO[Any, Throwable, AppConfigData] = Task.effect(ConfigSource.default.loadOrThrow[AppConfigData])
     })
 
-    val test: ZLayer.NoDeps[Nothing, AppConfig] = ZLayer.succeed(new Service {
+    val test: Layer[Nothing, AppConfig] = ZLayer.succeed(new Service {
       def load: ZIO[Any, Throwable, AppConfigData] = ZIO.effectTotal(AppConfigData(Http(8080, "localhost"), "/tmp"))
     })
   }
