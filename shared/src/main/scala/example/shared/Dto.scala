@@ -7,6 +7,6 @@ object Dto {
     case class Baz(c: Char) extends Event
     case class Qux(values: List[String]) extends Event
 
-    //import io.circe.generic.extras.Configuration
-    //implicit val circeConfig = Configuration.default.withDiscriminator("eventType").withDefaults
+    import io.circe.generic.extras.Configuration
+    implicit val circeConfig = Configuration.default.withDiscriminator("eventType").withDefaults
 }

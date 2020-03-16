@@ -1,7 +1,6 @@
 val http4sVersion = "0.21.1"
 val logbackVersion = "1.2.3"
 val zioVersion = "1.0.0-RC18-1"
-val zioMacrosVersion = "0.6.2"
 scalaVersion := "2.13.1"
 
 lazy val sharedSettings = Seq(
@@ -12,12 +11,12 @@ lazy val sharedSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats-core" % "2.1.1",
     "io.circe" %%% "circe-parser" % "0.13.0",
+    "io.circe" %%% "circe-generic-extras" % "0.13.0",
+    "io.circe" %%% "circe-generic" % "0.13.0",
+    "io.circe" %%% "circe-literal" % "0.13.0",
+    "com.softwaremill.quicklens" %%% "quicklens" % "1.4.13"
     // waiting for scalajs-1.0.0 support
-    // "io.circe" %%% "circe-generic-extras" % "0.13.0",
-    // "io.circe" %%% "circe-generic" % "0.13.0",
-    // "io.circe" %%% "circe-literal" % "0.13.0",
     // "io.scalaland" %%% "chimney" % "0.4.1",
-    // "com.softwaremill.quicklens" %%% "quicklens" % "1.4.12"
   ),
   scalacOptions ++= Seq(
     "-Xlint",
@@ -54,8 +53,6 @@ lazy val jsSettings = Seq(
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
     "dev.zio" %% "zio" % zioVersion,
-    //"dev.zio" %% "zio-macros-core" % zioMacrosVersion,
-    //"dev.zio" %% "zio-macros-test" % zioMacrosVersion,
     "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC11",
     "dev.zio" %% "zio-logging-slf4j" % "0.2.3",
 
@@ -68,11 +65,6 @@ lazy val jvmSettings = Seq(
 
     "dev.zio" %% "zio-test" % zioVersion % Test,
     "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
-
-    // remove after scalajs-1.0.0 support
-    "io.circe" %%% "circe-generic-extras" % "0.13.0",
-    "io.circe" %%% "circe-generic" % "0.13.0",
-    "io.circe" %%% "circe-literal" % "0.13.0",
   ),
   testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
   target := baseDirectory.value / ".." / "target",
