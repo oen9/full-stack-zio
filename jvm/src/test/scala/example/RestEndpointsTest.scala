@@ -13,20 +13,24 @@ import org.http4s.implicits._
 import example.shared.Dto.Foo
 import io.circe.generic.extras.auto._
 
+import example.modules.randomService.RandomService
 import example.shared.Dto._
 
 object RestEndpointsTest extends DefaultRunnableSpec {
+  type TestEnv = TestEnvironment
+                  with RandomService
+
   def spec = suite("RestEndpoints")(
     testM("GET /json/random") {
       val expected = Vector(Foo(3), Foo(5), Foo(7), Foo(11))
-      val req = Request[RIO[TestEnvironment, *]](Method.GET, uri"/json/random")
+      val req = Request[RIO[TestEnv, *]](Method.GET, uri"/json/random")
 
       def reqRandom() = for {
-        resp <- RestEndpoints.routes[TestEnvironment].run(req).value
-        parsedBody <- Http4sTestHelper.parseBody[TestEnvironment, Event](resp)
+        resp <- RestEndpoints.routes[TestEnv].run(req).value
+        parsedBody <- Http4sTestHelper.parseBody[TestEnv, Event](resp)
       } yield parsedBody
 
-      for {
+      val randomTest = for {
         _ <- TestRandom.feedInts(expected.map(_.i): _*)
         responses <- (0 until expected.size)
           .toVector
@@ -34,6 +38,11 @@ object RestEndpointsTest extends DefaultRunnableSpec {
           .sequence
           .map(_.flatten)
       } yield assert(responses)(equalTo(expected))
+
+      randomTest.provideLayer(
+        TestEnvironment.any ++
+        RandomService.live
+      )
     }
   )
 }
