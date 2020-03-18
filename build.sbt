@@ -1,7 +1,13 @@
-val http4sVersion = "0.21.1"
-val logbackVersion = "1.2.3"
-val zioVersion = "1.0.0-RC18-2"
 scalaVersion := "2.13.1"
+
+val Ver = new {
+  val http4s = "0.21.1"
+  val slinky = "0.6.4"
+  val logback = "1.2.3"
+  val zio = "1.0.0-RC18-2"
+  val circe = "0.13.0"
+  val tapir = "0.11.9"
+}
 
 lazy val sharedSettings = Seq(
   scalaVersion     := "2.13.1",
@@ -10,10 +16,10 @@ lazy val sharedSettings = Seq(
   organizationName := "oen9",
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats-core" % "2.1.1",
-    "io.circe" %%% "circe-parser" % "0.13.0",
-    "io.circe" %%% "circe-generic-extras" % "0.13.0",
-    "io.circe" %%% "circe-generic" % "0.13.0",
-    "io.circe" %%% "circe-literal" % "0.13.0",
+    "io.circe" %%% "circe-parser" % Ver.circe,
+    "io.circe" %%% "circe-generic-extras" % Ver.circe,
+    "io.circe" %%% "circe-generic" % Ver.circe,
+    "io.circe" %%% "circe-literal" % Ver.circe,
     "com.softwaremill.quicklens" %%% "quicklens" % "1.4.13"
     // waiting for scalajs-1.0.0 support
     // "io.scalaland" %%% "chimney" % "0.5.0",
@@ -31,8 +37,8 @@ lazy val sharedSettings = Seq(
 lazy val jsSettings = Seq(
   libraryDependencies ++= Seq(
     "com.lihaoyi" %%% "scalatags" % "0.8.6",
-    "me.shadaj" %%% "slinky-web" % "0.6.4",
-    "me.shadaj" %%% "slinky-react-router" % "0.6.4",
+    "me.shadaj" %%% "slinky-web" % Ver.slinky,
+    "me.shadaj" %%% "slinky-react-router" % Ver.slinky,
     "io.suzaku" %%% "diode" % "1.1.8"
   ),
   npmDependencies in Compile ++= Seq(
@@ -52,19 +58,19 @@ lazy val jsSettings = Seq(
 
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
-    "dev.zio" %% "zio" % zioVersion,
+    "dev.zio" %% "zio" % Ver.zio,
     "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC12",
     "dev.zio" %% "zio-logging-slf4j" % "0.2.4",
 
-    "org.http4s" %% "http4s-blaze-server" % http4sVersion,
-    "org.http4s" %% "http4s-circe" % http4sVersion,
-    "org.http4s" %% "http4s-dsl" % http4sVersion,
-    "org.http4s" %% "http4s-blaze-client" % http4sVersion,
-    "ch.qos.logback" % "logback-classic" % logbackVersion,
+    "org.http4s" %% "http4s-blaze-server" % Ver.http4s,
+    "org.http4s" %% "http4s-circe" % Ver.http4s,
+    "org.http4s" %% "http4s-dsl" % Ver.http4s,
+    "org.http4s" %% "http4s-blaze-client" % Ver.http4s,
+    "ch.qos.logback" % "logback-classic" % Ver.logback,
     "com.github.pureconfig" %% "pureconfig" % "0.12.2",
 
-    "dev.zio" %% "zio-test" % zioVersion % Test,
-    "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
+    "dev.zio" %% "zio-test" % Ver.zio % Test,
+    "dev.zio" %% "zio-test-sbt" % Ver.zio % Test,
   ),
   testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
   target := baseDirectory.value / ".." / "target",
