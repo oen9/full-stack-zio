@@ -12,6 +12,7 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.CORS
 
 import example.config.appConfig
+import example.modules.randomService
 import java.io.StringWriter
 import java.io.PrintWriter
 import scala.concurrent.duration._
@@ -19,6 +20,7 @@ import scala.concurrent.duration._
 object Hello extends App {
   type AppEnv = ZEnv
                   with appConfig.AppConfig
+                  with randomService.RandomService
                   with Logging
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
@@ -32,6 +34,7 @@ object Hello extends App {
       }
       .provideCustomLayer(
         slf4j.Slf4jLogger.make((_, msg) => msg) ++
+        randomService.RandomService.live ++
         appConfig.AppConfig.live)
       .fold(_ => 1, _ => 0)
   }

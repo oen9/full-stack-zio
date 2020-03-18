@@ -16,7 +16,7 @@ lazy val sharedSettings = Seq(
     "io.circe" %%% "circe-literal" % "0.13.0",
     "com.softwaremill.quicklens" %%% "quicklens" % "1.4.13"
     // waiting for scalajs-1.0.0 support
-    // "io.scalaland" %%% "chimney" % "0.4.1",
+    // "io.scalaland" %%% "chimney" % "0.5.0",
   ),
   scalacOptions ++= Seq(
     "-Xlint",

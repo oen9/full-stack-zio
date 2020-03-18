@@ -10,7 +10,7 @@ full-stack-zio
 ## Waiting for scalajs-1.0.0 support
 
 ```sbt
-"io.scalaland" %%% "chimney" % "0.4.1",
+"io.scalaland" %%% "chimney" % "0.5.0",
 ```
 
 ## Libs
