@@ -27,7 +27,7 @@ object RestEndpointsTest extends DefaultRunnableSpec {
 
       def reqRandom() = for {
         resp <- RestEndpoints.routes[TestEnv].run(req).value
-        parsedBody <- Http4sTestHelper.parseBody[TestEnv, Event](resp)
+        parsedBody <- Http4sTestHelper.parseBody[TestEnv, Foo](resp)
       } yield parsedBody
 
       val randomTest = for {
