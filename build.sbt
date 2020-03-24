@@ -6,7 +6,7 @@ val Ver = new {
   val logback = "1.2.3"
   val zio = "1.0.0-RC18-2"
   val circe = "0.13.0"
-  val tapir = "0.11.9"
+  val tapir = "0.12.25"
 }
 
 lazy val sharedSettings = Seq(
@@ -66,6 +66,12 @@ lazy val jvmSettings = Seq(
     "org.http4s" %% "http4s-circe" % Ver.http4s,
     "org.http4s" %% "http4s-dsl" % Ver.http4s,
     "org.http4s" %% "http4s-blaze-client" % Ver.http4s,
+    "com.softwaremill.sttp.tapir" %% "tapir-core" % Ver.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % Ver.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-http4s" % Ver.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs" % Ver.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % Ver.tapir,
+    "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Ver.tapir,
     "ch.qos.logback" % "logback-classic" % Ver.logback,
     "com.github.pureconfig" %% "pureconfig" % "0.12.2",
 

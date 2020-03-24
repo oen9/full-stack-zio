@@ -1,21 +1,25 @@
 package example
 
+import cats.implicits._
 import zio._
 import zio.blocking.Blocking
-import zio.logging._
 import zio.interop.catz._
-import cats.implicits._
+import zio.logging._
 
-import org.http4s.server.middleware.CORSConfig
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.CORS
+import org.http4s.server.middleware.CORSConfig
 
 import example.config.appConfig
 import example.modules.randomService
-import java.io.StringWriter
 import java.io.PrintWriter
+import java.io.StringWriter
 import scala.concurrent.duration._
+
+import sttp.tapir.docs.openapi._
+import sttp.tapir.openapi.circe.yaml._
+import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
 object Hello extends App {
   type AppEnv = ZEnv
@@ -50,15 +54,17 @@ object Hello extends App {
     ec <- ZIO.accessM[Blocking](b => ZIO.succeed(b.get.blockingExecutor))
     catsBlocker = cats.effect.Blocker.liftExecutionContext(ec.asEC)
 
+    yamlDocs = RestEndpoints.endpoints.toOpenAPI("full-stack-zio", "0.1.0").toYaml
     httpApp = (
       RestEndpoints.routes[AppEnv]
+      <+> new SwaggerHttp4s(yamlDocs).routes[RIO[AppEnv, *]]
       <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker)
     ).orNotFound
 
     server <- ZIO.runtime[AppEnv].flatMap { implicit rts =>
       BlazeServerBuilder[AppTask]
         .bindHttp(conf.http.port, conf.http.host)
-        .withHttpApp(CORS(httpApp))
+        .withHttpApp(CORS(httpApp, originConfig))
         .serve
         .compile
         .drain

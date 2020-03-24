@@ -23,6 +23,7 @@ full-stack-zio
 1. http4s
 1. pureconfig
 1. circe
+1. swagger
 
 ### frontend
 
@@ -36,7 +37,6 @@ full-stack-zio
 
 1. mongo
 1. doobie
-1. swagger
 1. docker
 1. auth example
 1. more tests
