@@ -56,7 +56,8 @@ full-stack-zio
 ### standalone
 
 1. `sbt stage`
-1. set `MONGO_URL_FULL_STACK_ZIO` env variable (example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`)
+1. set `MONGO_URL_FULL_STACK_ZIO` env variable\
+example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`
 1. run `./target/universal/stage/bin/app`
 1. open `http://localhost:8080` in browser
 
@@ -66,11 +67,12 @@ full-stack-zio
 
 #### mongoDB
 
-- docker
+- docker\
 run `docker-compose up -d mongo`
 
-- other
-set `MONGO_URL_FULL_STACK_ZIO` env variable (example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`)
+- other\
+set `MONGO_URL_FULL_STACK_ZIO` env variable\
+example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`
 
 ### js
 
