@@ -1,19 +1,23 @@
-package example.model.mongo
+package example.model
 
-object TodoTask {
+import reactivemongo.api.bson.BSONObjectID
+import reactivemongo.api.bson.Macros
+import reactivemongo.api.bson.Macros.Annotations.Key
+
+object MongoData {
   sealed trait TodoStatus
   case object Done extends TodoStatus
   case object Pending extends TodoStatus
 
-  case class TodoTask(value: String, status: TodoStatus)
+  case class TodoTask(@Key("_id") id: BSONObjectID, value: String, status: TodoStatus)
 
-  import reactivemongo.api.bson.Macros
-  import reactivemongo.api.bson.MacroOptions.{
-    AutomaticMaterialization, UnionType, \/
-  }
   object TodoStatus {
+    import reactivemongo.api.bson.MacroOptions.{
+      AutomaticMaterialization, UnionType, \/
+    }
     type PredefinedTodoStatus = UnionType[Done.type \/ Pending.type] with AutomaticMaterialization
     implicit val predefinedTodoStatus = Macros.handlerOpts[TodoStatus, PredefinedTodoStatus]
   }
+
   implicit val todoTaskHandler = Macros.handler[TodoTask]
 }

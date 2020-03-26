@@ -76,6 +76,8 @@ lazy val jvmSettings = Seq(
     "com.github.pureconfig" %% "pureconfig" % "0.12.2",
     "org.reactivemongo" %% "reactivemongo" % "0.20.3",
 
+    "io.scalaland" %%% "chimney" % "0.5.0", // TODO remove from here after scalajs-1.0.0 support
+
     "dev.zio" %% "zio-test" % Ver.zio % Test,
     "dev.zio" %% "zio-test-sbt" % Ver.zio % Test,
   ),
