@@ -74,6 +74,7 @@ lazy val jvmSettings = Seq(
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Ver.tapir,
     "ch.qos.logback" % "logback-classic" % Ver.logback,
     "com.github.pureconfig" %% "pureconfig" % "0.12.2",
+    "org.reactivemongo" %% "reactivemongo" % "0.20.3",
 
     "dev.zio" %% "zio-test" % Ver.zio % Test,
     "dev.zio" %% "zio-test-sbt" % Ver.zio % Test,

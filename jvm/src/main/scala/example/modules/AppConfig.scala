@@ -1,11 +1,12 @@
-package example.config
+package example.modules
 
-import zio._
-import pureconfig.generic.auto._
 import pureconfig.ConfigSource
+import pureconfig.generic.auto._
+import zio._
 
 case class Http(port: Int, host: String)
-case class AppConfigData(http: Http, assets: String)
+case class Mongo(uri: String)
+case class AppConfigData(http: Http, mongo: Mongo, assets: String)
 
 object appConfig {
   type AppConfig = Has[AppConfig.Service]
@@ -20,7 +21,7 @@ object appConfig {
     })
 
     val test: Layer[Nothing, AppConfig] = ZLayer.succeed(new Service {
-      def load: ZIO[Any, Throwable, AppConfigData] = ZIO.effectTotal(AppConfigData(Http(8080, "localhost"), "/tmp"))
+      def load: ZIO[Any, Throwable, AppConfigData] = ZIO.effectTotal(AppConfigData(Http(8080, "localhost"), Mongo("mongo://test:test@localhost/test"), "/tmp"))
     })
   }
 

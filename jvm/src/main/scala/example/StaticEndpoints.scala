@@ -1,8 +1,8 @@
 package example
 
+import cats.effect.Blocker
 import zio._
 import zio.interop.catz._
-import cats.effect.Blocker
 
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{HttpRoutes, Request, StaticFile}

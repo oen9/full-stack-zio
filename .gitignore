@@ -5,5 +5,6 @@
 .bloop/
 .metals/
 target/
+cache/
 sess.vim
 project/metals.sbt

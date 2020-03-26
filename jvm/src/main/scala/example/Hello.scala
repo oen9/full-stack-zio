@@ -11,12 +11,14 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.middleware.CORSConfig
 
-import example.config.appConfig
+import example.modules.appConfig
 import example.modules.randomService
 import java.io.PrintWriter
 import java.io.StringWriter
 import scala.concurrent.duration._
 
+import example.modules.MongoConn
+import example.modules.todoRepository
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
@@ -25,6 +27,7 @@ object Hello extends App {
   type AppEnv = ZEnv
                   with appConfig.AppConfig
                   with randomService.RandomService
+                  with todoRepository.TodoRepository
                   with Logging
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
@@ -36,15 +39,26 @@ object Hello extends App {
           e.printStackTrace(new PrintWriter(sw))
           zio.console.putStrLn(sw.toString())
       }
-      .provideCustomLayer(
-        slf4j.Slf4jLogger.make((_, msg) => msg) ++
-        randomService.RandomService.live ++
-        appConfig.AppConfig.live)
+      .provideCustomLayer{
+        val appConf = appConfig.AppConfig.live
+        val logging = slf4j.Slf4jLogger.make((_, msg) => msg)
+
+        val mongoConf = appConf >>> MongoConn.live
+        val todoRepo = (mongoConf ++ logging) >>> todoRepository.TodoRepository.live
+
+        logging ++
+        appConf ++
+        todoRepo ++
+        todoRepo ++
+        randomService.RandomService.live
+      }
       .fold(_ => 1, _ => 0)
   }
 
   def app(): ZIO[AppEnv, Throwable, Unit] = for {
     conf <- appConfig.load
+
+    _ <- todoRepository.runDebugTest()
 
     originConfig = CORSConfig(
       anyOrigin = true,

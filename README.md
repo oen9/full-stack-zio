@@ -24,6 +24,7 @@ full-stack-zio
 1. pureconfig
 1. circe
 1. swagger
+1. reactivemongo
 
 ### frontend
 
@@ -33,22 +34,43 @@ full-stack-zio
 1. bootstrap
 1. circe
 
+## in progress
+
+1. todo list with mongoDB
+
 ## soon
 
-1. mongo
 1. doobie
-1. docker
 1. auth example
 1. more tests
 1. and more
 
 ## Production
 
+### docker
+
 1. `sbt stage`
+1. `docker-compose up -d web`
+1. open `http://localhost:8080` in browser
+
+### standalone
+
+1. `sbt stage`
+1. set `MONGO_URL_FULL_STACK_ZIO` env variable (example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`)
 1. run `./target/universal/stage/bin/app`
 1. open `http://localhost:8080` in browser
 
 ## DEV
+
+### required services
+
+#### mongoDB
+
+- docker
+run `docker-compose up -d mongo`
+
+- other
+set `MONGO_URL_FULL_STACK_ZIO` env variable (example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`)
 
 ### js
 
