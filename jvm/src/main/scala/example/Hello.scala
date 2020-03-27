@@ -10,24 +10,27 @@ import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.middleware.CORSConfig
-
-import example.modules.appConfig
-import example.modules.randomService
-import java.io.PrintWriter
-import java.io.StringWriter
-import scala.concurrent.duration._
-
-import example.modules.MongoConn
-import example.modules.todoRepository
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
+
+import example.endpoints.RestEndpoints
+import example.endpoints.StaticEndpoints
+import example.endpoints.TodoEndpoints
+import example.modules.appConfig
+import example.modules.db.MongoConn
+import example.modules.db.todoRepository
+import example.modules.services.randomService
+import example.modules.services.todoService
+import java.io.PrintWriter
+import java.io.StringWriter
+import scala.concurrent.duration._
 
 object Hello extends App {
   type AppEnv = ZEnv
                   with appConfig.AppConfig
                   with randomService.RandomService
-                  with todoRepository.TodoRepository
+                  with todoService.TodoService
                   with Logging
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
@@ -45,11 +48,11 @@ object Hello extends App {
 
         val mongoConf = appConf >>> MongoConn.live
         val todoRepo = (mongoConf ++ logging) >>> todoRepository.TodoRepository.live
+        val todoServ = todoRepo >>> todoService.TodoService.live
 
         logging ++
         appConf ++
-        todoRepo ++
-        todoRepo ++
+        todoServ ++
         randomService.RandomService.live
       }
       .fold(_ => 1, _ => 0)
@@ -57,8 +60,6 @@ object Hello extends App {
 
   def app(): ZIO[AppEnv, Throwable, Unit] = for {
     conf <- appConfig.load
-
-    _ <- todoRepository.runDebugTest()
 
     originConfig = CORSConfig(
       anyOrigin = true,
@@ -68,9 +69,14 @@ object Hello extends App {
     ec <- ZIO.accessM[Blocking](b => ZIO.succeed(b.get.blockingExecutor))
     catsBlocker = cats.effect.Blocker.liftExecutionContext(ec.asEC)
 
-    yamlDocs = RestEndpoints.endpoints.toOpenAPI("full-stack-zio", "0.1.0").toYaml
+    yamlDocs = (
+      RestEndpoints.endpoints
+      ++ TodoEndpoints.endpoints
+    ).toOpenAPI("full-stack-zio", "0.1.0").toYaml
+
     httpApp = (
       RestEndpoints.routes[AppEnv]
+      <+> TodoEndpoints.routes[AppEnv]
       <+> new SwaggerHttp4s(yamlDocs).routes[RIO[AppEnv, *]]
       <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker)
     ).orNotFound
@@ -84,5 +90,4 @@ object Hello extends App {
         .drain
     }
   } yield server
-
 }

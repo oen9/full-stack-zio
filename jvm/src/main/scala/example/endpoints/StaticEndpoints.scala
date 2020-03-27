@@ -1,4 +1,4 @@
-package example
+package example.endpoints
 
 import cats.effect.Blocker
 import zio._

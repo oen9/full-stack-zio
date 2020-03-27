@@ -2,18 +2,18 @@ package example
 
 import cats.implicits._
 import zio._
+import zio.interop.catz._
 import zio.test._
 import zio.test.Assertion._
-import zio.test.environment.TestRandom
 import zio.test.environment.TestEnvironment
-import zio.interop.catz._
+import zio.test.environment.TestRandom
 
+import io.circe.generic.extras.auto._
 import org.http4s._
 import org.http4s.implicits._
-import example.shared.Dto.Foo
-import io.circe.generic.extras.auto._
 
-import example.modules.randomService.RandomService
+import example.endpoints.RestEndpoints
+import example.modules.services.randomService.RandomService
 import example.shared.Dto._
 
 object RestEndpointsTest extends DefaultRunnableSpec {

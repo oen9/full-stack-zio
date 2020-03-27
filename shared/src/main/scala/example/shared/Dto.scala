@@ -11,7 +11,7 @@ object Dto {
     case object Done extends TodoStatus
     case object Pending extends TodoStatus
 
-    case class TodoTask(id: String, value: String, status: TodoStatus)
+    case class TodoTask(id: Option[String] = None, value: String = "todo value", status: TodoStatus = Pending)
 
     import io.circe.generic.extras.Configuration
     implicit val circeConfig = Configuration.default.withDiscriminator("eventType").withDefaults

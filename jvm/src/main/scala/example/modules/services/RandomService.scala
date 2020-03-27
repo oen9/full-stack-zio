@@ -1,4 +1,4 @@
-package example.modules
+package example.modules.services
 
 import zio._
 import zio.random._

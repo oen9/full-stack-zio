@@ -1,4 +1,4 @@
-package example.modules
+package example.modules.db
 
 import example.modules.appConfig.AppConfig
 import example.modules.AppConfigData

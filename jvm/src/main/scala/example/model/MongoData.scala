@@ -20,4 +20,9 @@ object MongoData {
   }
 
   implicit val todoTaskHandler = Macros.handler[TodoTask]
+
+  def switchStatus(oldStatus: TodoStatus): TodoStatus = oldStatus match {
+    case Pending => Done
+    case Done => Pending
+  }
 }

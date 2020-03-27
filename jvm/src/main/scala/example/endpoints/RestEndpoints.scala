@@ -1,4 +1,4 @@
-package example
+package example.endpoints
 
 import cats.implicits._
 import zio._
@@ -10,9 +10,8 @@ import sttp.tapir._
 import sttp.tapir.json.circe._
 import sttp.tapir.server.http4s._
 
-import example.modules.randomService.getRandom
-import example.modules.randomService.getRandom
-import example.modules.randomService.RandomService
+import example.modules.services.randomService.getRandom
+import example.modules.services.randomService.RandomService
 import example.shared.Dto._
 
 object RestEndpoints {
@@ -25,7 +24,7 @@ object RestEndpoints {
     .out(jsonBody[String])
 
   val echoEndpoint = endpoint.get
-    .in("echo" / path[String]("echo text"))
+    .in("echo" / path[String]("echo text").example("hi!"))
     .out(stringBody)
 
   def endpoints = List(
