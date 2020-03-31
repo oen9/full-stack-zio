@@ -7,6 +7,13 @@ import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 
+import example.shared.Dto._
+import io.circe.Decoder
+import io.circe.generic.extras.auto._
+import io.circe.parser.decode
+import io.circe.syntax._
+import org.scalajs.dom.ext.AjaxException
+
 object AjaxClient {
   val JSON_TYPE = Map("Content-Type" -> "application/json")
   val baseUrl = ""
@@ -18,17 +25,44 @@ object AjaxClient {
     Ajax.get(
       url = s"$baseUrl/json/random",
       headers = JSON_TYPE
-    ).transform(decodeFoo)
+    ).transform(decodeAndHandleErrors[Foo])
   }
 
-  private[this] def decodeFoo(t: Try[XMLHttpRequest]): Try[Foo] = {
-    import example.shared.Dto._
-    import io.circe.generic.extras.auto._
-    import io.circe.parser.decode
+  def getTodos = {
+    Ajax.get(
+      url = s"$baseUrl/todos",
+      headers = JSON_TYPE
+    ).transform(decodeAndHandleErrors[Vector[TodoTask]])
+  }
 
+  def postTodo(newTodo: TodoTask) = {
+    Ajax.post(
+      url = s"$baseUrl/todos",
+      data = newTodo.asJson.noSpaces,
+      headers = JSON_TYPE
+    ).transform(decodeAndHandleErrors[String])
+  }
+
+  def switchStatus(todoId: String) = {
+    Ajax.get(
+      url = s"$baseUrl/todos/$todoId/switch",
+      headers = JSON_TYPE
+    ).transform(decodeAndHandleErrors[TodoStatus])
+  }
+
+  private[this] def decodeAndHandleErrors[A: Decoder](t: Try[XMLHttpRequest]): Try[A] = t match {
+    case Success(req) => decode[A](req.responseText).toTry
+    case Failure(e) => Failure(onFailure(e))
+  }
+
+  private[this] def onFailure: Throwable => Throwable = t => {
+    t.printStackTrace()
     t match {
-      case Success(req) => decode[Foo](req.responseText).toTry
-      case Failure(e) => Failure(e)
+      case ex: AjaxException => AjaxClient.AjaxErrorException(s"Connection error.")
+      case unknown => AjaxClient.UnknownErrorException
     }
   }
+
+  case object UnknownErrorException extends Exception("unknown error")
+  case class AjaxErrorException(s: String) extends Exception(s)
 }

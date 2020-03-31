@@ -44,7 +44,7 @@ import example.components.BlueButton
                 span(className := "sr-only", "Loading...")
               )
             case PotFailed =>
-              randomNumber.exceptionOption.fold("unknown error")(msg => " error: " + msg.toString)
+              randomNumber.exceptionOption.fold("unknown error")(msg => " error: " + msg.getMessage())
             case PotReady =>
               randomNumber.fold("unknown error")(_.i.toString)
             case _ => div()

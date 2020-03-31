@@ -14,3 +14,11 @@ main > .container {
 .main-content {
   min-height: 23rem;
 }
+
+.todo-size {
+  width: 40rem;
+}
+
+.add-todo-input {
+  width: 100%;
+}

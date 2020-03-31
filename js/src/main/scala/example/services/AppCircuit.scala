@@ -1,32 +1,30 @@
 package example.services
 
-import diode.{Action, ActionHandler, Circuit, ModelRW}
-import example.shared.Dto.Foo
-import diode.data.Pot
 import diode.data.Empty
+import diode.data.Pot
 import diode.data.PotAction
+import diode.{Action, Circuit}
+import example.shared.Dto.Foo
+import example.shared.Dto.TodoStatus
+import example.shared.Dto.TodoTask
+import example.services.handlers.ClicksHandler
+import example.services.handlers.RandomNumberHandler
+import example.services.handlers.TodosHandler
 
 case class Clicks(count: Int)
-case class RootModel(clicks: Clicks, randomNumber: Pot[Foo] = Empty)
+case class RootModel(clicks: Clicks, randomNumber: Pot[Foo] = Empty, todos: Pot[Vector[TodoTask]] = Empty)
 
 case object IncreaseClicks extends Action
 case class TryGetRandom(potResult: Pot[Foo] = Empty) extends PotAction[Foo, TryGetRandom] {
   def next(newResult: Pot[Foo]) = copy(potResult = newResult)
 }
 
-class ClicksHandler[M](modelRW: ModelRW[M, Clicks]) extends ActionHandler(modelRW) {
-  override def handle = {
-    case IncreaseClicks => updated(value.copy(count = value.count + 1))
-  }
-}
-
-class RandomNumberHandler[M](modelRW: ModelRW[M, Pot[Foo]]) extends ActionHandler(modelRW) {
-  import scala.concurrent.ExecutionContext.Implicits.global
-  override def handle = {
-    case action: TryGetRandom =>
-      val updateF = action.effect(AjaxClient.getRandom)(identity _)
-      action.handleWith(this, updateF)(PotAction.handler())
-  }
+case class AddNewTodo(todoTask: TodoTask) extends Action
+case class TodoAdded(todoTask: TodoTask) extends Action
+case class SwitchTodoStatus(id: String) extends Action
+case class TodoStatusSwitched(id: String, newState: TodoStatus) extends Action
+case class TryGetTodos(potResult: Pot[Vector[TodoTask]] = Empty) extends PotAction[Vector[TodoTask], TryGetTodos] {
+  def next(newResult: Pot[Vector[TodoTask]]) = copy(potResult = newResult)
 }
 
 object AppCircuit extends Circuit[RootModel] {
@@ -34,6 +32,7 @@ object AppCircuit extends Circuit[RootModel] {
 
   override protected def actionHandler: AppCircuit.HandlerFunction = composeHandlers(
     new ClicksHandler(zoomTo(_.clicks)),
-    new RandomNumberHandler(zoomTo(_.randomNumber))
+    new RandomNumberHandler(zoomTo(_.randomNumber)),
+    new TodosHandler(zoomTo(_.todos))
   )
 }
