@@ -3,16 +3,17 @@ package example.modules
 import cats.implicits._
 
 import example.components.TodoLi
+import example.services.AddNewTodo
 import example.services.AppCircuit
 import example.services.ReactDiode
 import example.services.TryGetTodos
 import example.shared.Dto.TodoTask
-import example.services.AddNewTodo
 
 import diode.data.PotState.PotEmpty
 import diode.data.PotState.PotFailed
 import diode.data.PotState.PotPending
 import diode.data.PotState.PotReady
+import example.services.DeleteTodo
 import org.scalajs.dom.{Event, html}
 import slinky.core.annotations.react
 import slinky.core.facade.Fragment
@@ -39,6 +40,7 @@ import slinky.web.html._
     })
 
     val clearToDelete = () => setToDelete(none)
+    val submitDelete = () => dispatch(DeleteTodo(toDelete.flatMap(_.id).getOrElse("")))
     def onDelete(todoTask: TodoTask) = () => setToDelete(todoTask.some)
     def onChangeAddNew(e: SyntheticEvent[html.Input, Event]): Unit = setToAdd(e.target.value)
     def onClickAddNew(e: SyntheticEvent[html.Button, Event]): Unit = {
@@ -85,7 +87,7 @@ import slinky.web.html._
             ),
             div(className := "modal-footer",
               button(`type` := "button", className := "btn btn-secondary", data-"dismiss" := "modal", onClick := clearToDelete, "cancel"),
-              button(`type` := "button", className := "btn btn-danger", "delete"),
+              button(`type` := "button", className := "btn btn-danger", data-"dismiss" := "modal", "delete", onClick := submitDelete),
             )
           )
         )

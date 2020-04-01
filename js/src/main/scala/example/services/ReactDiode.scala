@@ -1,11 +1,11 @@
 package example.services
 
-import slinky.core.facade.Hooks._
 import diode.Circuit
-import slinky.core.facade.ReactContext
-import diode.ModelR
 import diode.Dispatcher
+import diode.ModelR
+import slinky.core.facade.Hooks._
 import slinky.core.facade.React
+import slinky.core.facade.ReactContext
 
 object ReactDiode {
   val diodeContext = React.createContext[Circuit[RootModel]](AppCircuit)

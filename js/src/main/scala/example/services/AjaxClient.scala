@@ -50,6 +50,13 @@ object AjaxClient {
     ).transform(decodeAndHandleErrors[TodoStatus])
   }
 
+  def deleteTodo(todoId: String) = {
+    Ajax.delete(
+      url = s"$baseUrl/todos/$todoId",
+      headers = JSON_TYPE
+    ).transform(_.responseText, onFailure)
+  }
+
   private[this] def decodeAndHandleErrors[A: Decoder](t: Try[XMLHttpRequest]): Try[A] = t match {
     case Success(req) => decode[A](req.responseText).toTry
     case Failure(e) => Failure(onFailure(e))

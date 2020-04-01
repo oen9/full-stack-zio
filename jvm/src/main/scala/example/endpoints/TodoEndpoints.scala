@@ -17,7 +17,6 @@ import example.modules.services.todoService
 import example.modules.services.todoService.TodoService
 import example.shared.Dto._
 
-
 object TodoEndpoints {
   val exampleId = "5e7ca3231200001200268a81"
 
@@ -41,16 +40,23 @@ object TodoEndpoints {
     .in(jsonBody[TodoTask].example(TodoTask()))
     .errorOut(unexpectedError)
     .out(jsonBody[String].example(exampleId))
+    .out(statusCode(StatusCode.Created))
 
   val switchStatus = endpoint.get
     .in("todos" / path[String]("id").example(exampleId) / "switch")
     .errorOut(allErrorsOut)
     .out(jsonBody[TodoStatus].example(Pending))
 
+  val deleteTodo = endpoint.delete
+    .in("todos" / path[String]("id").example(exampleId))
+    .errorOut(allErrorsOut)
+    .out(statusCode(StatusCode.NoContent))
+
   def endpoints = List(
     getAllTodos,
     createNew,
-    switchStatus
+    switchStatus,
+    deleteTodo
   )
 
   def routes[R <: TodoService with Logging]: HttpRoutes[RIO[R, *]] = {
@@ -60,6 +66,8 @@ object TodoEndpoints {
       handleUnexpectedError(todoService.createNew(toCreate))
     } <+> switchStatus.toRoutes { id =>
       handleError(todoService.switchStatus(id))
+    } <+> deleteTodo.toRoutes { id =>
+      handleError(todoService.deleteTodo(id))
     }
   }
 

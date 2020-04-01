@@ -19,6 +19,7 @@ object todoService {
       def getAll: Task[List[TodoTask]]
       def createNew(todoTask: TodoTask): Task[String]
       def switchStatus(id: String): Task[TodoStatus]
+      def deleteTodo(id: String): Task[Unit]
     }
 
     val live: ZLayer[TodoRepository, Nothing, Has[TodoService.Service]] = ZLayer.fromService { todoRepository =>
@@ -44,12 +45,23 @@ object todoService {
         }
 
         def switchStatus(id: String): Task[TodoStatus] = for {
-          bsonId <- ZIO.fromTry(BSONObjectID.parse(id)).mapError(e => WrongMongoId(e.getMessage()))
+          bsonId <- strToBsonId(id)
           found <- todoRepository.findById(bsonId)
           newStatus = MongoData.switchStatus(found.status)
           _ <- todoRepository.updateStatus(bsonId, newStatus)
           dto = newStatus.into[TodoStatus].transform
         } yield dto
+
+        def deleteTodo(id: String): zio.Task[Unit] = for {
+          bsonId <- strToBsonId(id)
+          found <- todoRepository.findById(bsonId)
+          _ <- todoRepository.deleteById(bsonId)
+        } yield ()
+
+        private def strToBsonId(id: String) =
+          ZIO
+            .fromTry(BSONObjectID.parse(id))
+            .mapError(e => WrongMongoId(e.getMessage()))
       }
     }
   }
@@ -60,4 +72,6 @@ object todoService {
     ZIO.accessM[TodoService](_.get.createNew(toCreate))
   def switchStatus(id: String): ZIO[TodoService, Throwable, Dto.TodoStatus] =
     ZIO.accessM[TodoService](_.get.switchStatus(id))
+  def deleteTodo(id: String): ZIO[TodoService, Throwable, Unit] =
+    ZIO.accessM[TodoService](_.get.deleteTodo(id))
 }

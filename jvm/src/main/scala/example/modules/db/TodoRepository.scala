@@ -21,6 +21,7 @@ object todoRepository {
       def insert(todoTask: TodoTask): Task[WriteResult]
       def findById(id: BSONObjectID): Task[TodoTask]
       def updateStatus(id: BSONObjectID, newStatus: TodoStatus): Task[WriteResult]
+      def deleteById(id: BSONObjectID): Task[WriteResult]
     }
 
     val live = ZLayer.fromServices[MongoConn, Logging.Service, TodoRepository.Service]((mongoConn, logging) =>
@@ -60,6 +61,16 @@ object todoRepository {
             _ <- logger.log(LogLevel.Trace)(s"updateStatus '$id' to $newStatus: $updateResult")
           } yield updateResult
         }
+
+        def deleteById(id: BSONObjectID): Task[WriteResult] = {
+          val query = BSONDocument("_id" -> id)
+          for {
+            removeResult <- ZIO.fromFuture { implicit ec =>
+              collection.delete.one(query)
+            }
+            _ <- logger.log(LogLevel.Trace)(s"deleteById '$id' delete: $removeResult")
+          } yield removeResult
+        }
       }
     )
   }
@@ -72,4 +83,6 @@ object todoRepository {
     ZIO.accessM[TodoRepository](_.get.findById(id))
   def updateStatus(id: BSONObjectID, newStatus: TodoStatus): ZIO[TodoRepository, Throwable, WriteResult] =
     ZIO.accessM[TodoRepository](_.get.updateStatus(id, newStatus))
+  def deleteById(id: BSONObjectID): ZIO[TodoRepository, Throwable, WriteResult] =
+    ZIO.accessM[TodoRepository](_.get.deleteById(id))
 }

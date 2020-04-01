@@ -3,11 +3,11 @@ package example.services.handlers
 import diode.data.Pot
 import diode.data.PotAction
 import diode.{ActionHandler, ModelRW}
-import example.shared.Dto.Foo
-import example.services.Clicks
-import example.services.TryGetRandom
-import example.services.IncreaseClicks
 import example.services.AjaxClient
+import example.services.Clicks
+import example.services.IncreaseClicks
+import example.services.TryGetRandom
+import example.shared.Dto.Foo
 
 class ClicksHandler[M](modelRW: ModelRW[M, Clicks]) extends ActionHandler(modelRW) {
   override def handle = {
@@ -23,4 +23,3 @@ class RandomNumberHandler[M](modelRW: ModelRW[M, Pot[Foo]]) extends ActionHandle
       action.handleWith(this, updateF)(PotAction.handler())
   }
 }
-

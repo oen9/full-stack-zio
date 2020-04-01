@@ -36,7 +36,7 @@ full-stack-zio
 
 ## in progress
 
-1. todo list with mongoDB
+Something with doobie(PostgreSQL)
 
 ## soon
 
