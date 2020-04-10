@@ -36,7 +36,6 @@ lazy val sharedSettings = Seq(
 
 lazy val jsSettings = Seq(
   libraryDependencies ++= Seq(
-    "com.lihaoyi" %%% "scalatags" % "0.8.6",
     "me.shadaj" %%% "slinky-web" % Ver.slinky,
     "me.shadaj" %%% "slinky-react-router" % Ver.slinky,
     "io.suzaku" %%% "diode" % "1.1.8"
@@ -51,7 +50,7 @@ lazy val jsSettings = Seq(
     "jquery" -> "3.4.1"
   ),
   scalaJSUseMainModuleInitializer := true,
-  version.in(webpack) := "4.41.6",
+  version.in(webpack) := "4.42.1",
   webpackBundlingMode := BundlingMode.Application,
   webpackBundlingMode.in(fastOptJS) := BundlingMode.LibraryOnly(),
 )

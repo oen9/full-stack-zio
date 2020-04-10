@@ -13,8 +13,10 @@ services:
       JAVA_OPTS: "-Xdebug -Xrunjdwp:server=y,transport=dt_socket,suspend=n,address=8000"
     links:
       - mongo
+      - postgres
     depends_on:
       - mongo
+      - postgres
     volumes:
     - ./target/universal/stage/:/home/full-stack-zio
     command: /home/full-stack-zio/bin/app
@@ -41,3 +43,14 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: secret
     depends_on:
       - mongo
+
+  postgres:
+    image: postgres:12.2
+    ports:
+     - "5432:5432"
+    environment:
+      POSTGRES_NAME: fullstackzio
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+    volumes:
+     - ./cache/postgres:/var/lib/postgresql/data
