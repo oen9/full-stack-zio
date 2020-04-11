@@ -10,6 +10,7 @@ services:
       - /etc/environment
     environment:
       MONGO_URL_FULL_STACK_ZIO: mongodb://root:secret@mongo:27017/admin
+      DATABASE_URL_FULL_STACK_ZIO: jdbc:postgresql://postgres:5432/fullstackzio?user=root&password=secret
       JAVA_OPTS: "-Xdebug -Xrunjdwp:server=y,transport=dt_socket,suspend=n,address=8000"
     links:
       - mongo
@@ -44,6 +45,8 @@ services:
     depends_on:
       - mongo
 
+  # docker-compose run postgres bash
+  # psql -h postgres -d fullstackzio -U root
   postgres:
     image: postgres:12.2
     ports:
