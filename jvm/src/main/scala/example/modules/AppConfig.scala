@@ -6,7 +6,7 @@ import zio._
 
 case class Http(port: Int, host: String)
 case class Mongo(uri: String)
-case class Postgres(url: String)
+case class Postgres(url: String, driver: String)
 case class AppConfigData(http: Http, mongo: Mongo, postgres: Postgres, assets: String)
 
 object appConfig {
@@ -25,7 +25,7 @@ object appConfig {
       def load: ZIO[Any, Throwable, AppConfigData] = ZIO.effectTotal(AppConfigData(
         Http(8080, "localhost"),
         Mongo("mongo://test:test@localhost/test"),
-        Postgres("postgres://test:test@localhost:5432/test"),
+        Postgres(url = "postgres://test:test@localhost:5432/test", driver = "postgres"),
         "/tmp")
       )
     })

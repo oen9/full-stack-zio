@@ -49,7 +49,7 @@ services:
     ports:
      - "5432:5432"
     environment:
-      POSTGRES_NAME: fullstackzio
+      POSTGRES_DB: fullstackzio
       POSTGRES_USER: root
       POSTGRES_PASSWORD: secret
     volumes:

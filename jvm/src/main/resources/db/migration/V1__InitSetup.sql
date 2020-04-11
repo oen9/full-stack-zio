@@ -1,0 +1,5 @@
+CREATE TABLE scoreboard (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  score SMALLINT NOT NULL
+);

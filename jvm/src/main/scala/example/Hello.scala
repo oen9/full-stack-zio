@@ -18,9 +18,13 @@ import example.endpoints.RestEndpoints
 import example.endpoints.StaticEndpoints
 import example.endpoints.TodoEndpoints
 import example.modules.appConfig
+import example.modules.db.doobieTransactor
+import example.modules.db.flywayHandler
 import example.modules.db.MongoConn
+import example.modules.db.scoreboardRepository
 import example.modules.db.todoRepository
 import example.modules.services.randomService
+import example.modules.services.scoreboardService
 import example.modules.services.todoService
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -31,23 +35,31 @@ object Hello extends App {
                   with appConfig.AppConfig
                   with randomService.RandomService
                   with todoService.TodoService
+                  with scoreboardService.ScoreboardService
                   with Logging
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
   def run(args: List[String]): ZIO[zio.ZEnv,Nothing,Int] = {
     app
-      .provideCustomLayer{
+      .provideCustomLayer {
         val appConf = appConfig.AppConfig.live
         val logging = slf4j.Slf4jLogger.make((_, msg) => msg)
+        val randomServ = randomService.RandomService.live
 
         val mongoConf = appConf >>> MongoConn.live
         val todoRepo = (mongoConf ++ logging) >>> todoRepository.TodoRepository.live
         val todoServ = todoRepo >>> todoService.TodoService.live
 
+        val flyway = appConf >>> flywayHandler.FlywayHandler.live
+        val doobieTran = (Blocking.any ++ appConf ++ flyway) >>> doobieTransactor.live
+        val scoreboardRepo = doobieTran >>> scoreboardRepository.ScoreboardRepository.live
+        val scoreServ = (scoreboardRepo ++ logging ++ randomServ) >>> scoreboardService.ScoreboardService.live
+
         logging ++
         appConf ++
         todoServ ++
-        randomService.RandomService.live
+        scoreServ ++
+        randomServ
       }
       .flatMapError {
         case e: Throwable =>
@@ -61,13 +73,15 @@ object Hello extends App {
   def app(): ZIO[AppEnv, Throwable, Unit] = for {
     conf <- appConfig.load
 
+    _ <- scoreboardService.insertFoo //TODO experimental
+
     originConfig = CORSConfig(
       anyOrigin = true,
       allowCredentials = false,
       maxAge = 1.day.toSeconds)
 
-    ec <- ZIO.accessM[Blocking](b => ZIO.succeed(b.get.blockingExecutor))
-    catsBlocker = cats.effect.Blocker.liftExecutionContext(ec.asEC)
+    ec <- ZIO.accessM[Blocking](b => ZIO.succeed(b.get.blockingExecutor.asEC))
+    catsBlocker = cats.effect.Blocker.liftExecutionContext(ec)
 
     yamlDocs = (
       RestEndpoints.endpoints

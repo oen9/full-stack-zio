@@ -7,6 +7,7 @@ val Ver = new {
   val zio = "1.0.0-RC18-2"
   val circe = "0.13.0"
   val tapir = "0.12.25"
+  val doobie = "0.9.0"
 }
 
 lazy val sharedSettings = Seq(
@@ -73,7 +74,13 @@ lazy val jvmSettings = Seq(
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Ver.tapir,
     "ch.qos.logback" % "logback-classic" % Ver.logback,
     "com.github.pureconfig" %% "pureconfig" % "0.12.2",
+
     "org.reactivemongo" %% "reactivemongo" % "0.20.3",
+    "org.flywaydb" % "flyway-core" % "6.3.3",
+    "org.postgresql" % "postgresql" % "42.2.12",
+    "org.tpolecat" %% "doobie-core" % Ver.doobie,
+    "org.tpolecat" %% "doobie-h2" % Ver.doobie,
+    "org.tpolecat" %% "doobie-hikari" % Ver.doobie,
 
     "io.scalaland" %%% "chimney" % "0.5.0", // TODO remove from here after scalajs-1.0.0 support
 

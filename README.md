@@ -25,6 +25,8 @@ full-stack-zio
 1. circe
 1. swagger
 1. reactivemongo
+1. doobie
+1. flyway
 
 ### frontend
 
@@ -58,6 +60,8 @@ Something with doobie(PostgreSQL)
 1. `sbt stage`
 1. set `MONGO_URL_FULL_STACK_ZIO` env variable\
 example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`
+1. set `DATABASE_URL_FULL_STACK_ZIO` env variable\
+example: `DATABASE_URL_FULL_STACK_ZIO="jdbc:postgresql://localhost:5432/fullstackzio?user=test&password=test"`
 1. run `./target/universal/stage/bin/app`
 1. open `http://localhost:8080` in browser
 
@@ -65,14 +69,14 @@ example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`
 
 ### required services
 
-#### mongoDB
-
 - docker\
-run `docker-compose up -d mongo`
+run `docker-compose up -d mongo postgres`
 
 - other\
 set `MONGO_URL_FULL_STACK_ZIO` env variable\
 example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`
+- set `DATABASE_URL_FULL_STACK_ZIO` env variable\
+example: `DATABASE_URL_FULL_STACK_ZIO="jdbc:postgresql://localhost:5432/fullstackzio?user=test&password=test"`
 
 ### js
 
