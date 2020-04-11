@@ -74,9 +74,9 @@ run `docker-compose up -d mongo postgres`
 
 - other\
 set `MONGO_URL_FULL_STACK_ZIO` env variable\
-example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`
-- set `DATABASE_URL_FULL_STACK_ZIO` env variable\
-example: `DATABASE_URL_FULL_STACK_ZIO="jdbc:postgresql://localhost:5432/fullstackzio?user=test&password=test"`
+example: `MONGO_URL_FULL_STACK_ZIO=mongodb://test:test@localhost:27017/test`\
+set `DATABASE_URL_FULL_STACK_ZIO` env variable\
+example: `DATABASE_URL_FULL_STACK_ZIO="jdbc:postgresql://localhost:5432/fullstackzio?user=test&password=test"`\
 
 ### js
 

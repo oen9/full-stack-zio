@@ -54,3 +54,17 @@ services:
       POSTGRES_PASSWORD: secret
     volumes:
      - ./cache/postgres:/var/lib/postgresql/data
+
+  # mkdir -p cache/pgadmin
+  # chown -R 5050:5050 cache/pgadmin
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+     - "8082:80"
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@root.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    volumes:
+      - ./cache/pgadmin:/var/lib/pgadmin
