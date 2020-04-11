@@ -36,12 +36,6 @@ object Hello extends App {
 
   def run(args: List[String]): ZIO[zio.ZEnv,Nothing,Int] = {
     app
-      .flatMapError {
-        case e: Throwable =>
-          val sw = new StringWriter
-          e.printStackTrace(new PrintWriter(sw))
-          zio.console.putStrLn(sw.toString())
-      }
       .provideCustomLayer{
         val appConf = appConfig.AppConfig.live
         val logging = slf4j.Slf4jLogger.make((_, msg) => msg)
@@ -54,6 +48,12 @@ object Hello extends App {
         appConf ++
         todoServ ++
         randomService.RandomService.live
+      }
+      .flatMapError {
+        case e: Throwable =>
+          val sw = new StringWriter
+          e.printStackTrace(new PrintWriter(sw))
+          zio.console.putStrLn(sw.toString())
       }
       .fold(_ => 1, _ => 0)
   }
