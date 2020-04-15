@@ -29,6 +29,7 @@ import example.modules.services.todoService
 import java.io.PrintWriter
 import java.io.StringWriter
 import scala.concurrent.duration._
+import example.endpoints.ScoreboardEndpoints
 
 object Hello extends App {
   type AppEnv = ZEnv
@@ -53,7 +54,7 @@ object Hello extends App {
         val flyway = appConf >>> flywayHandler.FlywayHandler.live
         val doobieTran = (Blocking.any ++ appConf ++ flyway) >>> doobieTransactor.live
         val scoreboardRepo = doobieTran >>> scoreboardRepository.ScoreboardRepository.live
-        val scoreServ = (scoreboardRepo ++ logging ++ randomServ) >>> scoreboardService.ScoreboardService.live
+        val scoreServ = (scoreboardRepo ++ logging) >>> scoreboardService.ScoreboardService.live
 
         logging ++
         appConf ++
@@ -73,8 +74,6 @@ object Hello extends App {
   def app(): ZIO[AppEnv, Throwable, Unit] = for {
     conf <- appConfig.load
 
-    _ <- scoreboardService.insertFoo //TODO experimental
-
     originConfig = CORSConfig(
       anyOrigin = true,
       allowCredentials = false,
@@ -86,11 +85,13 @@ object Hello extends App {
     yamlDocs = (
       RestEndpoints.endpoints
       ++ TodoEndpoints.endpoints
+      ++ ScoreboardEndpoints.endpoints
     ).toOpenAPI("full-stack-zio", "0.1.0").toYaml
 
     httpApp = (
       RestEndpoints.routes[AppEnv]
       <+> TodoEndpoints.routes[AppEnv]
+      <+> ScoreboardEndpoints.routes[AppEnv]
       <+> new SwaggerHttp4s(yamlDocs).routes[RIO[AppEnv, *]]
       <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker)
     ).orNotFound

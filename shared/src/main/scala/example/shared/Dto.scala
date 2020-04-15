@@ -10,8 +10,9 @@ object Dto {
     sealed trait TodoStatus
     case object Done extends TodoStatus
     case object Pending extends TodoStatus
-
     case class TodoTask(id: Option[String] = None, value: String = "todo value", status: TodoStatus = Pending)
+
+    case class ScoreboardRecord(id: Option[Long] = None, name: String = "foo", score: Int = 0)
 
     import io.circe.generic.extras.Configuration
     implicit val circeConfig = Configuration.default.withDiscriminator("eventType").withDefaults
