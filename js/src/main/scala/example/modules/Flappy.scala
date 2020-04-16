@@ -14,13 +14,16 @@ import slinky.core.facade.Hooks._
 import slinky.core.FunctionalComponent
 import slinky.core.SyntheticEvent
 import slinky.web.html._
+import example.modules.flappybird.FlappyBird
+import example.services.AddNewScore
+import example.shared.Dto.ScoreboardRecord
 
 @react object Flappy {
   type Props = Unit
   val component = FunctionalComponent[Props] { _ =>
     val (scores, dispatch) = ReactDiode.useDiode(AppCircuit.zoomTo(_.scores))
     val (score, setScore) = useState(0)
-    val (name, setName) = useState("foo")
+    val (name, setName) = useState("unknown")
 
     useEffect(() => {
       dispatch(TryGetScoreboard())
@@ -28,9 +31,8 @@ import slinky.web.html._
 
     val submitDeleteAll = () => dispatch(ClearScoreboard)
     def onChangeName(e: SyntheticEvent[html.Input, Event]): Unit = setName(e.target.value)
-    def addNewScoreboardRecord(e: SyntheticEvent[html.Button, Event]): Unit = {
-      e.preventDefault()
-      println("add new score")
+    def addNewScoreboardRecord(score: Int): Unit = {
+      dispatch(AddNewScore(ScoreboardRecord(name = name, score = score)))
     }
 
     Fragment(
@@ -40,7 +42,7 @@ import slinky.web.html._
       ),
 
       div(className := "row justify-content-center",
-        div(className := "scoreboard-size",
+        div(className := "scoreboard-size mb-2",
           form(
             div(className := "input-group",
               div(className := "input-group-prepend",
@@ -51,31 +53,22 @@ import slinky.web.html._
           )
         ),
 
-        div(className := "card scoreboard-size mt-2",
-          div(className := "card-header",
-            "best 3 scores"
-          ),
-          div(className := "card-body",
-            PotScoreboardList(scores.map(_.take(3)))
-          )
-        ),
-
+        FlappyBird(setScore = addNewScoreboardRecord),
 
         div(className := "card scoreboard-size mt-2",
           div(className := "card-header",
-            "all scores"
+            "scoreboard"
           ),
           div(className := "card-body",
             PotScoreboardList(scores),
             div(className := "row",
               button(className := "btn btn-danger w-100", data-"toggle" := "modal", data-"target" := "#deleteModal",
-                "delete all saved scored",
+                "delete all saved scores",
                 i(className := "ml-2 fas fa-trash")
               ),
             ),
           )
         )
-
       )
     )
   }

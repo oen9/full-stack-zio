@@ -61,7 +61,7 @@ object scoreboardRepository {
     val selectAllSortedByScore: Query0[ScoreboardRecord] = sql"""
       SELECT *
       FROM scoreboard
-      ORDER BY score DESC
+      ORDER BY (score, name) DESC
     """.query[ScoreboardRecord]
 
     val deleteAll: Update0 = sql"""

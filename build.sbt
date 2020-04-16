@@ -39,7 +39,8 @@ lazy val jsSettings = Seq(
   libraryDependencies ++= Seq(
     "me.shadaj" %%% "slinky-web" % Ver.slinky,
     "me.shadaj" %%% "slinky-react-router" % Ver.slinky,
-    "io.suzaku" %%% "diode" % "1.1.8"
+    "io.suzaku" %%% "diode" % "1.1.8",
+    "com.github.oen9" %%% "slinky-bridge-react-konva" % "0.1.1",
   ),
   npmDependencies in Compile ++= Seq(
     "react" -> "16.13.1",
@@ -48,7 +49,10 @@ lazy val jsSettings = Seq(
     "react-router-dom" -> "5.1.2",
     "path-to-regexp" -> "6.1.0",
     "bootstrap" -> "4.4.1",
-    "jquery" -> "3.5.0"
+    "jquery" -> "3.5.0",
+    "konva" -> "4.2.2",
+    "react-konva" -> "16.13.0-0",
+    "use-image" -> "1.0.5",
   ),
   scalaJSUseMainModuleInitializer := true,
   version.in(webpack) := "4.42.1",

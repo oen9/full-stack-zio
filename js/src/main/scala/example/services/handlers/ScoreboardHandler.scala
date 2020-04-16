@@ -26,9 +26,10 @@ class ScoreboardHandler[M](modelRW: ModelRW[M, Pot[Vector[ScoreboardRecord]]]) e
     case ScoreAdded(newScore) =>
       val newValue = value.fold(value)(scores => Ready(
         (scores :+ newScore)
+          .sortBy(_.name)
           .sortBy(_.score)
-          .reverse)
-      )
+          .reverse
+      ))
       updated(newValue)
 
     case ClearScoreboard =>
