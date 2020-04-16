@@ -18,6 +18,7 @@ import slinky.core.FunctionalComponent
       Route(exact = true, path = Loc.home, component = Home.component),
       Route(exact = true, path = Loc.dynPage, component = DynamicPage.component),
       Route(exact = true, path = Loc.todos, component = Todos.component),
+      Route(exact = true, path = Loc.flappy, component = Flappy.component),
       Route(exact = true, path = Loc.about, component = About.component),
     )
     ReactDiode.diodeContext.Provider(AppCircuit)(
@@ -30,12 +31,14 @@ import slinky.core.FunctionalComponent
     val home = "/"
     val dynPage = "/dyn/:foo(\\d+)/:bar(.*)"
     val todos = "/todos"
+    val flappy = "/flappy"
     val about = "/about"
   }
   val menuItems = Seq(
     MenuItem("0", "Home", Loc.home),
     MenuItem("2", "Dynamic page", pathToDynPage(678, "a/b/c")),
     MenuItem("3", "MongoDB todos", Loc.todos),
+    MenuItem("4", "Postgres flappy", Loc.flappy),
     MenuItem("100", "About", Loc.about),
   )
 

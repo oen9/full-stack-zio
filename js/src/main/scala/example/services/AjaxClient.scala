@@ -57,6 +57,28 @@ object AjaxClient {
     ).transform(_.responseText, onFailure)
   }
 
+  def getScoreboard = {
+    Ajax.get(
+      url = s"$baseUrl/scoreboard",
+      headers = JSON_TYPE
+    ).transform(decodeAndHandleErrors[Vector[ScoreboardRecord]])
+  }
+
+  def postScore(newScore: ScoreboardRecord) = {
+    Ajax.post(
+      url = s"$baseUrl/scoreboard",
+      data = newScore.asJson.noSpaces,
+      headers = JSON_TYPE
+    ).transform(decodeAndHandleErrors[ScoreboardRecord])
+  }
+
+  def deleteAllScores() = {
+    Ajax.delete(
+      url = s"$baseUrl/scoreboard",
+      headers = JSON_TYPE
+    ).transform(_.responseText, onFailure)
+  }
+
   private[this] def decodeAndHandleErrors[A: Decoder](t: Try[XMLHttpRequest]): Try[A] = t match {
     case Success(req) => decode[A](req.responseText).toTry
     case Failure(e) => Failure(onFailure(e))

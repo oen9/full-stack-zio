@@ -2,7 +2,7 @@ scalaVersion := "2.13.1"
 
 val Ver = new {
   val http4s = "0.21.1"
-  val slinky = "0.6.4"
+  val slinky = "0.6.5"
   val logback = "1.2.3"
   val zio = "1.0.0-RC18-2"
   val circe = "0.13.0"
@@ -42,13 +42,13 @@ lazy val jsSettings = Seq(
     "io.suzaku" %%% "diode" % "1.1.8"
   ),
   npmDependencies in Compile ++= Seq(
-    "react" -> "16.13.0",
-    "react-dom" -> "16.13.0",
+    "react" -> "16.13.1",
+    "react-dom" -> "16.13.1",
     "react-popper" -> "1.3.7",
     "react-router-dom" -> "5.1.2",
     "path-to-regexp" -> "6.1.0",
     "bootstrap" -> "4.4.1",
-    "jquery" -> "3.4.1"
+    "jquery" -> "3.5.0"
   ),
   scalaJSUseMainModuleInitializer := true,
   version.in(webpack) := "4.42.1",

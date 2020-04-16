@@ -19,6 +19,30 @@ main > .container {
   width: 40rem;
 }
 
-.add-todo-input {
+.width-100 {
   width: 100%;
+}
+
+.scoreboard-size {
+  width: 60rem;
+}
+
+.gold {
+  color: gold;
+}
+
+.silver {
+  color: silver;
+}
+
+.brown {
+  color: brown;
+}
+
+.green {
+  color: lawngreen;
+}
+
+.max-vh-50 {
+  max-height: 50vh;
 }
