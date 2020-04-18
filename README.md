@@ -38,11 +38,10 @@ full-stack-zio
 
 ## in progress
 
-Something with doobie(PostgreSQL)
+more tests
 
 ## soon
 
-1. doobie
 1. auth example
 1. more tests
 1. and more

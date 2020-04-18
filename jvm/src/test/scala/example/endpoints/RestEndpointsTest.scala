@@ -1,4 +1,4 @@
-package example
+package example.endpoints
 
 import cats.implicits._
 import zio._
@@ -13,6 +13,7 @@ import org.http4s._
 import org.http4s.implicits._
 
 import example.endpoints.RestEndpoints
+import example.Http4sTestHelper
 import example.modules.services.randomService.RandomService
 import example.shared.Dto._
 

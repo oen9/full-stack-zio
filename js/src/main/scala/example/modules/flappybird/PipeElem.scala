@@ -53,7 +53,6 @@ import slinky.core.FunctionalComponent
         scaleY = 0.5,
       ).withRef(props.lowerPipeRef),
 
-
       if (props.debug) {
         Group(
           Rect(

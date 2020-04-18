@@ -90,6 +90,7 @@ lazy val jvmSettings = Seq(
 
     "dev.zio" %% "zio-test" % Ver.zio % Test,
     "dev.zio" %% "zio-test-sbt" % Ver.zio % Test,
+    "com.h2database" % "h2" % "1.4.200" % Test,
   ),
   testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
   target := baseDirectory.value / ".." / "target",

@@ -24,10 +24,10 @@ object doobieTransactor {
         connectEC = rt.platform.executor.asEC
         transactor <- HikariTransactor
           .newHikariTransactor[Task](
-            cfg.postgres.driver,
-            cfg.postgres.url,
-            "",
-            "",
+            cfg.sqldb.driver,
+            cfg.sqldb.url,
+            cfg.sqldb.username,
+            cfg.sqldb.password,
             connectEC,
             Blocker.liftExecutionContext(blockingEC)
           ).toManaged
