@@ -1,10 +1,13 @@
 package example
 
+import example.model.MongoData.TodoTask
 import example.modules.appConfig.AppConfig
-import example.modules.db.flywayHandler
 import example.modules.db.doobieTransactor
+import example.modules.db.flywayHandler
 import example.modules.db.scoreboardRepository
+import example.modules.db.todoRepository
 import example.modules.services.scoreboardService
+import example.modules.services.todoService
 import zio.blocking.Blocking
 import zio.logging.Logging
 
@@ -29,4 +32,7 @@ object TestEnvs {
     val scoreboardRepo = testDoobieTransactor(initdb) >>> scoreboardRepository.ScoreboardRepository.live
     (scoreboardRepo ++ logging) >>> scoreboardService.ScoreboardService.live
   }
+
+  def todoRepo(initData: Vector[TodoTask] = Vector()) = todoRepository.TodoRepository.test(initData)
+  def todoServ(initData: Vector[TodoTask] = Vector()) = todoRepo(initData) >>> todoService.TodoService.live
 }

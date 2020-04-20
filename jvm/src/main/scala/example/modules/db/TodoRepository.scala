@@ -24,6 +24,8 @@ object todoRepository {
       def deleteById(id: BSONObjectID): Task[WriteResult]
     }
 
+    def createNotFoundMsg(id: BSONObjectID) = s"TodoTask '${id.stringify}' not found"
+
     val live = ZLayer.fromServices[MongoConn, Logging.Service, TodoRepository.Service]((mongoConn, logging) =>
       new Service {
         val collection: BSONCollection = mongoConn.defaultDb.collection("todos")
@@ -44,7 +46,7 @@ object todoRepository {
               collection.find(query, Option.empty).one[TodoTask]
             )
             found <- ZIO.fromOption(maybeFound).flatMapError{ _ =>
-              val msg = s"TodoTask '${id.stringify}' not found"
+              val msg = createNotFoundMsg(id)
               logger.log(LogLevel.Trace)(s"findById $msg") as TodoTaskNotFound(msg)
             }
             _ <- logger.log(LogLevel.Trace)(s"findById '$id' found: $found")
@@ -73,6 +75,40 @@ object todoRepository {
         }
       }
     )
+
+    def test(initData: Vector[TodoTask] = Vector()) = ZLayer.fromEffect {
+      import com.softwaremill.quicklens._
+      import reactivemongo.api.commands.DefaultWriteResult
+      import reactivemongo.api.commands.UpdateWriteResult
+
+      val defaultResult = ZIO.succeed(DefaultWriteResult(true, 1, Seq(), None, None, None))
+      val updateResult = ZIO.succeed(UpdateWriteResult(true, 1, 1, Seq(), Seq(), None, None, None))
+
+      for {
+        _ <- ZIO.unit
+        ref <- Ref.make(initData)
+      } yield new Service {
+        def getAll: Task[List[TodoTask]] =
+          ref.get.map(_.toList)
+
+        def insert(todoTask: TodoTask): Task[WriteResult] =
+          ref.update(_ :+ todoTask) *> defaultResult
+
+        def findById(id: BSONObjectID): Task[TodoTask] = for {
+          maybeFound <- ref.get.map(_.find(_.id == id))
+          found <- ZIO.fromOption(maybeFound).mapError(_ =>TodoTaskNotFound(createNotFoundMsg(id)))
+        } yield found
+
+        def updateStatus(id: BSONObjectID, newStatus: TodoStatus): Task[WriteResult] =
+          ref.update(_.map(tt => {
+            if (tt.id == id) tt.modify(_.status).setTo(newStatus)
+            else tt
+          })) *> updateResult
+
+        def deleteById(id: BSONObjectID): Task[WriteResult] =
+          ref.update(_.filter(_.id != id)) *> defaultResult
+      }
+    }
   }
 
   def getAll: ZIO[TodoRepository, Throwable, List[TodoTask]] =

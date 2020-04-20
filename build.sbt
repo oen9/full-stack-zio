@@ -112,7 +112,7 @@ lazy val appJVM = app.jvm
   .enablePlugins(JavaAppPackaging)
   .settings(
     dockerExposedPorts := Seq(8080),
-    dockerBaseImage := "oracle/graalvm-ce:19.3.0.2-java11",
+    dockerBaseImage := "oracle/graalvm-ce:20.0.0-java11",
     (unmanagedResourceDirectories in Compile) += (resourceDirectory in(appJS, Compile)).value,
     mappings.in(Universal) ++= webpack.in(Compile, fullOptJS).in(appJS, Compile).value.map { f =>
       f.data -> s"assets/${f.data.getName()}"

@@ -7,12 +7,6 @@ full-stack-zio
 
 ![alt text](https://raw.githubusercontent.com/oen9/full-stack-zio/master/img/web.png "web")
 
-## Waiting for scalajs-1.0.0 support
-
-```sbt
-"io.scalaland" %%% "chimney" % "0.5.0",
-```
-
 ## Libs
 
 ### backend

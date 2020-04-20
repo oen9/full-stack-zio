@@ -40,7 +40,7 @@ object todoService {
             .withFieldComputed(_.id, _ => newId)
             .transform
           for {
-            allTodos <- todoRepository.insert(toInsert)
+            _ <- todoRepository.insert(toInsert)
           } yield newId.stringify
         }
 
