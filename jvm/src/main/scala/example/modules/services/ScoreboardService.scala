@@ -1,10 +1,11 @@
 package example.modules.services
 
+import cats.implicits._
 import example.modules.db.scoreboardRepository.ScoreboardRepository
+import example.shared.Dto.ScoreboardRecord
 import zio._
 import zio.logging.Logging
 import zio.logging.LogLevel
-import example.shared.Dto.ScoreboardRecord
 
 object scoreboardService {
   type ScoreboardService = Has[ScoreboardService.Service]
@@ -38,6 +39,12 @@ object scoreboardService {
             } yield ()
           }
       }
+
+    def test(data: Vector[ScoreboardRecord] = Vector()) = ZLayer.succeed(new Service {
+      def addNew(newRecord: ScoreboardRecord): Task[ScoreboardRecord] = ZIO.succeed(newRecord.copy(id = 42L.some))
+      def listScores(): Task[Vector[ScoreboardRecord]] = ZIO.succeed(data)
+      def deleteAll(): Task[Unit] = ZIO.unit
+    })
   }
 
   def addNew(newRecord: ScoreboardRecord): ZIO[ScoreboardService, Throwable, ScoreboardRecord] =
