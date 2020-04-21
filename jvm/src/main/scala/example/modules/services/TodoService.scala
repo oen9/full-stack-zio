@@ -64,6 +64,13 @@ object todoService {
             .mapError(e => WrongMongoId(e.getMessage()))
       }
     }
+
+    def test(initData: List[TodoTask] = List()) = ZLayer.succeed(new Service {
+      def getAll: Task[List[TodoTask]] = ZIO.succeed(initData)
+      def createNew(todoTask: TodoTask): Task[String] = ZIO.succeed(BSONObjectID.generate().stringify)
+      def switchStatus(id: String): Task[TodoStatus] = ZIO.succeed(Done)
+      def deleteTodo(id: String): Task[Unit] = ZIO.unit
+    })
   }
 
   def getAll: ZIO[TodoService, Throwable, List[TodoTask]] =
