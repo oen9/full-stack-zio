@@ -21,7 +21,7 @@ object ReactDiode {
     useEffect(() => {
       val unsubscription = circuit.subscribe(selector)(state => setState(state.value))
       () => unsubscription()
-    })
+    }, Seq())
 
     (state, circuit)
   }
