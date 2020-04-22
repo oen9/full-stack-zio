@@ -24,17 +24,17 @@ import example.shared.HelloShared
 
     Fragment(
       div(className := "text-center",
-        "Hello: " + HelloShared.TEST_STR
+        "compile-time shared string between js and jvm: " + HelloShared.TEST_STR
       ),
       div(className := "row mt-2",
         div(className := "col text-right",
-          BlueButton("click me!", () => dispatch(IncreaseClicks))
+          BlueButton("more clicks", () => dispatch(IncreaseClicks))
         ),
         div(className := "col", " clicks: " + clicks.count)
       ),
       div(className := "row mt-2",
         div(className := "col text-right",
-          BlueButton("get random from server!", () => dispatch(TryGetRandom()))
+          BlueButton("new random", () => dispatch(TryGetRandom()))
         ),
         div(className := "col", " random: ",
           randomNumber.state match {

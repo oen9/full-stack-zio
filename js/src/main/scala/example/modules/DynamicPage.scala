@@ -9,6 +9,9 @@ import example.bridges.reactrouter.ReactRouterDOM
 
   val component = FunctionalComponent[Props] { _ =>
     val params = ReactRouterDOM.useParams().toMap
-    h4("Dynamic page params: " + params)
+    div(
+      h4("Feel free to change args in url (...#/dyn/{foo}/{bar})"),
+      h5("Dynamic page params: " + params)
+    )
   }
 }
