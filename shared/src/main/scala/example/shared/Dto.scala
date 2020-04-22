@@ -14,6 +14,9 @@ object Dto {
 
     case class ScoreboardRecord(id: Option[Long] = None, name: String = "foo", score: Int = 0)
 
+    case class AuthCred(username: String, passwd: String)
+    case class Token(value: String)
+
     import io.circe.generic.extras.Configuration
     implicit val circeConfig = Configuration.default.withDiscriminator("eventType").withDefaults
 }

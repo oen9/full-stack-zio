@@ -49,7 +49,7 @@ lazy val jsSettings = Seq(
     "react-router-dom" -> "5.1.2",
     "path-to-regexp" -> "6.1.0",
     "bootstrap" -> "4.4.1",
-    "jquery" -> "3.5.0",
+    "jquery" -> "3.4.1", // bug for 3.5.0 https://github.com/twbs/bootstrap/issues/30553
     "konva" -> "4.2.2",
     "react-konva" -> "16.13.0-0",
     "use-image" -> "1.0.5",

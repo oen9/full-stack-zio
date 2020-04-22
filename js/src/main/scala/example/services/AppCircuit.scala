@@ -6,19 +6,22 @@ import diode.data.PotAction
 import diode.{Action, Circuit}
 import example.services.handlers.ClicksHandler
 import example.services.handlers.RandomNumberHandler
+import example.services.handlers.ScoreboardHandler
 import example.services.handlers.TodosHandler
 import example.shared.Dto.Foo
+import example.shared.Dto.ScoreboardRecord
 import example.shared.Dto.TodoStatus
 import example.shared.Dto.TodoTask
-import example.shared.Dto.ScoreboardRecord
-import example.services.handlers.ScoreboardHandler
+import example.services.handlers.AuthHandler
 
 case class Clicks(count: Int)
+case class Auth(username: String, token: String)
 case class RootModel(
   clicks: Clicks,
   randomNumber: Pot[Foo] = Empty,
   todos: Pot[Vector[TodoTask]] = Empty,
   scores: Pot[Vector[ScoreboardRecord]] = Empty,
+  auth: Pot[Auth] = Empty,
 )
 
 case object IncreaseClicks extends Action
@@ -44,6 +47,14 @@ case class TryGetScoreboard(potResult: Pot[Vector[ScoreboardRecord]] = Empty) ex
   def next(newResult: Pot[Vector[ScoreboardRecord]]) = copy(potResult = newResult)
 }
 
+case object SignOut extends Action
+case class TryAuth(username: String, passwd: String, potResult: Pot[Auth] = Empty) extends PotAction[Auth, TryAuth] {
+  def next(newResult: Pot[Auth]) = copy(potResult = newResult)
+}
+case class TryRegister(username: String, passwd: String, potResult: Pot[Auth] = Empty) extends PotAction[Auth, TryRegister] {
+  def next(newResult: Pot[Auth]) = copy(potResult = newResult)
+}
+
 object AppCircuit extends Circuit[RootModel] {
   override protected def initialModel: RootModel = RootModel(Clicks(0))
 
@@ -52,5 +63,6 @@ object AppCircuit extends Circuit[RootModel] {
     new RandomNumberHandler(zoomTo(_.randomNumber)),
     new TodosHandler(zoomTo(_.todos)),
     new ScoreboardHandler(zoomTo(_.scores)),
+    new AuthHandler(zoomTo(_.auth)),
   )
 }

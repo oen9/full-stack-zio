@@ -32,13 +32,12 @@ full-stack-zio
 
 ## in progress
 
-more tests
+auth example
 
 ## soon
 
 1. auth example
-1. more tests
-1. and more
+1. more?
 
 ## Production
 

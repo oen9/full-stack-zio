@@ -43,13 +43,11 @@ import example.shared.Dto.ScoreboardRecord
 
       div(className := "row justify-content-center",
         div(className := "scoreboard-size mb-2",
-          form(
-            div(className := "input-group",
-              div(className := "input-group-prepend",
-                span(className := "input-group-text", "your name on scoreboard:"),
-              ),
-              input(className := "form-control width-100", value := name, onChange := (onChangeName(_))),
-            )
+          div(className := "input-group",
+            div(className := "input-group-prepend",
+              span(className := "input-group-text", "your name on scoreboard:"),
+            ),
+            input(className := "form-control width-100", value := name, onChange := (onChangeName(_))),
           )
         ),
 

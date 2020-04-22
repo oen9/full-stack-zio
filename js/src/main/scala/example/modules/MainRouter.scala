@@ -9,17 +9,33 @@ import slinky.reactrouter.Route
 import slinky.reactrouter.Switch
 import example.bridges.reactrouter.RouteProps
 import slinky.core.FunctionalComponent
+import slinky.core.ReactComponentClass
+import slinky.reactrouter.Redirect
+import diode.data.PotState.PotReady
 
 @react object MainRouter {
   type Props = RouteProps
 
   val component = FunctionalComponent[Props] { _ =>
+    val (auth, _) = ReactDiode.useDiode(AppCircuit.zoom(_.auth))
+
+    def securedRoute(path: String, component: ReactComponentClass[_]) = {
+      val securedComp: ReactComponentClass[_] = auth.state match {
+        case PotReady => component
+        case _ => FunctionalComponent[Unit] { _ => Redirect(to = Loc.signIn) }
+      }
+      Route(exact = true, path = path, component = securedComp)
+    }
+
     val routerSwitch = Switch(
       Route(exact = true, path = Loc.home, component = Home.component),
       Route(exact = true, path = Loc.dynPage, component = DynamicPage.component),
       Route(exact = true, path = Loc.todos, component = Todos.component),
       Route(exact = true, path = Loc.flappy, component = Flappy.component),
+      securedRoute(path = Loc.secured, component = Secured.component),
       Route(exact = true, path = Loc.about, component = About.component),
+      Route(exact = true, path = Loc.signIn, component = SignIn.component),
+      Route(exact = true, path = Loc.register, component = Register.component),
     )
     ReactDiode.diodeContext.Provider(AppCircuit)(
       Layout(routerSwitch)
@@ -32,13 +48,17 @@ import slinky.core.FunctionalComponent
     val dynPage = "/dyn/:foo(\\d+)/:bar(.*)"
     val todos = "/todos"
     val flappy = "/flappy"
+    val secured = "/secured"
     val about = "/about"
+    val signIn = "/sign-in"
+    val register = "/register"
   }
   val menuItems = Seq(
     MenuItem("0", "Home", Loc.home),
     MenuItem("2", "Dynamic page", pathToDynPage(678, "a/b/c")),
     MenuItem("3", "MongoDB todos", Loc.todos),
     MenuItem("4", "Postgres flappy", Loc.flappy),
+    MenuItem("5", "Secured", Loc.secured),
     MenuItem("100", "About", Loc.about),
   )
 

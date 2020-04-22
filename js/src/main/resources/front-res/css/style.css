@@ -46,3 +46,10 @@ main > .container {
 .max-vh-50 {
   max-height: 50vh;
 }
+
+.input-group>.input-group-prepend {
+  flex: 0 0 15%;
+}
+.input-group .input-group-text {
+  width: 100%;
+}
