@@ -4,18 +4,19 @@ import cats.implicits._
 import diode.data.PotState.PotFailed
 import diode.data.PotState.PotPending
 import diode.data.PotState.PotReady
-import example.services.AppCircuit
-import example.services.ReactDiode
-import example.services.TryRegister
-import example.services.Validator
 import org.scalajs.dom.{Event, html}
 import slinky.core.annotations.react
 import slinky.core.facade.Fragment
 import slinky.core.facade.Hooks._
+import slinky.core.facade.ReactElement
 import slinky.core.FunctionalComponent
 import slinky.core.SyntheticEvent
 import slinky.web.html._
-import slinky.core.facade.ReactElement
+
+import example.services.AppCircuit
+import example.services.ReactDiode
+import example.services.TryRegister
+import example.services.Validator
 
 @react object Register {
   type Props = Unit
@@ -101,7 +102,7 @@ import slinky.core.facade.ReactElement
                 span(className := "sr-only", "Loading...")
               )
             case PotFailed =>
-                auth.exceptionOption.fold("unknown error")(msg => " error: " + msg.getMessage())
+              auth.exceptionOption.fold("unknown error")(msg => " error: " + msg.getMessage())
             case PotReady =>
               auth.fold("unknown error")(a => s"You are successfully registered and logged as ${a.username.toString}")
             case _ =>

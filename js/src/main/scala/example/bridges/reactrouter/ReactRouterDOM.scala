@@ -10,4 +10,12 @@ import slinky.core.ReactComponentClass
 object ReactRouterDOM extends js.Object {
   def useParams(): js.Dictionary[String] = js.native
   def withRouter: js.Function1[ReactComponentClass[RouteProps], js.Function1[js.Object, ReactElement]] = js.native
+  def useLocation(): Location = js.native
+
+  trait Location extends js.Object {
+    val key: String
+    val pathname: String
+    val search: String
+    val hash: String
+  }
 }
