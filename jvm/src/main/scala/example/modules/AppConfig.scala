@@ -7,7 +7,8 @@ import zio._
 case class Http(port: Int, host: String)
 case class Mongo(uri: String)
 case class SQLDB(url: String, driver: String, username: String = "", password: String = "")
-case class AppConfigData(http: Http, mongo: Mongo, sqldb: SQLDB, assets: String)
+case class Encryption(salt: String, bcryptLogRounds: Int)
+case class AppConfigData(http: Http, mongo: Mongo, sqldb: SQLDB, encryption: Encryption, assets: String)
 
 object appConfig {
   type AppConfig = Has[AppConfig.Service]
@@ -27,6 +28,7 @@ object appConfig {
         Http(8080, "localhost"),
         Mongo("mongo://test:test@localhost/test"),
         SQLDB(url = "postgres://test:test@localhost:5432/test", driver = "postgres"),
+        Encryption(salt = "super-secret", bcryptLogRounds = 10),
         "/tmp")
       )
     })

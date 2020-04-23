@@ -85,7 +85,6 @@ object todoRepository {
       val updateResult = ZIO.succeed(UpdateWriteResult(true, 1, 1, Seq(), Seq(), None, None, None))
 
       for {
-        _ <- ZIO.unit
         ref <- Ref.make(initData)
       } yield new Service {
         def getAll: Task[List[TodoTask]] =

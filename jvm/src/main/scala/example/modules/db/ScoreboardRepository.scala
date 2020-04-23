@@ -1,7 +1,6 @@
 package example.modules.db
 
 import cats.implicits._
-import cats.implicits._
 import doobie._
 import doobie.implicits._
 import example.modules.db.doobieTransactor.DoobieTransactor

@@ -6,7 +6,7 @@ val Ver = new {
   val logback = "1.2.3"
   val zio = "1.0.0-RC18-2"
   val circe = "0.13.0"
-  val tapir = "0.12.25"
+  val tapir = "0.14.2"
   val doobie = "0.9.0"
 }
 
@@ -85,6 +85,8 @@ lazy val jvmSettings = Seq(
     "org.tpolecat" %% "doobie-core" % Ver.doobie,
     "org.tpolecat" %% "doobie-h2" % Ver.doobie,
     "org.tpolecat" %% "doobie-hikari" % Ver.doobie,
+    "org.reactormonk" %% "cryptobits" % "1.3",
+    "org.mindrot" % "jbcrypt" % "0.4",
 
     "io.scalaland" %%% "chimney" % "0.5.0", // TODO remove from here after scalajs-1.0.0 support
 
