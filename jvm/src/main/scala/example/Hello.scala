@@ -25,14 +25,15 @@ import example.modules.db.flywayHandler
 import example.modules.db.MongoConn
 import example.modules.db.scoreboardRepository
 import example.modules.db.todoRepository
+import example.modules.db.userRepository
 import example.modules.services.auth.authService
+import example.modules.services.cryptoService
 import example.modules.services.randomService
 import example.modules.services.scoreboardService
 import example.modules.services.todoService
 import java.io.PrintWriter
 import java.io.StringWriter
 import scala.concurrent.duration._
-import example.modules.db.userRepository
 import zio.clock.Clock
 
 object Hello extends App {
@@ -62,8 +63,9 @@ object Hello extends App {
         val scoreboardRepo = doobieTran >>> scoreboardRepository.ScoreboardRepository.live
         val scoreServ = (scoreboardRepo ++ logging) >>> scoreboardService.ScoreboardService.live
 
+        val cryptoServ = (appConf ++ Clock.any) >>> cryptoService.CryptoService.live
         val userRepo = doobieTran >>> userRepository.UserRepository.live
-        val authServ = (userRepo ++ logging ++ Clock.any) >>> authService.AuthService.live
+        val authServ = (userRepo ++ logging ++ cryptoServ) >>> authService.AuthService.live
 
         logging ++
         appConf ++

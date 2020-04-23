@@ -6,25 +6,18 @@ import example.model.Errors.UserExists
 import example.model.SqlData
 import example.modules.db.userRepository.UserRepository
 import example.modules.services.auth.authService.AuthService
+import example.modules.services.cryptoService.CryptoService
 import example.shared.Dto
 import io.scalaland.chimney.dsl._
-import org.mindrot.jbcrypt.BCrypt
-import org.reactormonk.CryptoBits
-import org.reactormonk.PrivateKey
 import zio._
-import zio.clock.Clock
 import zio.logging.Logger
 import zio.logging.LogLevel
 
 class AuthServiceLive(
   userRepository: UserRepository.Service,
   logger: Logger,
-  clock: Clock.Service
+  cryptoService: CryptoService.Service
 ) extends AuthService.Service {
-
-  val key = PrivateKey(scala.io.Codec.toUTF8("secret-key")) // TODO
-  val crypto = CryptoBits(key)
-  val testUsername = "test"
 
   def getUser(token: Dto.Token): Task[Dto.User] = for {
     maybeUser <- userRepository.getUserByToken(token)
@@ -35,11 +28,12 @@ class AuthServiceLive(
 
   def generateNewToken(cred: Dto.AuthCredentials): Task[Dto.User] = for {
     maybeUser <- userRepository.getUserByName(cred.name)
-    maybeAuthenticatedUser = maybeUser.filter(u => BCrypt.checkpw(cred.password, u.password))
+    maybeAuthenticatedUser = maybeUser
+      .filter(u => cryptoService.chkPassword(cred.password, u.password))
     user <- ZIO
       .fromOption(maybeAuthenticatedUser)
       .flatMapError(_ => authenticationError("generateNewToken", cred.name))
-    newToken <- generateToken(crypto, user.name).provideLayer(ZLayer.succeed(clock))
+    newToken <- cryptoService.generateToken(user.name)
     updatedUser <- userRepository.updateToken(user.id.get, newToken)
 
     dtoUser = toDto(updatedUser)
@@ -47,8 +41,8 @@ class AuthServiceLive(
   } yield dtoUser
 
   def createUser(cred: Dto.AuthCredentials): Task[Dto.User] = for {
-    newToken <- generateToken(crypto, cred.name).provideLayer(ZLayer.succeed(clock))
-    hashedPasswd = BCrypt.hashpw(cred.password, BCrypt.gensalt())
+    newToken <- cryptoService.generateToken(cred.name)
+    hashedPasswd = cryptoService.hashPassword(cred.password)
     toInsert = cred
       .into[SqlData.User]
       .withFieldComputed(_.password, c => hashedPasswd)
@@ -65,13 +59,6 @@ class AuthServiceLive(
 
   def secretText(user: Dto.User): Task[String] =
     ZIO.succeed(s"This is super secure message for ${user.name}!")
-
-  def generateToken(crypto: CryptoBits, s: String): ZIO[Clock, Throwable, Dto.Token] = {
-    clock.nanoTime.map(nanos =>
-      if (s == testUsername) testUsername
-      else crypto.signToken(s, nanos.toString())
-    )
-  }
 
   def toDto(sqlUser: SqlData.User): Dto.User =
     sqlUser

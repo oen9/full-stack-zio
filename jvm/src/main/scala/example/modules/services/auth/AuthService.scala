@@ -1,10 +1,10 @@
 package example.modules.services.auth
 
 import example.modules.db.userRepository.UserRepository
+import example.modules.services.cryptoService.CryptoService
 import example.shared.Dto
 import io.scalaland.chimney.dsl._
 import zio._
-import zio.clock.Clock
 import zio.logging.Logging
 
 object authService {
@@ -18,9 +18,9 @@ object authService {
       def secretText(user: Dto.User): Task[String]
     }
 
-    val live: ZLayer[UserRepository with Logging with Clock, Nothing, AuthService] =
-      ZLayer.fromServices[UserRepository.Service, Logging.Service, Clock.Service, AuthService.Service] {
-        (userRepository, logging, clock) => new AuthServiceLive(userRepository, logging.logger, clock)
+    val live: ZLayer[UserRepository with Logging with CryptoService, Nothing, AuthService] =
+      ZLayer.fromServices[UserRepository.Service, Logging.Service, CryptoService.Service, AuthService.Service] {
+        (userRepository, logging, cryptoService) => new AuthServiceLive(userRepository, logging.logger, cryptoService)
       }
 
     def test(data: Vector[Dto.User]) = ZLayer.succeed(new Service {
