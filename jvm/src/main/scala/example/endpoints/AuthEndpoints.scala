@@ -44,6 +44,7 @@ object AuthEndpoints {
     .in(authDtoIn)
     .errorOut(allErrorsOut)
     .out(userDtoOut)
+    .out(statusCode(StatusCode.Created))
 
   val generateNewToken = endpoint.post
     .description("generate new token")
