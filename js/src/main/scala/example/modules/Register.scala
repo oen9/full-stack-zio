@@ -76,12 +76,12 @@ import example.components.AuthLastError
       ),
       div(className := "input-group mb-3",
         div(className := "input-group-prepend",
-          span(className := "input-group-text", "repepat password", id := "form-re-password-label")
+          span(className := "input-group-text", "repeat password", id := "form-re-password-label")
         ),
         input(`type` := "password",
           className := "form-control",
           placeholder := "Repeat Password",
-          aria-"label" := "Repepat password",
+          aria-"label" := "Repeat password",
           aria-"describedby" := "form-re-password-label",
           value := rePassword,
           onChange := (handleRePassword(_))
