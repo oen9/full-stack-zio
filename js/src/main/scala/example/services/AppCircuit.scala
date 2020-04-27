@@ -4,15 +4,16 @@ import diode.data.Empty
 import diode.data.Pot
 import diode.data.PotAction
 import diode.{Action, Circuit}
+import example.services.handlers.AuthHandler
 import example.services.handlers.ClicksHandler
 import example.services.handlers.RandomNumberHandler
 import example.services.handlers.ScoreboardHandler
+import example.services.handlers.SecuredTextHandler
 import example.services.handlers.TodosHandler
 import example.shared.Dto.Foo
 import example.shared.Dto.ScoreboardRecord
 import example.shared.Dto.TodoStatus
 import example.shared.Dto.TodoTask
-import example.services.handlers.AuthHandler
 
 case class Clicks(count: Int)
 case class Auth(username: String, token: String)
@@ -22,6 +23,7 @@ case class RootModel(
   todos: Pot[Vector[TodoTask]] = Empty,
   scores: Pot[Vector[ScoreboardRecord]] = Empty,
   auth: Pot[Auth] = Empty,
+  securedText: Pot[String] = Empty
 )
 
 case object IncreaseClicks extends Action
@@ -55,6 +57,10 @@ case class TryRegister(username: String, passwd: String, potResult: Pot[Auth] = 
   def next(newResult: Pot[Auth]) = copy(potResult = newResult)
 }
 
+case class TryGetSecuredText(token: String, potResult: Pot[String] = Empty) extends PotAction[String, TryGetSecuredText] {
+  def next(newResult: Pot[String]) = copy(potResult = newResult)
+}
+
 object AppCircuit extends Circuit[RootModel] {
   override protected def initialModel: RootModel = RootModel(Clicks(0))
 
@@ -64,5 +70,6 @@ object AppCircuit extends Circuit[RootModel] {
     new TodosHandler(zoomTo(_.todos)),
     new ScoreboardHandler(zoomTo(_.scores)),
     new AuthHandler(zoomTo(_.auth)),
+    new SecuredTextHandler(zoomTo(_.securedText)),
   )
 }

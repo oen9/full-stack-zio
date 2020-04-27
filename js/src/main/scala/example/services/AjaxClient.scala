@@ -16,6 +16,7 @@ import org.scalajs.dom.ext.AjaxException
 
 object AjaxClient {
   val JSON_TYPE = Map("Content-Type" -> "application/json")
+  def authHeader(token: String) = Map("TOKEN" -> token)
   val baseUrl = ""
   // val baseUrl = "http://localhost:8080" // for dev
 
@@ -79,6 +80,29 @@ object AjaxClient {
     ).transform(_.responseText, onFailure)
   }
 
+  def postAuth(cred: AuthCredentials) = {
+    Ajax.post(
+      url = s"$baseUrl/auth",
+      data = cred.asJson.noSpaces,
+      headers = JSON_TYPE
+    ).transform(decodeAndHandleErrors[User])
+  }
+
+  def postAuthUser(cred: AuthCredentials) = {
+    Ajax.post(
+      url = s"$baseUrl/auth/user",
+      data = cred.asJson.noSpaces,
+      headers = JSON_TYPE
+    ).transform(decodeAndHandleErrors[User])
+  }
+
+  def getAuthSecured(token: String) = {
+    Ajax.get(
+      url = s"$baseUrl/auth/secured",
+      headers = JSON_TYPE ++ authHeader(token)
+    ).transform(decodeAndHandleErrors[String])
+  }
+
   private[this] def decodeAndHandleErrors[A: Decoder](t: Try[XMLHttpRequest]): Try[A] = t match {
     case Success(req) => decode[A](req.responseText).toTry
     case Failure(e) => Failure(onFailure(e))
@@ -87,11 +111,17 @@ object AjaxClient {
   private[this] def onFailure: Throwable => Throwable = t => {
     t.printStackTrace()
     t match {
-      case ex: AjaxException => AjaxClient.AjaxErrorException(s"Connection error.")
+      case ex: AjaxException =>
+        val msgEx: Exception = decode[GenericMsgException](ex.xhr.responseText).getOrElse(AjaxErrorException(ex.xhr.responseText))
+        ex.xhr.status match {
+          case 401 | 409 => msgEx
+          case _ => AjaxClient.AjaxErrorException(s"Connection error.")
+        }
       case unknown => AjaxClient.UnknownErrorException
     }
   }
 
   case object UnknownErrorException extends Exception("unknown error")
   case class AjaxErrorException(s: String) extends Exception(s)
+  case class GenericMsgException(msg: String) extends Exception(msg)
 }

@@ -17,6 +17,7 @@ import example.services.AppCircuit
 import example.services.ReactDiode
 import example.services.TryRegister
 import example.services.Validator
+import example.components.AuthLastError
 
 @react object Register {
   type Props = Unit
@@ -101,14 +102,14 @@ import example.services.Validator
               div(className := "spinner-border text-primary", role := "status",
                 span(className := "sr-only", "Loading...")
               )
-            case PotFailed =>
-              auth.exceptionOption.fold("unknown error")(msg => " error: " + msg.getMessage())
             case PotReady =>
               auth.fold("unknown error")(a => s"You are successfully registered and logged as ${a.username.toString}")
             case _ =>
               "Register"
           },
         ),
+
+        AuthLastError(),
 
         auth.state match {
           case PotReady => none[ReactElement]

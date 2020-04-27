@@ -1,7 +1,6 @@
 package example.modules
 
 import cats.implicits._
-import diode.data.PotState.PotFailed
 import diode.data.PotState.PotPending
 import diode.data.PotState.PotReady
 import org.scalajs.dom.{Event, html}
@@ -14,6 +13,7 @@ import slinky.core.SyntheticEvent
 import slinky.web.html._
 
 import example.bridges.reactrouter.NavLink
+import example.components.AuthLastError
 import example.services.AppCircuit
 import example.services.ReactDiode
 import example.services.TryAuth
@@ -24,8 +24,8 @@ import example.services.Validator
 
   val component = FunctionalComponent[Props] { _ =>
     val (auth, dispatch) = ReactDiode.useDiode(AppCircuit.zoom(_.auth))
-    val (username, setUsername) = useState("foo")
-    val (password, setPassword) = useState("bar")
+    val (username, setUsername) = useState("test")
+    val (password, setPassword) = useState("test")
     val (errorMsgs, setErrorMsgs) = useState(Vector[String]())
 
     def handleUsername(e: SyntheticEvent[html.Input, Event]): Unit = setUsername(e.target.value)
@@ -78,6 +78,9 @@ import example.services.Validator
         div(className := "col",
           button(className := "btn btn-secondary", "Sign In", onClick := handleSingIn _),
         ),
+        div(className := "col",
+          small("you can use: test/test")
+        ),
         div(className := "col text-right",
           NavLink(exact = true, to = MainRouter.Loc.register)("register")
         )
@@ -93,14 +96,14 @@ import example.services.Validator
               div(className := "spinner-border text-primary", role := "status",
                 span(className := "sr-only", "Loading...")
               )
-            case PotFailed =>
-              auth.exceptionOption.fold("unknown error")(msg => " error: " + msg.getMessage())
             case PotReady =>
               auth.fold("unknown error")(a => s"Logged as ${a.username.toString}")
             case _ =>
               "Sign In!"
           },
         ),
+
+        AuthLastError(),
 
         auth.state match {
           case PotReady => none[ReactElement]
