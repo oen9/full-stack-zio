@@ -1,5 +1,6 @@
 package example.modules
 
+import com.softwaremill.quicklens._
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import zio._
@@ -32,6 +33,13 @@ object appConfig {
         "/tmp")
       )
     })
+
+    def test(h2DbName: String = "test"): Layer[Nothing, AppConfig] =
+      live >>> ZLayer.fromService[AppConfig.Service, AppConfig.Service](appConfig => new Service {
+        def load: zio.Task[AppConfigData] = appConfig.load.map(_.modify(_.sqldb.url).setTo(
+          s"jdbc:h2:mem:$h2DbName;DB_CLOSE_DELAY=-1"
+        ))
+      })
   }
 
   def load: ZIO[AppConfig, Throwable, AppConfigData] =

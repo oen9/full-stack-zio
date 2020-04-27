@@ -40,6 +40,12 @@ object cryptoService {
             BCrypt.checkpw(password, hashed)
         })
       }
+
+    val test: Layer[Nothing, CryptoService] = ZLayer.succeed(new Service {
+      def generateToken(s: String): Task[Dto.Token] = ZIO.succeed("generatedToken")
+      def hashPassword(password: String): String = s"!$password"
+      def chkPassword(password: String, hashed: String): Boolean = password == hashed.substring(1)
+    })
   }
 
   def generateToken(s: String): ZIO[CryptoService, Throwable, Dto.Token] =
