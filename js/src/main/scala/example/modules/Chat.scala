@@ -20,6 +20,7 @@ import slinky.web.html._
     val (errors, setErrors) = useState(Vector[String]())
     val (msgs, setMsgs) = useState(Vector[String]())
     val (autoscroll, setAutoscroll) = useState(true)
+
     val chatRef = React.createRef[html.Div]
 
     def handleUsername(e: SyntheticEvent[html.Input, Event]): Unit = setUsername(e.target.value)

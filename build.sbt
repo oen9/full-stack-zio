@@ -31,8 +31,11 @@ lazy val sharedSettings = Seq(
     "-deprecation",
     "-feature",
     "-language:higherKinds",
-    "-Ymacro-annotations"
-  )
+    "-Ymacro-annotations",
+    "-Ywarn-unused:imports",
+  ),
+  semanticdbEnabled := true,
+  semanticdbVersion := scalafixSemanticdb.revision,
 )
 
 lazy val jsSettings = Seq(
