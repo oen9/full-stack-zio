@@ -23,7 +23,7 @@ lazy val sharedSettings = Seq(
     "io.circe" %%% "circe-literal" % Ver.circe,
     "com.softwaremill.quicklens" %%% "quicklens" % "1.5.0"
     // waiting for scalajs-1.0.0 support
-    // "io.scalaland" %%% "chimney" % "0.5.0",
+    // "io.scalaland" %%% "chimney" % "0.5.1",
   ),
   scalacOptions ++= Seq(
     "-Xlint",
@@ -88,7 +88,7 @@ lazy val jvmSettings = Seq(
     "org.reactormonk" %% "cryptobits" % "1.3",
     "org.mindrot" % "jbcrypt" % "0.4",
 
-    "io.scalaland" %%% "chimney" % "0.5.0", // TODO remove from here after scalajs-1.0.0 support
+    "io.scalaland" %%% "chimney" % "0.5.1", // TODO remove from here after scalajs-1.0.0 support
 
     "dev.zio" %% "zio-test" % Ver.zio % Test,
     "dev.zio" %% "zio-test-sbt" % Ver.zio % Test,

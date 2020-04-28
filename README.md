@@ -7,6 +7,15 @@ full-stack-zio
 
 ![alt text](https://raw.githubusercontent.com/oen9/full-stack-zio/master/img/web.png "web")
 
+## Features
+
+1. TODO list - MongoDB
+1. Small Flappy Bird game with scoreboard - Postgres\
+The game is badly optimised because of not working directly with canvas.
+It is just my demo focusing on react w with scalajs.
+1. Auth example (register, singin, signout, secured endpoint) - Postgres
+1. API documentation - Swagger
+
 ## Libs
 
 ### backend
@@ -32,11 +41,11 @@ full-stack-zio
 
 ## in progress
 
-auth example
+1. websockets
 
 ## soon
 
-1. auth example
+1. websockets
 1. more?
 
 ## Production

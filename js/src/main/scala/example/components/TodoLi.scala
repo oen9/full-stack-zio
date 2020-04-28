@@ -19,7 +19,7 @@ import example.services.SwitchTodoStatus
     val onSwitchStatus = () => dispatch(SwitchTodoStatus(props.todoTask.id.getOrElse("")))
 
     li(className := "list-group-item",
-      div(className := "row",
+      div(className := "row align-items-center",
         div(className := "col-sm col-md-8",
           props.todoTask.status match {
             case Done => s(props.todoTask.value)

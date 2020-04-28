@@ -1,7 +1,6 @@
 package example.modules
 
 import cats.implicits._
-import diode.data.PotState.PotFailed
 import diode.data.PotState.PotPending
 import diode.data.PotState.PotReady
 import org.scalajs.dom.{Event, html}
@@ -13,11 +12,11 @@ import slinky.core.FunctionalComponent
 import slinky.core.SyntheticEvent
 import slinky.web.html._
 
+import example.components.AuthLastError
 import example.services.AppCircuit
 import example.services.ReactDiode
 import example.services.TryRegister
 import example.services.Validator
-import example.components.AuthLastError
 
 @react object Register {
   type Props = Unit
