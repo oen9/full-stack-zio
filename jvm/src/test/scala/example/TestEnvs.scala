@@ -17,10 +17,10 @@ import zio.logging.Logging
 object TestEnvs {
   sealed trait SqlInit
   case object SqlEmpty extends SqlInit
-  case object SqlFull extends SqlInit
+  case object SqlFull  extends SqlInit
 
-  val appConf = AppConfig.live
-  val logging = Logging.ignore
+  val appConf    = AppConfig.live
+  val logging    = Logging.ignore
   val cryptoServ = CryptoService.test
 
   def appConf(h2DbName: String = "test") = AppConfig.test(h2DbName)
@@ -28,10 +28,10 @@ object TestEnvs {
   def testDoobieTransactor(initdb: SqlInit, h2DbName: String) = {
     val migrations = initdb match {
       case SqlEmpty => Seq("db/migration")
-      case SqlFull => Seq("db/migration", "db/fulldb")
+      case SqlFull  => Seq("db/migration", "db/fulldb")
     }
     val testAppConf = appConf(h2DbName)
-    val flyway = testAppConf >>> flywayHandler.FlywayHandler.test(migrations)
+    val flyway      = testAppConf >>> flywayHandler.FlywayHandler.test(migrations)
     (Blocking.any ++ testAppConf ++ flyway) >>> doobieTransactor.live
   }
 

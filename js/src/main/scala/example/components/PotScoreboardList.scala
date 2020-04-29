@@ -19,8 +19,11 @@ import slinky.core.facade.ReactElement
       case PotEmpty =>
         "nothing here"
       case PotPending =>
-        div(className := "row justify-content-center",
-          div(className := "row justify-content-center spinner-border text-primary", role := "status",
+        div(
+          className := "row justify-content-center",
+          div(
+            className := "row justify-content-center spinner-border text-primary",
+            role := "status",
             span(className := "sr-only", "Loading...")
           )
         )
@@ -29,11 +32,7 @@ import slinky.core.facade.ReactElement
       case PotReady =>
         props.scores.fold(
           div("nothing here yet"): ReactElement
-        )(scoreList =>
-          ul(className := "list-group list-group-flush",
-            ScoreboardList(scoreList)
-          )
-        )
+        )(scoreList => ul(className := "list-group list-group-flush", ScoreboardList(scoreList)))
       case _ => div("unexpected state")
     }
   }

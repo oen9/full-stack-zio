@@ -23,28 +23,32 @@ object scoreboardService {
           new Service {
             val logger = logging.logger
 
-            def addNew(newRecord: ScoreboardRecord): Task[ScoreboardRecord] = for {
-              inserted <- scoreboardRepository.insert(newRecord)
-              _ <- logger.log(LogLevel.Trace)(s"new score record added: $inserted")
-            } yield inserted
+            def addNew(newRecord: ScoreboardRecord): Task[ScoreboardRecord] =
+              for {
+                inserted <- scoreboardRepository.insert(newRecord)
+                _        <- logger.log(LogLevel.Trace)(s"new score record added: $inserted")
+              } yield inserted
 
-            def listScores(): Task[Vector[ScoreboardRecord]] = for {
-              allScores <- scoreboardRepository.getAll()
-              _ <- logger.log(LogLevel.Trace)(s"got: '${allScores.size}' scores")
-            } yield allScores
+            def listScores(): Task[Vector[ScoreboardRecord]] =
+              for {
+                allScores <- scoreboardRepository.getAll()
+                _         <- logger.log(LogLevel.Trace)(s"got: '${allScores.size}' scores")
+              } yield allScores
 
-            def deleteAll(): Task[Unit] = for {
-              deleteResult <- scoreboardRepository.deleteAll()
-              _ <- logger.log(LogLevel.Trace)(s"deleted: '$deleteResult' scores")
-            } yield ()
+            def deleteAll(): Task[Unit] =
+              for {
+                deleteResult <- scoreboardRepository.deleteAll()
+                _            <- logger.log(LogLevel.Trace)(s"deleted: '$deleteResult' scores")
+              } yield ()
           }
       }
 
-    def test(data: Vector[ScoreboardRecord] = Vector()) = ZLayer.succeed(new Service {
-      def addNew(newRecord: ScoreboardRecord): Task[ScoreboardRecord] = ZIO.succeed(newRecord.copy(id = 42L.some))
-      def listScores(): Task[Vector[ScoreboardRecord]] = ZIO.succeed(data)
-      def deleteAll(): Task[Unit] = ZIO.unit
-    })
+    def test(data: Vector[ScoreboardRecord] = Vector()) =
+      ZLayer.succeed(new Service {
+        def addNew(newRecord: ScoreboardRecord): Task[ScoreboardRecord] = ZIO.succeed(newRecord.copy(id = 42L.some))
+        def listScores(): Task[Vector[ScoreboardRecord]]                = ZIO.succeed(data)
+        def deleteAll(): Task[Unit]                                     = ZIO.unit
+      })
   }
 
   def addNew(newRecord: ScoreboardRecord): ZIO[ScoreboardService, Throwable, ScoreboardRecord] =
@@ -54,4 +58,3 @@ object scoreboardService {
   def deleteAll(): ZIO[ScoreboardService, Throwable, Unit] =
     ZIO.accessM[ScoreboardService](_.get.deleteAll())
 }
-

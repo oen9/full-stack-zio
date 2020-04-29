@@ -18,20 +18,27 @@ import example.services.SwitchTodoStatus
 
     val onSwitchStatus = () => dispatch(SwitchTodoStatus(props.todoTask.id.getOrElse("")))
 
-    li(className := "list-group-item",
-      div(className := "row align-items-center",
-        div(className := "col-sm col-md-8",
+    li(
+      className := "list-group-item",
+      div(
+        className := "row align-items-center",
+        div(className := "col-sm col-md-8", props.todoTask.status match {
+          case Done    => s(props.todoTask.value)
+          case Pending => props.todoTask.value
+        }),
+        div(
+          className := "col-sm col-md-4 text-right",
           props.todoTask.status match {
-            case Done => s(props.todoTask.value)
-            case Pending => props.todoTask.value
-          }
-        ),
-        div(className := "col-sm col-md-4 text-right",
-          props.todoTask.status match {
-            case Done => button(className := "btn btn-warning", i(className := "fas fa-backspace"), onClick := onSwitchStatus)
-            case Pending => button(className := "btn btn-success", i(className := "fas fa-check-circle"), onClick := onSwitchStatus)
+            case Done =>
+              button(className := "btn btn-warning", i(className := "fas fa-backspace"), onClick := onSwitchStatus)
+            case Pending =>
+              button(className := "btn btn-success", i(className := "fas fa-check-circle"), onClick := onSwitchStatus)
           },
-          button(className := "btn btn-danger", data-"toggle" := "modal", data-"target" := "#deleteModal", onClick := props.onDelete,
+          button(
+            className := "btn btn-danger",
+            data - "toggle" := "modal",
+            data - "target" := "#deleteModal",
+            onClick := props.onDelete,
             i(className := "fas fa-trash")
           )
         )

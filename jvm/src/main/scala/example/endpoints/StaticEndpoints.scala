@@ -20,17 +20,17 @@ object StaticEndpoints {
       StaticFile.fromString(s"$assetsPath/$file", catsBlocker, Some(request)).getOrElseF(NotFound())
 
     HttpRoutes.of[RIO[R, *]] {
-      case request@GET -> Root =>
+      case request @ GET -> Root =>
         static("index.html", catsBlocker, request)
 
-      case request@GET -> Root / path if List(".js", ".css", ".map", ".html", ".ico").exists(path.endsWith) =>
+      case request @ GET -> Root / path if List(".js", ".css", ".map", ".html", ".ico").exists(path.endsWith) =>
         static(path, catsBlocker, request)
 
-      case request@GET -> "front-res" /: path =>
+      case request @ GET -> "front-res" /: path =>
         val fullPath = "front-res/" + path.toList.mkString("/")
         static(fullPath, catsBlocker, request)
 
-      case request@GET -> "assets" /: path =>
+      case request @ GET -> "assets" /: path =>
         val fullPath = path.toList.mkString("/")
         staticAssets(fullPath, catsBlocker, request)
     }

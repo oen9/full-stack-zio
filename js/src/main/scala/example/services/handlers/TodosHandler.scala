@@ -32,22 +32,28 @@ class TodosHandler[M](modelRW: ModelRW[M, Pot[Vector[TodoTask]]]) extends Action
       updated(newValue)
 
     case SwitchTodoStatus(idToSwitch) =>
-      val switchTodoEffect = Effect(AjaxClient.switchStatus(idToSwitch).map(newStatus => TodoStatusSwitched(idToSwitch, newStatus)))
+      val switchTodoEffect = Effect(
+        AjaxClient.switchStatus(idToSwitch).map(newStatus => TodoStatusSwitched(idToSwitch, newStatus))
+      )
       effectOnly(switchTodoEffect)
     case TodoStatusSwitched(id, newStatus) =>
       val idPred = (todo: TodoTask) => todo.id === id.some
-      val newValue = value.fold(value)((todos: Vector[TodoTask]) => Ready({
-        todos.modify(_.eachWhere(idPred).status).setTo(newStatus)
-      }))
+      val newValue = value.fold(value)((todos: Vector[TodoTask]) =>
+        Ready {
+          todos.modify(_.eachWhere(idPred).status).setTo(newStatus)
+        }
+      )
       updated(newValue)
 
     case DeleteTodo(id) =>
       val deleteEffect = Effect(AjaxClient.deleteTodo(id).map(_ => TodoDeleted(id)))
       effectOnly(deleteEffect)
     case TodoDeleted(id) =>
-      val newValue = value.fold(value)((todos: Vector[TodoTask]) => Ready({
-        todos.filter(_.id =!= id.some)
-      }))
+      val newValue = value.fold(value)((todos: Vector[TodoTask]) =>
+        Ready {
+          todos.filter(_.id =!= id.some)
+        }
+      )
       updated(newValue)
   }
 }

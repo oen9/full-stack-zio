@@ -22,28 +22,30 @@ object cryptoService {
 
     val live: ZLayer[AppConfig with Clock, Throwable, CryptoService] =
       ZLayer.fromServiceM[Clock.Service, AppConfig, Throwable, CryptoService.Service] { clock =>
-        appConfig.load.map(cfg => new Service {
-          val key = PrivateKey(scala.io.Codec.toUTF8(cfg.encryption.salt))
-          val crypto = CryptoBits(key)
-          val testUsername = "test"
+        appConfig.load.map(cfg =>
+          new Service {
+            val key          = PrivateKey(scala.io.Codec.toUTF8(cfg.encryption.salt))
+            val crypto       = CryptoBits(key)
+            val testUsername = "test"
 
-          def generateToken(s: String): Task[Dto.Token] =
-            clock.nanoTime.map(nanos =>
-              if (s == testUsername) testUsername
-              else crypto.signToken(s, nanos.toString())
-            )
+            def generateToken(s: String): Task[Dto.Token] =
+              clock.nanoTime.map(nanos =>
+                if (s == testUsername) testUsername
+                else crypto.signToken(s, nanos.toString())
+              )
 
-          def hashPassword(password: String): String =
-            BCrypt.hashpw(password, BCrypt.gensalt(cfg.encryption.bcryptLogRounds))
+            def hashPassword(password: String): String =
+              BCrypt.hashpw(password, BCrypt.gensalt(cfg.encryption.bcryptLogRounds))
 
-          def chkPassword(password: String, hashed: String): Boolean =
-            BCrypt.checkpw(password, hashed)
-        })
+            def chkPassword(password: String, hashed: String): Boolean =
+              BCrypt.checkpw(password, hashed)
+          }
+        )
       }
 
     val test: Layer[Nothing, CryptoService] = ZLayer.succeed(new Service {
-      def generateToken(s: String): Task[Dto.Token] = ZIO.succeed("generatedToken")
-      def hashPassword(password: String): String = s"!$password"
+      def generateToken(s: String): Task[Dto.Token]              = ZIO.succeed("generatedToken")
+      def hashPassword(password: String): String                 = s"!$password"
       def chkPassword(password: String, hashed: String): Boolean = password == hashed.substring(1)
     })
   }

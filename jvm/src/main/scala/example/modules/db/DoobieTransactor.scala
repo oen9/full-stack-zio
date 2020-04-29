@@ -18,8 +18,8 @@ object doobieTransactor {
   val live: ZLayer[Blocking with AppConfig with FlywayHandler, Throwable, DoobieTransactor] = ZLayer.fromManaged {
     ZIO.runtime[Blocking].toManaged_.flatMap { implicit rt =>
       for {
-        _ <- flywayHandler.initDb.toManaged_
-        cfg <- appConfig.load.toManaged_
+        _          <- flywayHandler.initDb.toManaged_
+        cfg        <- appConfig.load.toManaged_
         blockingEC <- ZIO.accessM[Blocking](b => ZIO.succeed(b.get.blockingExecutor.asEC)).toManaged_
         connectEC = rt.platform.executor.asEC
         transactor <- HikariTransactor
@@ -30,7 +30,8 @@ object doobieTransactor {
             cfg.sqldb.password,
             connectEC,
             Blocker.liftExecutionContext(blockingEC)
-          ).toManaged
+          )
+          .toManaged
       } yield transactor
     }
   }

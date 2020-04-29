@@ -14,12 +14,12 @@ import slinky.core.FunctionalComponent
     gameOver: Boolean,
     score: Int,
     bestScore: Int,
-    onClickRestart: KonvaEventObject[Event] => Unit,
+    onClickRestart: KonvaEventObject[Event] => Unit
   )
 
   val component = FunctionalComponent[Props] { props =>
     val (restartImg, _) = useImage("front-res/img/flappy/restart.png")
-    val (scoreImg, _) = useImage("front-res/img/flappy/score.png")
+    val (scoreImg, _)   = useImage("front-res/img/flappy/score.png")
 
     if (props.gameOver) {
       Group(
@@ -28,7 +28,7 @@ import slinky.core.FunctionalComponent
           x = GameLogic.width / 2 - 43,
           y = GameLogic.height / 2 - 100,
           scaleX = 0.5,
-          scaleY = 0.5,
+          scaleY = 0.5
         ),
         Image(
           image = restartImg,
@@ -37,7 +37,7 @@ import slinky.core.FunctionalComponent
           scaleX = 0.5,
           scaleY = 0.5,
           onClick = props.onClickRestart,
-          onTap = props.onClickRestart,
+          onTap = props.onClickRestart
         ),
         Text(
           x = GameLogic.width / 2 - 43,
@@ -48,7 +48,7 @@ import slinky.core.FunctionalComponent
           verticalAlign = "middle",
           text = s"${props.score}",
           fontSize = 24,
-          fill = "black",
+          fill = "black"
         ),
         Text(
           x = GameLogic.width / 2 - 43,
@@ -59,7 +59,7 @@ import slinky.core.FunctionalComponent
           verticalAlign = "middle",
           text = s"${props.bestScore}",
           fontSize = 24,
-          fill = "black",
+          fill = "black"
         )
       )
     } else {

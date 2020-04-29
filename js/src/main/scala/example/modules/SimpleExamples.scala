@@ -20,28 +20,28 @@ import example.shared.HelloShared
   type Props = Unit
   val component = FunctionalComponent[Props] { _ =>
     val (clicks, dispatch) = ReactDiode.useDiode(AppCircuit.zoomTo(_.clicks))
-    val (randomNumber, _) = ReactDiode.useDiode(AppCircuit.zoomTo(_.randomNumber))
+    val (randomNumber, _)  = ReactDiode.useDiode(AppCircuit.zoomTo(_.randomNumber))
 
     Fragment(
-      div(className := "text-center",
-        "compile-time shared string between js and jvm: " + HelloShared.TEST_STR
-      ),
-      div(className := "row mt-2",
-        div(className := "col text-right",
-          BlueButton("more clicks", () => dispatch(IncreaseClicks))
-        ),
+      div(className := "text-center", "compile-time shared string between js and jvm: " + HelloShared.TEST_STR),
+      div(
+        className := "row mt-2",
+        div(className := "col text-right", BlueButton("more clicks", () => dispatch(IncreaseClicks))),
         div(className := "col", " clicks: " + clicks.count)
       ),
-      div(className := "row mt-2",
-        div(className := "col text-right",
-          BlueButton("new random", () => dispatch(TryGetRandom()))
-        ),
-        div(className := "col", " random: ",
+      div(
+        className := "row mt-2",
+        div(className := "col text-right", BlueButton("new random", () => dispatch(TryGetRandom()))),
+        div(
+          className := "col",
+          " random: ",
           randomNumber.state match {
             case PotEmpty =>
               div("nothing here")
             case PotPending =>
-              div(className := "spinner-border text-primary", role := "status",
+              div(
+                className := "spinner-border text-primary",
+                role := "status",
                 span(className := "sr-only", "Loading...")
               )
             case PotFailed =>

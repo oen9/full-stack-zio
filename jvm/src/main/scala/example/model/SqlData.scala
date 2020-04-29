@@ -5,6 +5,6 @@ object SqlData {
     id: Option[Long] = None,
     name: String,
     password: String,
-    token: String,
+    token: String
   )
 }

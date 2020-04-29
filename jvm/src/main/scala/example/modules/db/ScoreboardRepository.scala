@@ -28,16 +28,13 @@ object scoreboardRepository {
             .orDie
 
         def getAll(): UIO[Vector[ScoreboardRecord]] =
-          SQL
-            .selectAllSortedByScore
+          SQL.selectAllSortedByScore
             .to[Vector]
             .transact(xa)
             .orDie
 
         def deleteAll(): UIO[Int] =
-          SQL
-            .deleteAll
-            .run
+          SQL.deleteAll.run
             .transact(xa)
             .orDie
       }

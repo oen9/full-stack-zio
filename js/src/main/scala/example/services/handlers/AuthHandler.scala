@@ -16,7 +16,7 @@ class AuthHandler[M](modelRW: ModelRW[M, Pot[Auth]]) extends ActionHandler(model
 
   override def handle = {
     case action: TryAuth =>
-      val cred = AuthCredentials(action.username, action.passwd)
+      val cred    = AuthCredentials(action.username, action.passwd)
       val updateF = action.effect(AjaxClient.postAuth(cred))(u => Auth(u.name, u.token))
       action.handleWith(this, updateF)(PotAction.handler())
 
@@ -24,7 +24,7 @@ class AuthHandler[M](modelRW: ModelRW[M, Pot[Auth]]) extends ActionHandler(model
       updated(Empty)
 
     case action: TryRegister =>
-      val cred = AuthCredentials(action.username, action.passwd)
+      val cred    = AuthCredentials(action.username, action.passwd)
       val updateF = action.effect(AjaxClient.postAuthUser(cred))(u => Auth(u.name, u.token))
       action.handleWith(this, updateF)(PotAction.handler())
   }

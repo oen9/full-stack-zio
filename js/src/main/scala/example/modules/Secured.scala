@@ -18,35 +18,39 @@ import slinky.web.html._
 
   val component = FunctionalComponent[Props] { _ =>
     val (auth, dispatch) = ReactDiode.useDiode(AppCircuit.zoom(_.auth))
-    val (secretText, _) = ReactDiode.useDiode(AppCircuit.zoom(_.securedText))
+    val (secretText, _)  = ReactDiode.useDiode(AppCircuit.zoom(_.securedText))
 
-    useEffect(() => {
-      auth.state match {
-        case PotReady => dispatch(TryGetSecuredText(auth.get.token))
-        case _ => ()
-      }
-    }, Seq())
+    useEffect(
+      () =>
+        auth.state match {
+          case PotReady => dispatch(TryGetSecuredText(auth.get.token))
+          case _        => ()
+        },
+      Seq()
+    )
 
-    div(className := "card",
+    div(
+      className := "card",
       div(className := "card-header", "Secured"),
-      div(className := "card-body",
+      div(
+        className := "card-body",
         div("This page is only available after signing in."),
         div(
           secretText.state match {
             case PotPending =>
-              div(className := "spinner-border text-primary", role := "status",
+              div(
+                className := "spinner-border text-primary",
+                role := "status",
                 span(className := "sr-only", "Loading...")
               ).some
             case PotFailed =>
-              div(secretText
-                .exceptionOption
-                .fold("unknown error")(msg =>
-                  s"error: ${msg.getMessage()}"
-                )
+              div(
+                secretText.exceptionOption
+                  .fold("unknown error")(msg => s"error: ${msg.getMessage()}")
               )
             case PotReady =>
               secretText.fold("unknown error")(s => s"Secured text: $s").some
-            case _ =>  none[ReactElement]
+            case _ => none[ReactElement]
           }
         )
       )

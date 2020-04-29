@@ -24,14 +24,15 @@ object todoService {
 
     val live: ZLayer[TodoRepository, Nothing, Has[TodoService.Service]] = ZLayer.fromService { todoRepository =>
       new Service {
-        def getAll: Task[List[Dto.TodoTask]] = for {
-          allTodos <- todoRepository.getAll
-          dtos = allTodos.map { _
-            .into[TodoTask]
-            .withFieldComputed(_.id, _.id.stringify.some)
-            .transform
-          }
-        } yield dtos
+        def getAll: Task[List[Dto.TodoTask]] =
+          for {
+            allTodos <- todoRepository.getAll
+            dtos = allTodos.map {
+              _.into[TodoTask]
+                .withFieldComputed(_.id, _.id.stringify.some)
+                .transform
+            }
+          } yield dtos
 
         def createNew(toCreate: Dto.TodoTask): Task[String] = {
           val newId = BSONObjectID.generate()
@@ -44,19 +45,21 @@ object todoService {
           } yield newId.stringify
         }
 
-        def switchStatus(id: String): Task[TodoStatus] = for {
-          bsonId <- strToBsonId(id)
-          found <- todoRepository.findById(bsonId)
-          newStatus = MongoData.switchStatus(found.status)
-          _ <- todoRepository.updateStatus(bsonId, newStatus)
-          dto = newStatus.into[TodoStatus].transform
-        } yield dto
+        def switchStatus(id: String): Task[TodoStatus] =
+          for {
+            bsonId <- strToBsonId(id)
+            found  <- todoRepository.findById(bsonId)
+            newStatus = MongoData.switchStatus(found.status)
+            _ <- todoRepository.updateStatus(bsonId, newStatus)
+            dto = newStatus.into[TodoStatus].transform
+          } yield dto
 
-        def deleteTodo(id: String): zio.Task[Unit] = for {
-          bsonId <- strToBsonId(id)
-          found <- todoRepository.findById(bsonId)
-          _ <- todoRepository.deleteById(bsonId)
-        } yield ()
+        def deleteTodo(id: String): zio.Task[Unit] =
+          for {
+            bsonId <- strToBsonId(id)
+            found  <- todoRepository.findById(bsonId)
+            _      <- todoRepository.deleteById(bsonId)
+          } yield ()
 
         private def strToBsonId(id: String) =
           ZIO
@@ -65,12 +68,13 @@ object todoService {
       }
     }
 
-    def test(initData: List[TodoTask] = List()) = ZLayer.succeed(new Service {
-      def getAll: Task[List[TodoTask]] = ZIO.succeed(initData)
-      def createNew(todoTask: TodoTask): Task[String] = ZIO.succeed(BSONObjectID.generate().stringify)
-      def switchStatus(id: String): Task[TodoStatus] = ZIO.succeed(Done)
-      def deleteTodo(id: String): Task[Unit] = ZIO.unit
-    })
+    def test(initData: List[TodoTask] = List()) =
+      ZLayer.succeed(new Service {
+        def getAll: Task[List[TodoTask]]                = ZIO.succeed(initData)
+        def createNew(todoTask: TodoTask): Task[String] = ZIO.succeed(BSONObjectID.generate().stringify)
+        def switchStatus(id: String): Task[TodoStatus]  = ZIO.succeed(Done)
+        def deleteTodo(id: String): Task[Unit]          = ZIO.unit
+      })
   }
 
   def getAll: ZIO[TodoService, Throwable, List[TodoTask]] =

@@ -6,15 +6,13 @@ import reactivemongo.api.bson.Macros.Annotations.Key
 
 object MongoData {
   sealed trait TodoStatus
-  case object Done extends TodoStatus
+  case object Done    extends TodoStatus
   case object Pending extends TodoStatus
 
   case class TodoTask(@Key("_id") id: BSONObjectID, value: String, status: TodoStatus)
 
   object TodoStatus {
-    import reactivemongo.api.bson.MacroOptions.{
-      AutomaticMaterialization, UnionType, \/
-    }
+    import reactivemongo.api.bson.MacroOptions.{\/, AutomaticMaterialization, UnionType}
     type PredefinedTodoStatus = UnionType[Done.type \/ Pending.type] with AutomaticMaterialization
     implicit val predefinedTodoStatus = Macros.handlerOpts[TodoStatus, PredefinedTodoStatus]
   }
@@ -23,6 +21,6 @@ object MongoData {
 
   def switchStatus(oldStatus: TodoStatus): TodoStatus = oldStatus match {
     case Pending => Done
-    case Done => Pending
+    case Done    => Pending
   }
 }

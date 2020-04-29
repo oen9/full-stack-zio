@@ -13,23 +13,25 @@ import slinky.core.FunctionalComponent
   case class Props(groundShift: Int, debug: Boolean = false)
 
   val groundWidth = 18
-  val groundNum = (GameLogic.width / groundWidth.toDouble).ceil.toInt
+  val groundNum   = (GameLogic.width / groundWidth.toDouble).ceil.toInt
 
-  val component = FunctionalComponent[Props] {props =>
-    val (groundImg, _) = useImage("front-res/img/flappy/ground.png")
+  val component = FunctionalComponent[Props] { props =>
+    val (groundImg, _)            = useImage("front-res/img/flappy/ground.png")
     val (debugRect, setDebugRect) = useState(KonvaHelper.IRect())
 
-    useLayoutEffect(() => {
-      if (props.debug) {
-        val rect = KonvaHelper.IRect(
-          x = 0,
-          y = GameLogic.groundY,
-          width = GameLogic.width,
-          height = GameLogic.height,
-        )
-        setDebugRect(rect)
-      }
-    }, Seq(props))
+    useLayoutEffect(
+      () =>
+        if (props.debug) {
+          val rect = KonvaHelper.IRect(
+            x = 0,
+            y = GameLogic.groundY,
+            width = GameLogic.width,
+            height = GameLogic.height
+          )
+          setDebugRect(rect)
+        },
+      Seq(props)
+    )
 
     Group(
       (0 to groundNum).map { i =>
@@ -38,17 +40,16 @@ import slinky.core.FunctionalComponent
           x = i * groundWidth + props.groundShift,
           y = GameLogic.groundY,
           scaleX = 0.5,
-          scaleY = 0.5,
+          scaleY = 0.5
         ).withKey(i.toString())
       },
-
       if (props.debug) {
         Rect(
           x = debugRect.x.toInt,
           y = debugRect.y.toInt,
           width = debugRect.width.toInt,
           height = debugRect.height.toInt,
-          stroke = "brown",
+          stroke = "brown"
         ),
       } else Group()
     )

@@ -29,35 +29,42 @@ object authService {
       data: Vector[Dto.User] = Vector(),
       newToken: String = "newToken",
       secretReturn: String = "Super secret text"
-    ) = ZLayer.succeed(new Service {
+    ) =
+      ZLayer.succeed(new Service {
 
-      def getUser(token: Dto.Token): Task[Dto.User] = ZIO.fromOption(
-        data
-          .find(_.token == token)
-      ).mapError(_ => AuthenticationError("wrong token"))
+        def getUser(token: Dto.Token): Task[Dto.User] =
+          ZIO
+            .fromOption(
+              data
+                .find(_.token == token)
+            )
+            .mapError(_ => AuthenticationError("wrong token"))
 
-      def generateNewToken(cred: Dto.AuthCredentials): Task[Dto.User] = ZIO.fromOption(
-        data
-          .find(_.name == cred.name)
-          .map(_.copy(token = newToken))
-      ).mapError(_ => AuthenticationError("wrong name/password"))
+        def generateNewToken(cred: Dto.AuthCredentials): Task[Dto.User] =
+          ZIO
+            .fromOption(
+              data
+                .find(_.name == cred.name)
+                .map(_.copy(token = newToken))
+            )
+            .mapError(_ => AuthenticationError("wrong name/password"))
 
-      def createUser(cred: Dto.AuthCredentials): Task[Dto.User] =  {
-        val succ: ZIO[Any, Throwable, Dto.User] = ZIO.succeed(
-          cred
-            .into[Dto.User]
-            .withFieldComputed(_.id, _ => 1L)
-            .withFieldComputed(_.token, _ => newToken)
-            .transform
-        )
-        val fail = ZIO.fail(UserExists(s"user ${cred.name} exists"))
-        data
-          .find(_.name == cred.name)
-          .fold(succ)(_ => fail)
-      }
+        def createUser(cred: Dto.AuthCredentials): Task[Dto.User] = {
+          val succ: ZIO[Any, Throwable, Dto.User] = ZIO.succeed(
+            cred
+              .into[Dto.User]
+              .withFieldComputed(_.id, _ => 1L)
+              .withFieldComputed(_.token, _ => newToken)
+              .transform
+          )
+          val fail = ZIO.fail(UserExists(s"user ${cred.name} exists"))
+          data
+            .find(_.name == cred.name)
+            .fold(succ)(_ => fail)
+        }
 
-      def secretText(user: Dto.User): Task[String] = ZIO.succeed(secretReturn)
-    })
+        def secretText(user: Dto.User): Task[String] = ZIO.succeed(secretReturn)
+      })
   }
 
   def getUser(token: Dto.Token): ZIO[AuthService, Throwable, Dto.User] =

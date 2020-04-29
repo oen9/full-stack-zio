@@ -26,7 +26,11 @@ object ScoreboardEndpoints {
     .description("List all scores sorted by score")
     .in("scoreboard")
     .errorOut(unexpectedError)
-    .out(jsonBody[Vector[ScoreboardRecord]].example(Vector(ScoreboardRecord(id = 2L.some, name = "bar", 100), ScoreboardRecord(id = 1L.some, name = "foo", 50))))
+    .out(
+      jsonBody[Vector[ScoreboardRecord]].example(
+        Vector(ScoreboardRecord(id = 2L.some, name = "bar", 100), ScoreboardRecord(id = 1L.some, name = "foo", 50))
+      )
+    )
 
   val createNew = endpoint.post
     .description("Create new score record")
@@ -48,21 +52,23 @@ object ScoreboardEndpoints {
     deleteAll
   )
 
-  def routes[R <: ScoreboardService with Logging]: HttpRoutes[RIO[R, *]] = {
+  def routes[R <: ScoreboardService with Logging]: HttpRoutes[RIO[R, *]] =
     (
-      listScores.toRoutes (_ => handleUnexpectedError(scoreboardService.listScores)): HttpRoutes[RIO[R, *]] // TODO find a better way
-    ) <+> createNew.toRoutes { toCreate =>
-      handleUnexpectedError(scoreboardService.addNew(toCreate))
-    } <+> deleteAll.toRoutes { _ =>
-      handleUnexpectedError(scoreboardService.deleteAll)
+      listScores.toRoutes(_ => handleUnexpectedError(scoreboardService.listScores)): HttpRoutes[
+        RIO[R, *]
+      ] // TODO find a better way
+    ) <+> createNew.toRoutes(toCreate => handleUnexpectedError(scoreboardService.addNew(toCreate))) <+> deleteAll.toRoutes {
+      _ => handleUnexpectedError(scoreboardService.deleteAll)
     }
-  }
 
-  private def handleUnexpectedError[R <: Logging, A](result: ZIO[R, Throwable, A]): URIO[R, Either[UnknownError with Product with Serializable, A]] = result.foldM(
+  private def handleUnexpectedError[R <: Logging, A](
+    result: ZIO[R, Throwable, A]
+  ): URIO[R, Either[UnknownError with Product with Serializable, A]] = result.foldM(
     {
-      case unknown => for {
-        _ <- logThrowable(unknown)
-      } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
+      case unknown =>
+        for {
+          _ <- logThrowable(unknown)
+        } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
     },
     succ => ZIO.succeed(succ.asRight)
   )

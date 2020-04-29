@@ -28,23 +28,22 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
   val tokenHeader = "TOKEN"
 
   def spec = suite("AuthEndpoints")(
-    suite("get user by token") (
+    suite("get user by token")(
       testM("GET /auth/user with token") {
         val expected = initData.get(0).get
         val req = Request[RIO[TestEnv, *]](Method.GET, uri"/auth" / "user")
           .putHeaders(Header(tokenHeader, expected.token))
 
         val program = for {
-          response <- AuthEndpoints.routes[TestEnv].run(req).value
+          response   <- AuthEndpoints.routes[TestEnv].run(req).value
           parsedBody <- Http4sTestHelper.parseBody[TestEnv, User](response)
         } yield assert(parsedBody)(isSome(equalTo(expected)))
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test(data = initData)
+            AuthService.test(data = initData)
         )
       },
-
       testM("GET /auth/user with wrong token") {
         val req = Request[RIO[TestEnv, *]](Method.GET, uri"/auth" / "user")
           .putHeaders(Header(tokenHeader, "wrong token"))
@@ -55,10 +54,9 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test(data = initData)
+            AuthService.test(data = initData)
         )
       },
-
       testM("GET /auth/user without token") {
         val req = Request[RIO[TestEnv, *]](Method.GET, uri"/auth" / "user")
 
@@ -68,12 +66,11 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test()
+            AuthService.test()
         )
-      },
+      }
     ),
-
-    suite("create new user") (
+    suite("create new user")(
       testM("POST /auth/user with data") {
         val expected = initData.get(0).get
         val postData = AuthCredentials(name = expected.name, password = expected.token)
@@ -81,18 +78,16 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
           .withEntity(postData.asJson)
 
         val program = for {
-          response <- AuthEndpoints.routes[TestEnv].run(req).value
+          response   <- AuthEndpoints.routes[TestEnv].run(req).value
           parsedBody <- Http4sTestHelper.parseBody[TestEnv, User](response)
-        } yield
-          assert(parsedBody)(isSome(equalTo(expected))) &&
+        } yield assert(parsedBody)(isSome(equalTo(expected))) &&
           assert(response.map(_.status))(isSome(equalTo(Status.Created)))
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test(newToken = expected.token)
+            AuthService.test(newToken = expected.token)
         )
       },
-
       testM("POST /auth/user with corrupted data") {
         val req = Request[RIO[TestEnv, *]](Method.POST, uri"/auth" / "user")
           .withEntity("{corrupted = 'json")
@@ -103,10 +98,9 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test()
+            AuthService.test()
         )
       },
-
       testM("POST /auth/user user exists") {
         val expected = initData.get(0).get
         val postData = AuthCredentials(name = expected.name, password = expected.token)
@@ -119,11 +113,10 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test(data = initData, newToken = expected.token)
+            AuthService.test(data = initData, newToken = expected.token)
         )
-      },
+      }
     ),
-
     suite("generate new token")(
       testM("POST /auth with data") {
         val newToken = "new  token"
@@ -133,16 +126,15 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
           .withEntity(postData.asJson)
 
         val program = for {
-          response <- AuthEndpoints.routes[TestEnv].run(req).value
+          response   <- AuthEndpoints.routes[TestEnv].run(req).value
           parsedBody <- Http4sTestHelper.parseBody[TestEnv, User](response)
         } yield assert(parsedBody)(isSome(equalTo(expected)))
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test(data = initData, newToken = expected.token)
+            AuthService.test(data = initData, newToken = expected.token)
         )
       },
-
       testM("POST /auth with corrupted data") {
         val req = Request[RIO[TestEnv, *]](Method.POST, uri"/auth")
           .withEntity("{corrupted = 'json")
@@ -153,10 +145,9 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test()
+            AuthService.test()
         )
       },
-
       testM("POST /auth with wrong credentials") {
         val postData = AuthCredentials(name = "mistake", password = "not checked in tests")
         val req = Request[RIO[TestEnv, *]](Method.POST, uri"/auth")
@@ -168,31 +159,28 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test()
+            AuthService.test()
         )
-      },
+      }
     ),
-
     suite("get super secret text")(
       testM("GET /auth/secured with token") {
         val expected = "Super secure text"
-        val user = initData.get(0).get
+        val user     = initData.get(0).get
         val req = Request[RIO[TestEnv, *]](Method.GET, uri"/auth" / "secured")
           .putHeaders(Header(tokenHeader, user.token))
 
         val program = for {
-          response <- AuthEndpoints.routes[TestEnv].run(req).value
+          response   <- AuthEndpoints.routes[TestEnv].run(req).value
           parsedBody <- Http4sTestHelper.parseBody[TestEnv, String](response)
-        } yield
-          assert(parsedBody)(isSome(equalTo(expected))) &&
+        } yield assert(parsedBody)(isSome(equalTo(expected))) &&
           assert(response.map(_.status))(isSome(equalTo(Status.Ok)))
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test(data = initData, secretReturn = expected)
+            AuthService.test(data = initData, secretReturn = expected)
         )
       },
-
       testM("GET /auth/secured without token") {
         val req = Request[RIO[TestEnv, *]](Method.GET, uri"/auth" / "secured")
 
@@ -202,10 +190,9 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test()
+            AuthService.test()
         )
       },
-
       testM("GET /auth/secured with wrong token") {
         val req = Request[RIO[TestEnv, *]](Method.GET, uri"/auth" / "secured")
           .putHeaders(Header(tokenHeader, "wrong token"))
@@ -216,10 +203,9 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
 
         program.provideLayer(
           TestEnvs.logging ++
-          AuthService.test()
+            AuthService.test()
         )
-      },
-
-    ),
+      }
+    )
   )
 }

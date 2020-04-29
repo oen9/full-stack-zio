@@ -24,12 +24,14 @@ class ScoreboardHandler[M](modelRW: ModelRW[M, Pot[Vector[ScoreboardRecord]]]) e
       val addEffect = Effect(AjaxClient.postScore(newScore).map(ScoreAdded))
       effectOnly(addEffect)
     case ScoreAdded(newScore) =>
-      val newValue = value.fold(value)(scores => Ready(
-        (scores :+ newScore)
-          .sortBy(_.name)
-          .sortBy(_.score)
-          .reverse
-      ))
+      val newValue = value.fold(value)(scores =>
+        Ready(
+          (scores :+ newScore)
+            .sortBy(_.name)
+            .sortBy(_.score)
+            .reverse
+        )
+      )
       updated(newValue)
 
     case ClearScoreboard =>

@@ -50,6 +50,6 @@ object RestEndpoints {
 
   def routes[R <: RandomService]: HttpRoutes[RIO[R, *]] =
     getUserRoute[R] <+>
-    getHelloRoute <+>
-    echoRoute
+      getHelloRoute <+>
+      echoRoute
 }

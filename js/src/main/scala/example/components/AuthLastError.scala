@@ -15,22 +15,24 @@ import slinky.web.html._
 
   val component = FunctionalComponent[Props] { props =>
     val (auth, dispatch) = ReactDiode.useDiode(AppCircuit.zoom(_.auth))
-    val clean = () => dispatch(SignOut)
+    val clean            = () => dispatch(SignOut)
 
-    def lastErrorMsg() = auth
-      .exceptionOption
-      .fold("unknown error")(msg =>
-        s"Last auth error: ${msg.getMessage()}"
-      )
+    def lastErrorMsg() =
+      auth.exceptionOption
+        .fold("unknown error")(msg => s"Last auth error: ${msg.getMessage()}")
 
     auth.state match {
       case PotFailed =>
-        div(className := "alert alert-danger", role := "alert",
-          div(className := "row align-items-center",
+        div(
+          className := "alert alert-danger",
+          role := "alert",
+          div(
+            className := "row align-items-center",
             div(className := "col", lastErrorMsg()),
-            div(className := "col text-right",
+            div(
+              className := "col text-right",
               button(className := "btn btn-secondary text-right", "clean", onClick := clean)
-            ),
+            )
           )
         ).some
       case _ => none[ReactElement]

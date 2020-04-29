@@ -15,7 +15,7 @@ object appConfig {
   type AppConfig = Has[AppConfig.Service]
 
   object AppConfig {
-    trait  Service {
+    trait Service {
       def load: Task[AppConfigData]
     }
 
@@ -25,21 +25,29 @@ object appConfig {
 
     // actually we want to use application.conf from test so `live` for tests is better
     val test: Layer[Nothing, AppConfig] = ZLayer.succeed(new Service {
-      def load: ZIO[Any, Throwable, AppConfigData] = ZIO.effectTotal(AppConfigData(
-        Http(8080, "localhost"),
-        Mongo("mongo://test:test@localhost/test"),
-        SQLDB(url = "postgres://test:test@localhost:5432/test", driver = "postgres"),
-        Encryption(salt = "super-secret", bcryptLogRounds = 10),
-        "/tmp")
-      )
+      def load: ZIO[Any, Throwable, AppConfigData] =
+        ZIO.effectTotal(
+          AppConfigData(
+            Http(8080, "localhost"),
+            Mongo("mongo://test:test@localhost/test"),
+            SQLDB(url = "postgres://test:test@localhost:5432/test", driver = "postgres"),
+            Encryption(salt = "super-secret", bcryptLogRounds = 10),
+            "/tmp"
+          )
+        )
     })
 
     def test(h2DbName: String = "test"): Layer[Nothing, AppConfig] =
-      live >>> ZLayer.fromService[AppConfig.Service, AppConfig.Service](appConfig => new Service {
-        def load: zio.Task[AppConfigData] = appConfig.load.map(_.modify(_.sqldb.url).setTo(
-          s"jdbc:h2:mem:$h2DbName;DB_CLOSE_DELAY=-1"
-        ))
-      })
+      live >>> ZLayer.fromService[AppConfig.Service, AppConfig.Service](appConfig =>
+        new Service {
+          def load: zio.Task[AppConfigData] =
+            appConfig.load.map(
+              _.modify(_.sqldb.url).setTo(
+                s"jdbc:h2:mem:$h2DbName;DB_CLOSE_DELAY=-1"
+              )
+            )
+        }
+      )
   }
 
   def load: ZIO[AppConfig, Throwable, AppConfigData] =
