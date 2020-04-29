@@ -67,24 +67,31 @@ object AuthEndpoints {
     securedText
   )
 
+  // format: off
   def routes[R <: AuthService with Logging]: HttpRoutes[RIO[R, *]] =
     (
       getUser.toRoutes(token => handleError(authService.getUser(token))): HttpRoutes[RIO[R, *]]
-    ) <+> createUser.toRoutes(cred => handleError(authService.createUser(cred))) <+> generateNewToken.toRoutes { cred =>
+    ) <+> createUser.toRoutes { cred =>
+      handleError(authService.createUser(cred))
+    } <+> generateNewToken.toRoutes { cred =>
       handleError(authService.generateNewToken(cred))
-    } <+> securedText.toRoutes(token => handleError(authService.getUser(token) >>= authService.secretText))
+    } <+> securedText.toRoutes { token =>
+      handleError(authService.getUser(token) >>= authService.secretText)
+    }
+  // format: on
 
-  private def handleError[R <: Logging, A](result: ZIO[R, Throwable, A]): URIO[R, Either[ErrorInfo, A]] = result.foldM(
-    {
-      case TokenNotFound(msg)       => ZIO.succeed(Unauthorized(msg).asLeft)
-      case AuthenticationError(msg) => ZIO.succeed(Unauthorized(msg).asLeft)
-      case UserExists(msg)          => ZIO.succeed(Conflict(msg).asLeft)
+  private def handleError[R <: Logging, A](result: ZIO[R, Throwable, A]): URIO[R, Either[ErrorInfo, A]] =
+    result.foldM(
+      {
+        case TokenNotFound(msg)       => ZIO.succeed(Unauthorized(msg).asLeft)
+        case AuthenticationError(msg) => ZIO.succeed(Unauthorized(msg).asLeft)
+        case UserExists(msg)          => ZIO.succeed(Conflict(msg).asLeft)
 
-      case unknown =>
-        for {
-          _ <- logThrowable(unknown)
-        } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
-    },
-    succ => ZIO.succeed(succ.asRight)
-  )
+        case unknown =>
+          for {
+            _ <- logThrowable(unknown)
+          } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
+      },
+      succ => ZIO.succeed(succ.asRight)
+    )
 }

@@ -18,7 +18,7 @@ object AjaxClient {
   val JSON_TYPE                 = Map("Content-Type" -> "application/json")
   def authHeader(token: String) = Map("TOKEN" -> token)
   val baseUrl                   = ""
-  // val baseUrl = "http://localhost:8080" // for dev
+  // val baseUrl                   = "http://localhost:8080" // for dev
 
   import scala.concurrent.ExecutionContext.Implicits.global
 

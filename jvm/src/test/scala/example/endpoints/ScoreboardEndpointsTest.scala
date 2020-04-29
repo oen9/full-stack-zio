@@ -36,8 +36,7 @@ object ScoreboardEndpointsTest extends DefaultRunnableSpec {
       } yield assert(parsedBody)(isSome(equalTo(initData)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          ScoreboardService.test(initData)
+        TestEnvs.logging ++ ScoreboardService.test(initData)
       )
     },
     testM("POST /scoreboard") {
@@ -54,8 +53,7 @@ object ScoreboardEndpointsTest extends DefaultRunnableSpec {
         assert(parsedBody)(isSome(equalTo(expected)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          ScoreboardService.test()
+        TestEnvs.logging ++ ScoreboardService.test()
       )
     },
     testM("POST /scoreboard bad request") {
@@ -67,8 +65,7 @@ object ScoreboardEndpointsTest extends DefaultRunnableSpec {
       } yield assert(response.map(_.status))(isSome(equalTo(Status.BadRequest)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          ScoreboardService.test()
+        TestEnvs.logging ++ ScoreboardService.test()
       )
     },
     testM("DELETE /scoreboard") {
@@ -79,8 +76,7 @@ object ScoreboardEndpointsTest extends DefaultRunnableSpec {
       } yield assert(response.map(_.status))(isSome(equalTo(Status.NoContent)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          ScoreboardService.test()
+        TestEnvs.logging ++ ScoreboardService.test()
       )
     }
   )

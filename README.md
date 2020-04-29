@@ -12,7 +12,7 @@ full-stack-zio
 1. TODO list - MongoDB
 1. Small Flappy Bird game with scoreboard - Postgres\
 The game is badly optimised because of not working directly with canvas.
-It is just my demo focusing on react w with scalajs.
+It is just my demo focusing on react with scalajs.
 1. Auth example (register, singin, signout, secured endpoint) - Postgres
 1. API documentation - Swagger
 
@@ -41,7 +41,7 @@ It is just my demo focusing on react w with scalajs.
 
 ## in progress
 
-1. websockets
+1. small chat with websockets
 
 ## soon
 

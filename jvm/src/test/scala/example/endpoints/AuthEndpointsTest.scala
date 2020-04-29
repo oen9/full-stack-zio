@@ -40,8 +40,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(parsedBody)(isSome(equalTo(expected)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test(data = initData)
+          TestEnvs.logging ++ AuthService.test(data = initData)
         )
       },
       testM("GET /auth/user with wrong token") {
@@ -53,8 +52,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.Unauthorized)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test(data = initData)
+          TestEnvs.logging ++ AuthService.test(data = initData)
         )
       },
       testM("GET /auth/user without token") {
@@ -65,8 +63,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.BadRequest)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test()
+          TestEnvs.logging ++ AuthService.test()
         )
       }
     ),
@@ -84,8 +81,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
           assert(response.map(_.status))(isSome(equalTo(Status.Created)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test(newToken = expected.token)
+          TestEnvs.logging ++ AuthService.test(newToken = expected.token)
         )
       },
       testM("POST /auth/user with corrupted data") {
@@ -97,8 +93,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.BadRequest)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test()
+          TestEnvs.logging ++ AuthService.test()
         )
       },
       testM("POST /auth/user user exists") {
@@ -112,8 +107,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.Conflict)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test(data = initData, newToken = expected.token)
+          TestEnvs.logging ++ AuthService.test(data = initData, newToken = expected.token)
         )
       }
     ),
@@ -131,8 +125,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(parsedBody)(isSome(equalTo(expected)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test(data = initData, newToken = expected.token)
+          TestEnvs.logging ++ AuthService.test(data = initData, newToken = expected.token)
         )
       },
       testM("POST /auth with corrupted data") {
@@ -144,8 +137,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.BadRequest)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test()
+          TestEnvs.logging ++ AuthService.test()
         )
       },
       testM("POST /auth with wrong credentials") {
@@ -158,8 +150,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.Unauthorized)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test()
+          TestEnvs.logging ++ AuthService.test()
         )
       }
     ),
@@ -177,8 +168,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
           assert(response.map(_.status))(isSome(equalTo(Status.Ok)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test(data = initData, secretReturn = expected)
+          TestEnvs.logging ++ AuthService.test(data = initData, secretReturn = expected)
         )
       },
       testM("GET /auth/secured without token") {
@@ -189,8 +179,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.BadRequest)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test()
+          TestEnvs.logging ++ AuthService.test()
         )
       },
       testM("GET /auth/secured with wrong token") {
@@ -202,8 +191,7 @@ object AuthEndpointsTest extends DefaultRunnableSpec {
         } yield assert(response.map(_.status))(isSome(equalTo(Status.Unauthorized)))
 
         program.provideLayer(
-          TestEnvs.logging ++
-            AuthService.test()
+          TestEnvs.logging ++ AuthService.test()
         )
       }
     )

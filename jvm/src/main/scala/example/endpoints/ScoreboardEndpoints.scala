@@ -52,24 +52,27 @@ object ScoreboardEndpoints {
     deleteAll
   )
 
+  // format: off
   def routes[R <: ScoreboardService with Logging]: HttpRoutes[RIO[R, *]] =
     (
-      listScores.toRoutes(_ => handleUnexpectedError(scoreboardService.listScores)): HttpRoutes[
-        RIO[R, *]
-      ] // TODO find a better way
-    ) <+> createNew.toRoutes(toCreate => handleUnexpectedError(scoreboardService.addNew(toCreate))) <+> deleteAll.toRoutes {
-      _ => handleUnexpectedError(scoreboardService.deleteAll)
+      listScores.toRoutes { _ =>
+          handleUnexpectedError(scoreboardService.listScores)
+      }: HttpRoutes[RIO[R, *]] // TODO find a better way
+    ) <+> createNew.toRoutes { toCreate =>
+      handleUnexpectedError(scoreboardService.addNew(toCreate))
+    } <+> deleteAll.toRoutes { _ =>
+      handleUnexpectedError(scoreboardService.deleteAll)
     }
+  // format: on
 
-  private def handleUnexpectedError[R <: Logging, A](
-    result: ZIO[R, Throwable, A]
-  ): URIO[R, Either[UnknownError with Product with Serializable, A]] = result.foldM(
-    {
-      case unknown =>
-        for {
-          _ <- logThrowable(unknown)
-        } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
-    },
-    succ => ZIO.succeed(succ.asRight)
-  )
+  private def handleUnexpectedError[R <: Logging, A](result: ZIO[R, Throwable, A]): URIO[R, Either[UnknownError, A]] =
+    result.foldM(
+      {
+        case unknown =>
+          for {
+            _ <- logThrowable(unknown)
+          } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
+      },
+      succ => ZIO.succeed(succ.asRight)
+    )
 }

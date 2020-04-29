@@ -59,39 +59,41 @@ object TodoEndpoints {
     deleteTodo
   )
 
+  // format: off
   def routes[R <: TodoService with Logging]: HttpRoutes[RIO[R, *]] =
     (
-      getAllTodos.toRoutes(_ => handleUnexpectedError(todoService.getAll)): HttpRoutes[
-        RIO[R, *]
-      ] // TODO find a better way
-    ) <+> createNew.toRoutes(toCreate => handleUnexpectedError(todoService.createNew(toCreate))) <+> switchStatus.toRoutes {
+      getAllTodos.toRoutes { _ => 
+        handleUnexpectedError(todoService.getAll)
+      }: HttpRoutes[RIO[R, *]] // TODO find a better way
+    ) <+> createNew.toRoutes { toCreate => 
+      handleUnexpectedError(todoService.createNew(toCreate))
+    }<+> switchStatus.toRoutes {
       id => handleError(todoService.switchStatus(id))
     } <+> deleteTodo.toRoutes(id => handleError(todoService.deleteTodo(id)))
+  // format: on
 
-  private def handleError[R <: Logging, A](
-    result: ZIO[R, Throwable, A]
-  ): URIO[R, Either[ErrorInfo with Product with Serializable, A]] = result.foldM(
-    {
-      case WrongMongoId(msg)     => ZIO.succeed(BadRequest(msg).asLeft)
-      case TodoTaskNotFound(msg) => ZIO.succeed(NotFound(msg).asLeft)
+  private def handleError[R <: Logging, A](result: ZIO[R, Throwable, A]): URIO[R, Either[ErrorInfo, A]] =
+    result.foldM(
+      {
+        case WrongMongoId(msg)     => ZIO.succeed(BadRequest(msg).asLeft)
+        case TodoTaskNotFound(msg) => ZIO.succeed(NotFound(msg).asLeft)
 
-      case unknown =>
-        for {
-          _ <- logThrowable(unknown)
-        } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
-    },
-    succ => ZIO.succeed(succ.asRight)
-  )
+        case unknown =>
+          for {
+            _ <- logThrowable(unknown)
+          } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
+      },
+      succ => ZIO.succeed(succ.asRight)
+    )
 
-  private def handleUnexpectedError[R <: Logging, A](
-    result: ZIO[R, Throwable, A]
-  ): URIO[R, Either[UnknownError with Product with Serializable, A]] = result.foldM(
-    {
-      case unknown =>
-        for {
-          _ <- logThrowable(unknown)
-        } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
-    },
-    succ => ZIO.succeed(succ.asRight)
-  )
+  private def handleUnexpectedError[R <: Logging, A](result: ZIO[R, Throwable, A]): URIO[R, Either[UnknownError, A]] =
+    result.foldM(
+      {
+        case unknown =>
+          for {
+            _ <- logThrowable(unknown)
+          } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
+      },
+      succ => ZIO.succeed(succ.asRight)
+    )
 }

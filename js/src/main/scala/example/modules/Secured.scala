@@ -34,7 +34,7 @@ import slinky.web.html._
       div(className := "card-header", "Secured"),
       div(
         className := "card-body",
-        div("This page is only available after signing in."),
+        div("This page is available only after signing in."),
         div(
           secretText.state match {
             case PotPending =>

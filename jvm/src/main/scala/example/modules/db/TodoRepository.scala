@@ -78,6 +78,7 @@ object todoRepository {
       import reactivemongo.api.commands.DefaultWriteResult
       import reactivemongo.api.commands.UpdateWriteResult
 
+      //If this gets removed we have to change results in Service.
       val defaultResult = ZIO.succeed(DefaultWriteResult(true, 1, Seq(), None, None, None))
       val updateResult  = ZIO.succeed(UpdateWriteResult(true, 1, 1, Seq(), Seq(), None, None, None))
 

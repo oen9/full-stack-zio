@@ -68,21 +68,15 @@ object GameLogic {
 
     val newScore = gs.score + pipe1Score + pipe2Score
 
-    gs.modify(_.bird.angle)
-      .setTo(newAngle)
-      .modify(_.bird.upAcceleration)
-      .setTo(newUpAcc)
-      .modify(_.bird.y)
-      .setTo(newBirdY)
-      .modify(_.fps)
-      .setTo((1000 / frame.timeDiff).toInt)
-      .modify(_.groundShift)
-      .setTo(newGroundShift)
-      .modify(_.score)
-      .setTo(newScore)
-      .modify(_.pipe1)
-      .setTo(newPipe1)
-      .modify(_.pipe2)
-      .setTo(newPipe2)
+    // format: off
+    gs.modify(_.bird.angle).setTo(newAngle)
+      .modify(_.bird.upAcceleration).setTo(newUpAcc)
+      .modify(_.bird.y).setTo(newBirdY)
+      .modify(_.fps).setTo((1000 / frame.timeDiff).toInt)
+      .modify(_.groundShift).setTo(newGroundShift)
+      .modify(_.score).setTo(newScore)
+      .modify(_.pipe1).setTo(newPipe1)
+      .modify(_.pipe2).setTo(newPipe2)
+    // format: on
   }
 }

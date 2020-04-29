@@ -40,8 +40,7 @@ object RestEndpointsTest extends DefaultRunnableSpec {
       } yield assert(responses)(equalTo(expected))
 
       randomTest.provideLayer(
-        TestEnvironment.any ++
-          RandomService.live
+        TestEnvironment.any ++ RandomService.live
       )
     }
   )

@@ -36,8 +36,7 @@ object TodoEndpointsTest extends DefaultRunnableSpec {
       } yield assert(parsedBody)(isSome(equalTo(initData)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          TodoService.test(initData)
+        TestEnvs.logging ++ TodoService.test(initData)
       )
     },
     testM("POST /todos") {
@@ -52,8 +51,7 @@ object TodoEndpointsTest extends DefaultRunnableSpec {
         assert(parsedBody)(isSome(isNonEmptyString))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          TodoService.test()
+        TestEnvs.logging ++ TodoService.test()
       )
     },
     testM("POST /todos bad request") {
@@ -65,8 +63,7 @@ object TodoEndpointsTest extends DefaultRunnableSpec {
       } yield assert(response.map(_.status))(isSome(equalTo(Status.BadRequest)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          TodoService.test()
+        TestEnvs.logging ++ TodoService.test()
       )
     },
     testM("GET /todos/{id}/switch") {
@@ -80,8 +77,7 @@ object TodoEndpointsTest extends DefaultRunnableSpec {
         assert(parsedBody)(isSome(isSubtype[TodoStatus](anything)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          TodoService.test()
+        TestEnvs.logging ++ TodoService.test()
       )
     },
     testM("DELETE /todos/{id}") {
@@ -93,8 +89,7 @@ object TodoEndpointsTest extends DefaultRunnableSpec {
       } yield assert(response.map(_.status))(isSome(equalTo(Status.NoContent)))
 
       program.provideLayer(
-        TestEnvs.logging ++
-          TodoService.test()
+        TestEnvs.logging ++ TodoService.test()
       )
     }
   )

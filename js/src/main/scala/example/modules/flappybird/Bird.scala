@@ -26,20 +26,13 @@ import slinky.core.FunctionalComponent
   val angleHeightFix = 1
 
   val animations = js.Dynamic.literal(
+    // format: off
     idle = js.Array(
-      0 * birdWidth,
-      0,
-      birdWidth,
-      birdHeight,
-      1 * birdWidth,
-      0,
-      birdWidth,
-      birdHeight,
-      2 * birdWidth,
-      0,
-      birdWidth,
-      birdHeight
+      0 * birdWidth, 0, birdWidth, birdHeight,
+      1 * birdWidth, 0, birdWidth, birdHeight,
+      2 * birdWidth, 0, birdWidth, birdHeight
     )
+    // format: on
   )
 
   val component = FunctionalComponent[Props] { props =>
