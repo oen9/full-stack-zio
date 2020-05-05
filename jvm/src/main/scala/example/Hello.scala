@@ -15,6 +15,7 @@ import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
 
 import example.endpoints.AuthEndpoints
+import example.endpoints.ChatEndpoints
 import example.endpoints.RestEndpoints
 import example.endpoints.ScoreboardEndpoints
 import example.endpoints.StaticEndpoints
@@ -27,6 +28,7 @@ import example.modules.db.scoreboardRepository
 import example.modules.db.todoRepository
 import example.modules.db.userRepository
 import example.modules.services.auth.authService
+import example.modules.services.chatService
 import example.modules.services.cryptoService
 import example.modules.services.randomService
 import example.modules.services.scoreboardService
@@ -43,6 +45,7 @@ object Hello extends App {
     with todoService.TodoService
     with scoreboardService.ScoreboardService
     with authService.AuthService
+    with chatService.ChatService
     with Logging
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
@@ -66,11 +69,14 @@ object Hello extends App {
       val userRepo   = doobieTran >>> userRepository.UserRepository.live
       val authServ   = (userRepo ++ logging ++ cryptoServ) >>> authService.AuthService.live
 
+      val chatServ = chatService.ChatService.live
+
       logging ++
         appConf ++
         todoServ ++
         scoreServ ++
         authServ ++
+        chatServ ++
         randomServ
     }.flatMapError {
       case e: Throwable =>
@@ -101,6 +107,7 @@ object Hello extends App {
           <+> ScoreboardEndpoints.routes[AppEnv]
           <+> AuthEndpoints.routes[AppEnv]
           <+> new SwaggerHttp4s(yamlDocs).routes[RIO[AppEnv, *]]
+          <+> ChatEndpoints.routes[AppEnv]
           <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker)
       ).orNotFound
 

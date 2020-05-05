@@ -1,7 +1,7 @@
 scalaVersion := "2.13.1"
 
 val Ver = new {
-  val http4s = "0.21.1"
+  val http4s = "0.21.3"
   val slinky = "0.6.5"
   val logback = "1.2.3"
   val zio = "1.0.0-RC18-2"

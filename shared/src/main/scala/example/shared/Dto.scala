@@ -18,6 +18,18 @@ object Dto {
   type Token = String
   case class User(id: Long, name: String, token: Token)
 
+  sealed trait ChatDto
+  case class ChatUser(id: Int, name: String) extends ChatDto
+  case class ChatUsers(value: Set[ChatUser]) extends ChatDto
+
+  sealed trait ClientMsg                                         extends ChatDto
+  case class ChatMsg(user: Option[ChatUser] = None, msg: String) extends ClientMsg
+  case class UnknownData(data: String)                           extends ClientMsg
+
+  sealed trait ServerMsg               extends ChatDto
+  case class NewChatUser(u: ChatUser)  extends ServerMsg
+  case class ChatUserLeft(u: ChatUser) extends ServerMsg
+
   import io.circe.generic.extras.Configuration
   implicit val circeConfig = Configuration.default.withDiscriminator("eventType").withDefaults
 }
