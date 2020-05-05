@@ -28,6 +28,7 @@ import example.modules.db.scoreboardRepository
 import example.modules.db.todoRepository
 import example.modules.db.userRepository
 import example.modules.services.auth.authService
+import example.modules.services.chatFlowBuilder
 import example.modules.services.chatService
 import example.modules.services.cryptoService
 import example.modules.services.randomService
@@ -46,7 +47,9 @@ object Hello extends App {
     with scoreboardService.ScoreboardService
     with authService.AuthService
     with chatService.ChatService
+    with chatFlowBuilder.ChatFlowBuilder
     with Logging
+
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
   def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] =
@@ -69,7 +72,8 @@ object Hello extends App {
       val userRepo   = doobieTran >>> userRepository.UserRepository.live
       val authServ   = (userRepo ++ logging ++ cryptoServ) >>> authService.AuthService.live
 
-      val chatServ = chatService.ChatService.live
+      val chatServ     = chatService.ChatService.live
+      val chatFlowBuil = (chatServ ++ logging) >>> chatFlowBuilder.ChatFlowBuilder.live
 
       logging ++
         appConf ++
@@ -77,6 +81,7 @@ object Hello extends App {
         scoreServ ++
         authServ ++
         chatServ ++
+        chatFlowBuil ++
         randomServ
     }.flatMapError {
       case e: Throwable =>
