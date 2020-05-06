@@ -43,7 +43,7 @@ import example.services.SwitchTodoStatus
           )
         )
       )
-    ),
+    )
   }
 
 }

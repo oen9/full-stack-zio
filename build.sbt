@@ -1,4 +1,4 @@
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.2"
 
 val Ver = new {
   val http4s = "0.21.3"
@@ -11,7 +11,7 @@ val Ver = new {
 }
 
 lazy val sharedSettings = Seq(
-  scalaVersion     := "2.13.1",
+  scalaVersion     := "2.13.2",
   version          := "0.1.0-SNAPSHOT",
   organization     := "com.github.oen9",
   organizationName := "oen9",
@@ -35,7 +35,7 @@ lazy val sharedSettings = Seq(
     "-Ywarn-unused:imports",
   ),
   semanticdbEnabled := true,
-  semanticdbVersion := scalafixSemanticdb.revision,
+  semanticdbVersion := "4.3.10", // scalafixSemanticdb.revision, // https://github.com/scalacenter/scalafix/issues/1109
 )
 
 lazy val jsSettings = Seq(

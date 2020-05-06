@@ -72,7 +72,7 @@ import slinky.core.FunctionalComponent
           width = debugRect.width.toInt,
           height = debugRect.height.toInt,
           stroke = "yellow"
-        ),
+        )
       } else Group()
     )
   }
