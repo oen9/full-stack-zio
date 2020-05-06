@@ -22,7 +22,7 @@ lazy val sharedSettings = Seq(
     "io.circe" %%% "circe-generic" % Ver.circe,
     "io.circe" %%% "circe-literal" % Ver.circe,
     "com.softwaremill.quicklens" %%% "quicklens" % "1.5.0"
-    // waiting for scalajs-1.0.0 support
+    // waiting for scalajs-1 support
     // "io.scalaland" %%% "chimney" % "0.5.1",
   ),
   scalacOptions ++= Seq(
@@ -52,13 +52,13 @@ lazy val jsSettings = Seq(
     "react-router-dom" -> "5.1.2",
     "path-to-regexp" -> "6.1.0",
     "bootstrap" -> "4.4.1",
-    "jquery" -> "3.4.1", // bug for 3.5.0 https://github.com/twbs/bootstrap/issues/30553
+    "jquery" -> "3.5.1",
     "konva" -> "4.2.2",
     "react-konva" -> "16.13.0-0",
     "use-image" -> "1.0.5",
   ),
   scalaJSUseMainModuleInitializer := true,
-  version.in(webpack) := "4.42.1",
+  version.in(webpack) := "4.43.0",
   webpackBundlingMode := BundlingMode.Application,
   webpackBundlingMode.in(fastOptJS) := BundlingMode.LibraryOnly(),
 )
@@ -91,7 +91,7 @@ lazy val jvmSettings = Seq(
     "org.reactormonk" %% "cryptobits" % "1.3",
     "org.mindrot" % "jbcrypt" % "0.4",
 
-    "io.scalaland" %%% "chimney" % "0.5.1", // TODO remove from here after scalajs-1.0.0 support
+    "io.scalaland" %%% "chimney" % "0.5.1", // TODO remove from here after scalajs-1 support
 
     "dev.zio" %% "zio-test" % Ver.zio % Test,
     "dev.zio" %% "zio-test-sbt" % Ver.zio % Test,
