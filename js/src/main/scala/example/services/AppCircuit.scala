@@ -76,6 +76,7 @@ case class TryGetSecuredText(token: String, potResult: Pot[String] = Empty)
 }
 
 case object Connect                      extends Action
+case object ReConnect                    extends Action
 case object Disconnect                   extends Action
 case class Connected(user: Dto.ChatUser) extends Action
 case object Disconnected                 extends Action

@@ -11,6 +11,7 @@ import example.services.Connect
 import example.services.Connected
 import example.services.Disconnect
 import example.services.Disconnected
+import example.services.ReConnect
 import example.shared.Dto
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,9 +34,12 @@ class WebsockLifecycleHandler[M](modelRW: ModelRW[M, ChatConnection]) extends Ac
       val newValue = value
         .modify(_.users).setTo(Dto.ChatUsers())
         .modify(_.msgs).using(_ :+ Dto.ChatMsg(msg = "disconnected"))
-        .modify(_.msgs).using(_ :+ Dto.ChatMsg(msg = "connecting in 5 seconds"))
+        .modify(_.msgs).using(_ :+ Dto.ChatMsg(msg = "reconnecting in 5 seconds"))
       // format: on
-      updated(newValue, Effect.action(Connect).after(5.second))
+      updated(newValue, Effect.action(ReConnect).after(5.second))
+
+    case ReConnect =>
+      value.ws.fold(noChange)(_ => effectOnly(Effect.action(Connect)))
 
     case Connect =>
       // format: off
