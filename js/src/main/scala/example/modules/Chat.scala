@@ -1,10 +1,11 @@
 package example.modules
 
 import cats.implicits._
+import example.components.chat.ChatUserList
+import example.components.chat.ChatView
 import org.scalajs.dom.{html, Event}
 import slinky.core.annotations.react
 import slinky.core.facade.Fragment
-import slinky.core.facade.Hooks._
 import slinky.core.facade.Hooks._
 import slinky.core.facade.React
 import slinky.core.FunctionalComponent
@@ -21,8 +22,6 @@ import slinky.web.html._
     val (msgs, setMsgs)             = useState(Vector[String]())
     val (autoscroll, setAutoscroll) = useState(true)
 
-    val chatRef = React.createRef[html.Div]
-
     def handleUsername(e: SyntheticEvent[html.Input, Event]): Unit      = setUsername(e.target.value)
     def handleNewMsg(e: SyntheticEvent[html.Input, Event]): Unit        = setNewMsg(e.target.value)
     def handleSetAutoscroll(e: SyntheticEvent[html.Input, Event]): Unit = setAutoscroll(e.currentTarget.checked)
@@ -34,15 +33,6 @@ import slinky.web.html._
         setNewMsg("")
       }
     }
-
-    useLayoutEffect(
-      () =>
-        if (autoscroll) {
-          val chatDiv = chatRef.current
-          chatDiv.scrollTop = chatDiv.scrollHeight
-        },
-      Seq(msgs, autoscroll)
-    )
 
     def chatForm() = Fragment(
       form(
@@ -85,12 +75,9 @@ import slinky.web.html._
           )
         ),
         div(
-          className := "vh-50 overflow-auto mb-3",
-          ref := chatRef,
-          msgs.zipWithIndex.map {
-            case (msg, idx) =>
-              div(key := idx.toString, className := "alert alert-success", role := "alert", msg)
-          }
+          className := "row",
+          div(className := "col-12 order-2 col-sm-8 order-sm-1", ChatView(msgs, autoscroll)),
+          div(className := "col-12 order-1 col-sm-4 order-sm-2", ChatUserList())
         ),
         div(
           className := "input-group mb-3",
