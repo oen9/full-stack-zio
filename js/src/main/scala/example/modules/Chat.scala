@@ -3,6 +3,12 @@ package example.modules
 import cats.implicits._
 import example.components.chat.ChatUserList
 import example.components.chat.ChatView
+import example.services.AppCircuit
+import example.services.ChatWebsock
+import example.services.Connect
+import example.services.Disconnect
+import example.services.ReactDiode
+import example.shared.Dto
 import org.scalajs.dom.{html, Event}
 import slinky.core.annotations.react
 import slinky.core.facade.Fragment
@@ -19,8 +25,9 @@ import slinky.web.html._
     val (username, setUsername)     = useState("unknown")
     val (newMsg, setNewMsg)         = useState("")
     val (errors, setErrors)         = useState(Vector[String]())
-    val (msgs, setMsgs)             = useState(Vector[String]())
     val (autoscroll, setAutoscroll) = useState(true)
+    val (maybeWs, dispatch)         = ReactDiode.useDiode(AppCircuit.zoomTo(_.chatConn.ws))
+    val (msgs, _)                   = ReactDiode.useDiode(AppCircuit.zoomTo(_.chatConn.msgs))
 
     def handleUsername(e: SyntheticEvent[html.Input, Event]): Unit      = setUsername(e.target.value)
     def handleNewMsg(e: SyntheticEvent[html.Input, Event]): Unit        = setNewMsg(e.target.value)
@@ -29,10 +36,13 @@ import slinky.web.html._
     def handleSend(e: SyntheticEvent[html.Form, Event]): Unit = {
       e.preventDefault()
       if (newMsg.nonEmpty) {
-        setMsgs(msgs :+ s"$username: $newMsg")
+        maybeWs.fold(())(ws => ChatWebsock.send(ws, Dto.ChatMsg(msg = newMsg)))
         setNewMsg("")
       }
     }
+
+    val connect    = () => dispatch(Connect)
+    val disconnect = () => dispatch(Disconnect)
 
     def chatForm() = Fragment(
       form(
@@ -41,7 +51,7 @@ import slinky.web.html._
           className := "input-group mb-3",
           div(
             className := "input-group-prepend",
-            span(className := "input-group-text", id := "form-username-label", "username:")
+            span(className := "input-group-text", id := "form-username-label", "Username:")
           ),
           input(
             `type` := "text",
@@ -50,6 +60,7 @@ import slinky.web.html._
             aria - "label" := "Username",
             aria - "describedby" := "form-username-label",
             value := username,
+            disabled, // TODO
             onChange := (handleUsername(_))
           ),
           div(
@@ -76,14 +87,14 @@ import slinky.web.html._
         ),
         div(
           className := "row",
-          div(className := "col-12 order-2 col-sm-8 order-sm-1", ChatView(msgs, autoscroll)),
+          div(className := "col-12 order-2 col-sm-8 order-sm-1", ChatView(autoscroll), autoscroll),
           div(className := "col-12 order-1 col-sm-4 order-sm-2", ChatUserList())
         ),
         div(
           className := "input-group mb-3",
           div(
             className := "input-group-prepend",
-            span(className := "input-group-text", "message", id := "form-message-label")
+            span(className := "input-group-text", "Message:", id := "form-message-label")
           ),
           input(
             `type` := "text",
@@ -108,7 +119,21 @@ import slinky.web.html._
 
     div(
       className := "card",
-      div(className := "card-header", "Chat"),
+      div(
+        className := "card-header",
+        div(
+          className := "row",
+          div(className := "col", div("Chat")),
+          div(
+            className := "col",
+            div(
+              className := "text-right",
+              button(className := "btn btn-primary", disabled := maybeWs.isDefined, onClick := connect, "connect"),
+              button(className := "btn btn-danger", disabled := maybeWs.isEmpty, onClick := disconnect, "disconnect")
+            )
+          )
+        )
+      ),
       div(className := "card-body", h5(className := "card-title", "Nothing here. Everything in progress."), chatForm())
     )
   }

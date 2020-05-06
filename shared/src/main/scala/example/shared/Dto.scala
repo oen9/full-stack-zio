@@ -19,8 +19,8 @@ object Dto {
   case class User(id: Long, name: String, token: Token)
 
   sealed trait ChatDto
-  case class ChatUser(id: Int, name: String) extends ChatDto
-  case class ChatUsers(value: Set[ChatUser]) extends ChatDto
+  case class ChatUser(id: Int = 0, name: String = "unknown") extends ChatDto
+  case class ChatUsers(value: Set[ChatUser] = Set())         extends ChatDto
 
   sealed trait ClientMsg                                         extends ChatDto
   case class ChatMsg(user: Option[ChatUser] = None, msg: String) extends ClientMsg

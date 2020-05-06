@@ -14,16 +14,27 @@ import example.shared.Dto.Foo
 import example.shared.Dto.ScoreboardRecord
 import example.shared.Dto.TodoStatus
 import example.shared.Dto.TodoTask
+import example.shared.Dto
+import org.scalajs.dom.raw.WebSocket
+import example.services.handlers.WebsockLifecycleHandler
+import example.services.handlers.ChatHandler
 
 case class Clicks(count: Int)
 case class Auth(username: String, token: String)
+case class ChatConnection(
+  ws: Option[WebSocket] = None,
+  user: Dto.ChatUser = Dto.ChatUser(),
+  users: Dto.ChatUsers = Dto.ChatUsers(),
+  msgs: Vector[Dto.ChatMsg] = Vector()
+)
 case class RootModel(
   clicks: Clicks,
   randomNumber: Pot[Foo] = Empty,
   todos: Pot[Vector[TodoTask]] = Empty,
   scores: Pot[Vector[ScoreboardRecord]] = Empty,
   auth: Pot[Auth] = Empty,
-  securedText: Pot[String] = Empty
+  securedText: Pot[String] = Empty,
+  chatConn: ChatConnection = ChatConnection()
 )
 
 case object IncreaseClicks extends Action
@@ -64,6 +75,16 @@ case class TryGetSecuredText(token: String, potResult: Pot[String] = Empty)
   def next(newResult: Pot[String]) = copy(potResult = newResult)
 }
 
+case object Connect                      extends Action
+case object Disconnect                   extends Action
+case class Connected(user: Dto.ChatUser) extends Action
+case object Disconnected                 extends Action
+
+case class InitChatUsers(us: Dto.ChatUsers) extends Action
+case class AddNewMsg(msg: Dto.ChatMsg)      extends Action
+case class AddUser(u: Dto.NewChatUser)      extends Action
+case class RemoveUser(u: Dto.ChatUserLeft)  extends Action
+
 object AppCircuit extends Circuit[RootModel] {
   override protected def initialModel: RootModel = RootModel(Clicks(0))
 
@@ -73,6 +94,8 @@ object AppCircuit extends Circuit[RootModel] {
     new TodosHandler(zoomTo(_.todos)),
     new ScoreboardHandler(zoomTo(_.scores)),
     new AuthHandler(zoomTo(_.auth)),
-    new SecuredTextHandler(zoomTo(_.securedText))
+    new SecuredTextHandler(zoomTo(_.securedText)),
+    new WebsockLifecycleHandler(zoomTo(_.chatConn)),
+    new ChatHandler(zoomTo(_.chatConn))
   )
 }
