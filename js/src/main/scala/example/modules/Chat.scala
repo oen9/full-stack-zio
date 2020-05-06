@@ -22,7 +22,7 @@ import slinky.web.html._
   type Props = Unit
 
   val component = FunctionalComponent[Props] { _ =>
-    val (username, setUsername)     = useState("unknown")
+    val (username, setUsername)     = useState("unknown (you'll be able to change it soon)")
     val (newMsg, setNewMsg)         = useState("")
     val (errors, setErrors)         = useState(Vector[String]())
     val (autoscroll, setAutoscroll) = useState(true)
@@ -134,7 +134,10 @@ import slinky.web.html._
           )
         )
       ),
-      div(className := "card-body", h5(className := "card-title", "Nothing here. Everything in progress."), chatForm())
+      div(
+        className := "card-body",
+        h5(className := "card-title", "Open in new tab/window to test (this is in progress)"),
+        chatForm())
     )
   }
 }
