@@ -13,12 +13,12 @@ import io.circe.generic.extras.auto._
 import io.circe.parser.decode
 import io.circe.syntax._
 import org.scalajs.dom.ext.AjaxException
+import scala.scalajs.LinkingInfo
 
 object AjaxClient {
   val JSON_TYPE                 = Map("Content-Type" -> "application/json")
-  def authHeader(token: String) = Map("TOKEN"        -> token)
-  val baseUrl                   = ""
-  // val baseUrl                   = "http://localhost:8080" // for dev
+  def authHeader(token: String) = Map("TOKEN" -> token)
+  val baseUrl                   = if (LinkingInfo.developmentMode) "http://localhost:8080" else ""
 
   import scala.concurrent.ExecutionContext.Implicits.global
 

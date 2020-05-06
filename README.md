@@ -93,8 +93,6 @@ http://localhost:8080/
 ### js + server (dev conf)
 
 Run server normally `reStart`.\
-Connect your js api to http://localhost:8080
-(e.g.`js/src/main/scala/example/services/AjaxClient.scala`).\
 Run js: `fastOptJS::webpack` and `fastOptJS`.\
 Open `js/src/main/resources/index-dev.html` in browser.\
 When server changed run `reStart`.\

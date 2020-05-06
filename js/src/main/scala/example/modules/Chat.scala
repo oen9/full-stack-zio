@@ -137,7 +137,8 @@ import slinky.web.html._
       div(
         className := "card-body",
         h5(className := "card-title", "Open in new tab/window to test (this is in progress)"),
-        chatForm())
+        chatForm()
+      )
     )
   }
 }
