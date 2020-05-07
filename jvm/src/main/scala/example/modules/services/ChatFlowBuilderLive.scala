@@ -29,15 +29,15 @@ class ChatFlowBuilderLive(
       out          <- Queue.unbounded[Task[*], Dto.ChatDto]
 
       user <- chatService.createUser(out)
-      _    <- logger.log(LogLevel.Trace)(s"user ${user.id} connected")
+      _    <- logger.log(LogLevel.Trace)(s"userId ${user.id}: connected")
 
       qinLogic = in.dequeue
-        .through(handleMsg[R](user))
+        .through(handleMsg[R](user.id))
         .merge(inEndChannel.dequeue)
         .unNoneTerminate
       _ <- (for {
         res <- qinLogic.compile.drain
-        _   <- logger.log(LogLevel.Trace)(s"${user.id} Fiber ended")
+        _   <- logger.log(LogLevel.Trace)(s"userId ${user.id}: disconnected")
       } yield ()).forkDaemon
 
       outStream = out.dequeue.map(toWsFrame)
@@ -49,13 +49,13 @@ class ChatFlowBuilderLive(
       _ <- chatService.handleServerMsg(Dto.ChatUserLeft(u))
     } yield ()
 
-  def handleMsg[R](u: Dto.ChatUser): Pipe[RIO[R, *], WebSocketFrame, Option[Unit]] =
+  def handleMsg[R](userId: Int): Pipe[RIO[R, *], WebSocketFrame, Option[Unit]] =
     _.collect {
       case WebSocketFrame.Text(msg, _) => fromWsFrame(msg)
     }.evalMap(msg =>
         for {
-          _ <- logger.log(LogLevel.Trace)(s"rcv $u : $msg")
-          _ <- chatService.handleUserMsg(u, msg)
+          _ <- logger.log(LogLevel.Trace)(s"userId : $userId -> msg : $msg")
+          _ <- chatService.handleUserMsg(userId, msg)
         } yield msg
       )
       .dropWhile(_ => true)

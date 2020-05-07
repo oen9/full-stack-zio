@@ -22,9 +22,10 @@ object Dto {
   case class ChatUser(id: Int = 0, name: String = "unknown") extends ChatDto
   case class ChatUsers(value: Set[ChatUser] = Set())         extends ChatDto
 
-  sealed trait ClientMsg                                         extends ChatDto
-  case class ChatMsg(user: Option[ChatUser] = None, msg: String) extends ClientMsg
-  case class UnknownData(data: String)                           extends ClientMsg
+  sealed trait ClientMsg                                                       extends ChatDto
+  case class ChatMsg(user: Option[ChatUser] = None, msg: String)               extends ClientMsg
+  case class ChangeChatName(oldUser: Option[ChatUser] = None, newName: String) extends ClientMsg
+  case class UnknownData(data: String)                                         extends ClientMsg
 
   sealed trait ServerMsg               extends ChatDto
   case class NewChatUser(u: ChatUser)  extends ServerMsg

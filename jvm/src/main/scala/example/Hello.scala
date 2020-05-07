@@ -72,7 +72,7 @@ object Hello extends App {
       val userRepo   = doobieTran >>> userRepository.UserRepository.live
       val authServ   = (userRepo ++ logging ++ cryptoServ) >>> authService.AuthService.live
 
-      val chatServ     = chatService.ChatService.live
+      val chatServ     = logging >>> chatService.ChatService.live
       val chatFlowBuil = (chatServ ++ logging) >>> chatFlowBuilder.ChatFlowBuilder.live
 
       logging ++
