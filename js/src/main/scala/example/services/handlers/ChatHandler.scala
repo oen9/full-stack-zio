@@ -5,6 +5,9 @@ import com.softwaremill.quicklens._
 import diode.ActionHandler
 import diode.Effect
 import diode.ModelRW
+import example.services.AddNewMsg
+import example.services.AddUser
+import example.services.ChangeMyChatName
 import example.services.ChatConnection
 import example.services.ChatWebsock
 import example.services.Connect
@@ -12,12 +15,11 @@ import example.services.Connected
 import example.services.Disconnect
 import example.services.Disconnected
 import example.services.InitChatUsers
+import example.services.RemoveUser
 import example.shared.Dto
+import example.shared.Dto.ChangeChatName
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.ExecutionContext.Implicits.global
-import example.services.AddUser
-import example.services.RemoveUser
-import example.services.AddNewMsg
 
 class ChatHandler[M](modelRW: ModelRW[M, ChatConnection]) extends ActionHandler(modelRW) {
 
@@ -37,5 +39,11 @@ class ChatHandler[M](modelRW: ModelRW[M, ChatConnection]) extends ActionHandler(
     case AddNewMsg(msg) =>
       val newValue = value.modify(_.msgs).using(_ :+ msg)
       updated(newValue)
+
+    case ChangeMyChatName(newName) =>
+      value.ws.fold(noChange) { ws =>
+        val data = ChangeChatName(newName = newName)
+        effectOnly(ChatWebsock.sendAsEffect(ws, data))
+      }
   }
 }

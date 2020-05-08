@@ -17,19 +17,18 @@ import slinky.core.facade.React
 import slinky.core.FunctionalComponent
 import slinky.core.SyntheticEvent
 import slinky.web.html._
+import example.components.GlobalName
 
 @react object Chat {
   type Props = Unit
 
   val component = FunctionalComponent[Props] { _ =>
-    val (username, setUsername)     = useState("unknown (you'll be able to change it soon)")
     val (newMsg, setNewMsg)         = useState("")
     val (errors, setErrors)         = useState(Vector[String]())
     val (autoscroll, setAutoscroll) = useState(true)
     val (maybeWs, dispatch)         = ReactDiode.useDiode(AppCircuit.zoomTo(_.chatConn.ws))
     val (msgs, _)                   = ReactDiode.useDiode(AppCircuit.zoomTo(_.chatConn.msgs))
 
-    def handleUsername(e: SyntheticEvent[html.Input, Event]): Unit      = setUsername(e.target.value)
     def handleNewMsg(e: SyntheticEvent[html.Input, Event]): Unit        = setNewMsg(e.target.value)
     def handleSetAutoscroll(e: SyntheticEvent[html.Input, Event]): Unit = setAutoscroll(e.currentTarget.checked)
 
@@ -48,41 +47,21 @@ import slinky.web.html._
       form(
         onSubmit := (handleSend(_)),
         div(
-          className := "input-group mb-3",
-          div(
-            className := "input-group-prepend",
-            span(className := "input-group-text", id := "form-username-label", "Username:")
-          ),
+          className := "form-group form-check",
           input(
-            `type` := "text",
-            className := "form-control",
-            placeholder := "Username",
-            aria - "label" := "Username",
-            aria - "describedby" := "form-username-label",
-            value := username,
-            disabled, // TODO
-            onChange := (handleUsername(_))
+            `type` := "checkbox",
+            id := "autoscroll-checkbox",
+            className := "form-check-input",
+            aria - "label" := "autoscroll",
+            aria - "describedby" := "form-autoscroll-label",
+            checked := autoscroll,
+            onChange := (handleSetAutoscroll(_))
           ),
-          div(
-            className := "input-group-append",
-            label(
-              id := "form-autoscroll-label",
-              className := "input-group-text",
-              htmlFor := "autoscroll-checkbox",
-              "autoscroll:"
-            ),
-            div(
-              className := "input-group-text",
-              input(
-                `type` := "checkbox",
-                id := "autoscroll-checkbox",
-                className := "ml-2",
-                aria - "label" := "autoscroll",
-                aria - "describedby" := "form-autoscroll-label",
-                checked := autoscroll,
-                onChange := (handleSetAutoscroll(_))
-              )
-            )
+          label(
+            id := "form-autoscroll-label",
+            className := "form-check-label",
+            htmlFor := "autoscroll-checkbox",
+            "autoscroll"
           )
         ),
         div(
@@ -137,6 +116,7 @@ import slinky.web.html._
       div(
         className := "card-body",
         h5(className := "card-title", "Open in new tab/window to test (this is in progress)"),
+        GlobalName(),
         chatForm()
       )
     )

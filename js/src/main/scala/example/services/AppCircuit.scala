@@ -18,6 +18,7 @@ import example.shared.Dto
 import org.scalajs.dom.raw.WebSocket
 import example.services.handlers.WebsockLifecycleHandler
 import example.services.handlers.ChatHandler
+import example.services.handlers.GlobalNameHandler
 
 case class Clicks(count: Int)
 case class Auth(username: String, token: String)
@@ -34,7 +35,8 @@ case class RootModel(
   scores: Pot[Vector[ScoreboardRecord]] = Empty,
   auth: Pot[Auth] = Empty,
   securedText: Pot[String] = Empty,
-  chatConn: ChatConnection = ChatConnection()
+  chatConn: ChatConnection = ChatConnection(),
+  globalName: String = "unknown"
 )
 
 case object IncreaseClicks extends Action
@@ -81,10 +83,13 @@ case object Disconnect                   extends Action
 case class Connected(user: Dto.ChatUser) extends Action
 case object Disconnected                 extends Action
 
-case class InitChatUsers(us: Dto.ChatUsers) extends Action
-case class AddNewMsg(msg: Dto.ChatMsg)      extends Action
-case class AddUser(u: Dto.NewChatUser)      extends Action
-case class RemoveUser(u: Dto.ChatUserLeft)  extends Action
+case class InitChatUsers(us: Dto.ChatUsers)  extends Action
+case class AddNewMsg(msg: Dto.ChatMsg)       extends Action
+case class AddUser(u: Dto.NewChatUser)       extends Action
+case class RemoveUser(u: Dto.ChatUserLeft)   extends Action
+case class ChangeMyChatName(newName: String) extends Action
+
+case class SetGlobalName(newName: String) extends Action
 
 object AppCircuit extends Circuit[RootModel] {
   override protected def initialModel: RootModel = RootModel(Clicks(0))
@@ -97,6 +102,7 @@ object AppCircuit extends Circuit[RootModel] {
     new AuthHandler(zoomTo(_.auth)),
     new SecuredTextHandler(zoomTo(_.securedText)),
     new WebsockLifecycleHandler(zoomTo(_.chatConn)),
-    new ChatHandler(zoomTo(_.chatConn))
+    new ChatHandler(zoomTo(_.chatConn)),
+    new GlobalNameHandler(zoomTo(_.globalName))
   )
 }
