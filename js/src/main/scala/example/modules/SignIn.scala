@@ -38,7 +38,7 @@ import example.services.Validator
       setErrorMsgs(Vector())
     }
 
-    def handleSingIn() =
+    def handleSignIn() =
       Validator
         .validateTryAuth(username, password)
         .fold(setErrorMsgs, signIn)
@@ -82,7 +82,7 @@ import example.services.Validator
       },
       div(
         className := "row",
-        div(className := "col", button(className := "btn btn-secondary", "Sign In", onClick := handleSingIn _)),
+        div(className := "col", button(className := "btn btn-secondary", "Sign In", onClick := handleSignIn _)),
         div(className := "col", small("you can use: test/test")),
         div(className := "col text-right", NavLink(exact = true, to = MainRouter.Loc.register)("register"))
       )
