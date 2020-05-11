@@ -8,6 +8,7 @@ import diode.ModelRW
 import example.services.AddNewMsg
 import example.services.AddUser
 import example.services.ChangeMyChatName
+import example.services.ChangeUser
 import example.services.ChatConnection
 import example.services.ChatWebsock
 import example.services.Connect
@@ -45,5 +46,14 @@ class ChatHandler[M](modelRW: ModelRW[M, ChatConnection]) extends ActionHandler(
         val data = ChangeChatName(newName = newName)
         effectOnly(ChatWebsock.sendAsEffect(ws, data))
       }
+
+    case ChangeUser(ChangeChatName(oldUser, newName)) =>
+      val userPred: Dto.ChatUser => Boolean = _.some == oldUser
+      val newValue = value
+        .modify(
+          _.users.value.eachWhere(userPred).name
+        )
+        .setTo(newName)
+      updated(newValue)
   }
 }

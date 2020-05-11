@@ -83,11 +83,12 @@ case object Disconnect                   extends Action
 case class Connected(user: Dto.ChatUser) extends Action
 case object Disconnected                 extends Action
 
-case class InitChatUsers(us: Dto.ChatUsers)  extends Action
-case class AddNewMsg(msg: Dto.ChatMsg)       extends Action
-case class AddUser(u: Dto.NewChatUser)       extends Action
-case class RemoveUser(u: Dto.ChatUserLeft)   extends Action
-case class ChangeMyChatName(newName: String) extends Action
+case class InitChatUsers(us: Dto.ChatUsers)       extends Action
+case class AddNewMsg(msg: Dto.ChatMsg)            extends Action
+case class AddUser(u: Dto.NewChatUser)            extends Action
+case class RemoveUser(u: Dto.ChatUserLeft)        extends Action
+case class ChangeMyChatName(newName: String)      extends Action
+case class ChangeUser(change: Dto.ChangeChatName) extends Action
 
 case class SetGlobalName(newName: String) extends Action
 case object RefreshGlobalName             extends Action

@@ -27,12 +27,13 @@ object ChatWebsock {
       decode[Dto.ChatDto](e.data.toString)
         .fold(
           err => println(s"error: $err : ${e.data.toString()}"), {
-            case u: Dto.ChatUser     => AppCircuit.dispatch(Connected(u))
-            case u: Dto.ChatUsers    => AppCircuit.dispatch(InitChatUsers(u))
-            case u: Dto.NewChatUser  => AppCircuit.dispatch(AddUser(u))
-            case u: Dto.ChatUserLeft => AppCircuit.dispatch(RemoveUser(u))
-            case m: Dto.ChatMsg      => AppCircuit.dispatch(AddNewMsg(m))
-            case unknown             => println(s"[ws] unsupported data: $unknown")
+            case u: Dto.ChatUser       => AppCircuit.dispatch(Connected(u))
+            case u: Dto.ChatUsers      => AppCircuit.dispatch(InitChatUsers(u))
+            case u: Dto.NewChatUser    => AppCircuit.dispatch(AddUser(u))
+            case u: Dto.ChatUserLeft   => AppCircuit.dispatch(RemoveUser(u))
+            case m: Dto.ChatMsg        => AppCircuit.dispatch(AddNewMsg(m))
+            case m: Dto.ChangeChatName => AppCircuit.dispatch(ChangeUser(m))
+            case unknown               => println(s"[ws] unsupported data: $unknown")
           }
         )
 
