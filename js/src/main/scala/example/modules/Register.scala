@@ -40,12 +40,15 @@ import example.services.Validator
       setErrorMsgs(Vector())
     }
 
-    def handleRegister() =
+    def handleRegister(e: SyntheticEvent[html.Form, Event]): Unit = {
+      e.preventDefault()
       Validator
         .validateTryRegister(username, password, rePassword)
         .fold(setErrorMsgs, register)
+    }
 
-    def registerForm() = Fragment(
+    def registerForm() = form(
+      onSubmit := (handleRegister(_)),
       div(
         className := "input-group mb-3",
         div(
@@ -98,7 +101,7 @@ import example.services.Validator
         case (msg, idx) =>
           div(key := idx.toString, className := "alert alert-danger", role := "alert", msg)
       },
-      button(className := "btn btn-secondary", "Register and sign-in instantly", onClick := handleRegister _)
+      button(`type` := "submit", className := "btn btn-secondary", "Register and sign-in instantly")
     )
 
     div(
