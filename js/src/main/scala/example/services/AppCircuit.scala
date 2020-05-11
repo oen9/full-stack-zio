@@ -5,20 +5,20 @@ import diode.data.Pot
 import diode.data.PotAction
 import diode.{Action, Circuit}
 import example.services.handlers.AuthHandler
+import example.services.handlers.ChatHandler
 import example.services.handlers.ClicksHandler
+import example.services.handlers.GlobalNameHandler
 import example.services.handlers.RandomNumberHandler
 import example.services.handlers.ScoreboardHandler
 import example.services.handlers.SecuredTextHandler
 import example.services.handlers.TodosHandler
+import example.services.handlers.WebsockLifecycleHandler
+import example.shared.Dto
 import example.shared.Dto.Foo
 import example.shared.Dto.ScoreboardRecord
 import example.shared.Dto.TodoStatus
 import example.shared.Dto.TodoTask
-import example.shared.Dto
 import org.scalajs.dom.raw.WebSocket
-import example.services.handlers.WebsockLifecycleHandler
-import example.services.handlers.ChatHandler
-import example.services.handlers.GlobalNameHandler
 
 case class Clicks(count: Int)
 case class Auth(username: String, token: String)
@@ -90,6 +90,7 @@ case class RemoveUser(u: Dto.ChatUserLeft)   extends Action
 case class ChangeMyChatName(newName: String) extends Action
 
 case class SetGlobalName(newName: String) extends Action
+case object RefreshGlobalName             extends Action
 
 object AppCircuit extends Circuit[RootModel] {
   override protected def initialModel: RootModel = RootModel(Clicks(0))

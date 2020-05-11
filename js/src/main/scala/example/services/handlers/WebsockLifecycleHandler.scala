@@ -12,6 +12,7 @@ import example.services.Connected
 import example.services.Disconnect
 import example.services.Disconnected
 import example.services.ReConnect
+import example.services.RefreshGlobalName
 import example.shared.Dto
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,7 +27,8 @@ class WebsockLifecycleHandler[M](modelRW: ModelRW[M, ChatConnection]) extends Ac
         .modify(_.user).setTo(user)
         .modify(_.msgs).using(_ :+ Dto.ChatMsg(msg = "connected"))
       // format: on
-      updated(newValue)
+      val refreshName = Effect.action(RefreshGlobalName)
+      updated(newValue, refreshName)
 
     case Disconnected =>
       import diode.Implicits.runAfterImpl

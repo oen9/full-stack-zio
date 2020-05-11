@@ -5,6 +5,7 @@ import diode.ActionResult
 import diode.Effect
 import diode.ModelRW
 import example.services.ChangeMyChatName
+import example.services.RefreshGlobalName
 import example.services.SetGlobalName
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -22,5 +23,8 @@ class GlobalNameHandler[M](modelRW: ModelRW[M, String]) extends ActionHandler(mo
 
     case SetGlobalName(_) =>
       noChange
+
+    case RefreshGlobalName =>
+      effectOnly(Effect.action(ChangeMyChatName(value)))
   }
 }
