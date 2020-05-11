@@ -72,8 +72,13 @@ class ChatServiceLive(users: Ref[Vector[User]], idCounter: Ref[Int], logger: Log
       broadcast(nu)
     case ul @ ChatUserLeft(u) =>
       for {
-        _ <- users.update(_.filter(_.id != u.id))
-        _ <- broadcast(ul)
+        maybeRemovedUser <- users.modify(removeUser(u.id, _))
+        _ <- maybeRemovedUser
+          .fold(
+            logError("ChatUserLeft", s"userId: ${u.id} not found")
+          )(
+            broadcast(_, userDto => ul.copy(u = userDto.get))
+          )
       } yield ()
   }
 
@@ -98,6 +103,13 @@ class ChatServiceLive(users: Ref[Vector[User]], idCounter: Ref[Int], logger: Log
     val updatedUsers = users.modify(_.eachWhere(uIdPred).name).setTo(newName)
 
     (maybeOldUser, updatedUsers)
+  }
+
+  def removeUser(userId: Int, users: Vector[User]) = {
+    val maybeRemovedUser = users.find(_.id == userId)
+    val updatedUsers     = users.filter(_.id != userId)
+
+    (maybeRemovedUser, updatedUsers)
   }
 
   def logError(caller: String, msg: String): ZIO[Any, Throwable, Unit] = logger.log(LogLevel.Error)(s"$caller -> $msg")
