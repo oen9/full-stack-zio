@@ -38,12 +38,15 @@ import example.services.Validator
       setErrorMsgs(Vector())
     }
 
-    def handleSignIn() =
+    def handleSignIn(e: SyntheticEvent[html.Form, Event]): Unit = {
+      e.preventDefault()
       Validator
         .validateTryAuth(username, password)
         .fold(setErrorMsgs, signIn)
+    }
 
-    def signInForm() = Fragment(
+    def signInForm() = form(
+      onSubmit := (handleSignIn(_)),
       div(
         className := "input-group mb-3",
         div(
@@ -82,7 +85,7 @@ import example.services.Validator
       },
       div(
         className := "row",
-        div(className := "col", button(className := "btn btn-secondary", "Sign In", onClick := handleSignIn _)),
+        div(className := "col", button(`type` := "submit", className := "btn btn-secondary", "Sign In")),
         div(className := "col", small("you can use: test/test")),
         div(className := "col text-right", NavLink(exact = true, to = MainRouter.Loc.register)("register"))
       )
