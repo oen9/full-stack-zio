@@ -4,6 +4,7 @@ import cats.implicits._
 import example.modules.db.scoreboardRepository.ScoreboardRepository
 import example.shared.Dto.ScoreboardRecord
 import zio._
+import zio.logging.Logger
 import zio.logging.Logging
 import zio.logging.LogLevel
 
@@ -18,11 +19,9 @@ object scoreboardService {
     }
 
     val live: ZLayer[ScoreboardRepository with Logging, Nothing, ScoreboardService] =
-      ZLayer.fromServices[ScoreboardRepository.Service, Logging.Service, ScoreboardService.Service] {
-        (scoreboardRepository, logging) =>
+      ZLayer.fromServices[ScoreboardRepository.Service, Logger[String], ScoreboardService.Service] {
+        (scoreboardRepository, logger) =>
           new Service {
-            val logger = logging.logger
-
             def addNew(newRecord: ScoreboardRecord): Task[ScoreboardRecord] =
               for {
                 inserted <- scoreboardRepository.insert(newRecord)

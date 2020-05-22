@@ -89,7 +89,7 @@ object AuthEndpoints {
 
         case unknown =>
           for {
-            _ <- logThrowable(unknown)
+            _ <- log.throwable("unknown error", unknown)
           } yield UnknownError(s"Something went wrong. Check logs for more info").asLeft
       },
       succ => ZIO.succeed(succ.asRight)

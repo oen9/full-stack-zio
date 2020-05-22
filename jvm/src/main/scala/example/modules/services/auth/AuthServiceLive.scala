@@ -15,7 +15,7 @@ import zio.logging.LogLevel
 
 class AuthServiceLive(
   userRepository: UserRepository.Service,
-  logger: Logger,
+  logger: Logger[String],
   cryptoService: CryptoService.Service
 ) extends AuthService.Service {
 

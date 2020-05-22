@@ -15,7 +15,8 @@ import zio._
 import zio.logging.Logger
 import zio.logging.LogLevel
 
-class ChatServiceLive(users: Ref[Vector[User]], idCounter: Ref[Int], logger: Logger) extends ChatService.Service {
+class ChatServiceLive(users: Ref[Vector[User]], idCounter: Ref[Int], logger: Logger[String])
+    extends ChatService.Service {
   def getUsers(): zio.Task[Dto.ChatUsers] =
     for {
       users <- users.get

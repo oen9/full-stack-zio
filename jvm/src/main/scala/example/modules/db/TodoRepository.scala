@@ -9,6 +9,7 @@ import reactivemongo.api.bson.collection.BSONCollection
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.api.Cursor
 import zio._
+import zio.logging.Logger
 import zio.logging.Logging
 import zio.logging.LogLevel
 
@@ -26,10 +27,9 @@ object todoRepository {
 
     def createNotFoundMsg(id: BSONObjectID) = s"TodoTask '${id.stringify}' not found"
 
-    val live = ZLayer.fromServices[MongoConn, Logging.Service, TodoRepository.Service]((mongoConn, logging) =>
+    val live = ZLayer.fromServices[MongoConn, Logger[String], TodoRepository.Service]((mongoConn, logger) =>
       new Service {
         val collection: BSONCollection = mongoConn.defaultDb.collection("todos")
-        val logger                     = logging.logger
 
         def getAll: Task[List[TodoTask]] = ZIO.fromFuture { implicit ec =>
           collection

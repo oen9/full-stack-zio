@@ -19,7 +19,7 @@ import zio.logging.LogLevel
 
 class ChatFlowBuilderLive(
   chatService: ChatService.Service,
-  logger: Logger
+  logger: Logger[String]
 ) extends ChatFlowBuilder.Service {
 
   def build[R](): RIO[R, ChatClientFlow[R]] =

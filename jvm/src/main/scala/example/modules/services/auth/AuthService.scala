@@ -7,6 +7,7 @@ import example.modules.services.cryptoService.CryptoService
 import example.shared.Dto
 import io.scalaland.chimney.dsl._
 import zio._
+import zio.logging.Logger
 import zio.logging.Logging
 
 object authService {
@@ -21,8 +22,8 @@ object authService {
     }
 
     val live: ZLayer[UserRepository with Logging with CryptoService, Nothing, AuthService] =
-      ZLayer.fromServices[UserRepository.Service, Logging.Service, CryptoService.Service, AuthService.Service] {
-        (userRepository, logging, cryptoService) => new AuthServiceLive(userRepository, logging.logger, cryptoService)
+      ZLayer.fromServices[UserRepository.Service, Logger[String], CryptoService.Service, AuthService.Service] {
+        (userRepository, logger, cryptoService) => new AuthServiceLive(userRepository, logger, cryptoService)
       }
 
     def test(

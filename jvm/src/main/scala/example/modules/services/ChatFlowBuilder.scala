@@ -4,6 +4,7 @@ import example.modules.services.chatService.ChatService
 import fs2.{Pipe, Stream}
 import org.http4s.websocket.WebSocketFrame
 import zio._
+import zio.logging.Logger
 import zio.logging.Logging
 
 object chatFlowBuilder {
@@ -21,8 +22,8 @@ object chatFlowBuilder {
     }
 
     val live: ZLayer[ChatService with Logging, Nothing, ChatFlowBuilder] =
-      ZLayer.fromServices[ChatService.Service, Logging.Service, ChatFlowBuilder.Service] { (chatService, logging) =>
-        new ChatFlowBuilderLive(chatService, logging.logger)
+      ZLayer.fromServices[ChatService.Service, Logger[String], ChatFlowBuilder.Service] { (chatService, logger) =>
+        new ChatFlowBuilderLive(chatService, logger)
       }
   }
 

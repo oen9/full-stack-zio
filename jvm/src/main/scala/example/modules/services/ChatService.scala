@@ -11,6 +11,7 @@ import example.shared.Dto.UnknownData
 import fs2.concurrent.Queue
 import io.scalaland.chimney.dsl._
 import zio._
+import zio.logging.Logger
 import zio.logging.Logging
 
 object chatService {
@@ -24,11 +25,11 @@ object chatService {
     }
 
     val live: ZLayer[Any with Logging, Throwable, ChatService] =
-      ZLayer.fromServiceM[Logging.Service, Any, Throwable, ChatService.Service] { logging =>
+      ZLayer.fromServiceM[Logger[String], Any, Throwable, ChatService.Service] { logger =>
         for {
           users     <- Ref.make(Vector[User]())
           idCounter <- Ref.make(1)
-        } yield new ChatServiceLive(users, idCounter, logging.logger)
+        } yield new ChatServiceLive(users, idCounter, logger)
       }
   }
 

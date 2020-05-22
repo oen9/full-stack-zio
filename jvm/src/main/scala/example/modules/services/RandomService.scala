@@ -12,7 +12,7 @@ object randomService {
     }
     val live: ZLayer[Random, Nothing, RandomService] = ZLayer.fromFunction(random =>
       new Service {
-        def getRandom: zio.Task[Int] = random.get.nextInt(9000)
+        def getRandom: zio.Task[Int] = random.get.nextIntBetween(0, 9000)
       }
     )
   }
