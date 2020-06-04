@@ -52,7 +52,7 @@ object Hello extends App {
 
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
-  def run(args: List[String]): ZIO[zio.ZEnv, Nothing, Int] =
+  def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] =
     app.provideCustomLayer {
       val appConf    = appConfig.AppConfig.live
       val logging    = slf4j.Slf4jLogger.make((_, msg) => msg)
@@ -88,7 +88,7 @@ object Hello extends App {
         val sw = new StringWriter
         e.printStackTrace(new PrintWriter(sw))
         zio.console.putStrLn(sw.toString())
-    }.fold(_ => 1, _ => 0)
+    }.fold(_ => ExitCode.failure, _ => ExitCode.success)
 
   def app(): ZIO[AppEnv, Throwable, Unit] =
     for {

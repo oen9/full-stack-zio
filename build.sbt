@@ -4,7 +4,7 @@ val Ver = new {
   val http4s  = "0.21.3"
   val slinky  = "0.6.5"
   val logback = "1.2.3"
-  val zio     = "1.0.0-RC19-2"
+  val zio     = "1.0.0-RC20"
   val circe   = "0.13.0"
   val tapir   = "0.14.2"
   val doobie  = "0.9.0"
@@ -65,10 +65,10 @@ lazy val jsSettings = Seq(
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
     "dev.zio"                     %% "zio"                      % Ver.zio,
-    "dev.zio"                     %% "zio-interop-cats"         % "2.0.0.0-RC14",
-    "dev.zio"                     %% "zio-logging-slf4j"        % "0.2.9",
+    "dev.zio"                     %% "zio-interop-cats"         % "2.1.3.0-RC15",
+    "dev.zio"                     %% "zio-logging-slf4j"        % "0.3.0",
 
-    "org.typelevel"               %% "cats-effect"              % "2.1.3", // needed by zio-interop-cats 2.0.0.0-RC-14 (RC-14 is incompatible with 2.1.2)
+    "org.typelevel"               %% "cats-effect"              % "2.1.3", // needed by zio-interop-cats 2.1.3.0-RC15 (incompatible with 2.1.2)
 
     "org.http4s"                  %% "http4s-blaze-server"      % Ver.http4s,
     "org.http4s"                  %% "http4s-circe"             % Ver.http4s,
