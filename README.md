@@ -15,6 +15,11 @@ The game is badly optimised because of not working directly with canvas.
 It is just my demo focusing on react with scalajs.
 1. Auth example (register, singin, signout, secured endpoint) - Postgres
 1. API documentation - Swagger
+1. Small chat with websockets
+
+## Live
+
+https://full-stack-zio.herokuapp.com/
 
 ## Libs
 
@@ -41,11 +46,10 @@ It is just my demo focusing on react with scalajs.
 
 ## in progress
 
-1. small chat with websockets
+1. ???
 
 ## soon
 
-1. websockets
 1. more?
 
 ## Production
