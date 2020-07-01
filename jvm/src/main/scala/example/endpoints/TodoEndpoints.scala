@@ -62,10 +62,10 @@ object TodoEndpoints {
   // format: off
   def routes[R <: TodoService with Logging]: HttpRoutes[RIO[R, *]] =
     (
-      getAllTodos.toRoutes { _ => 
+      getAllTodos.toRoutes { _ =>
         handleUnexpectedError(todoService.getAll)
       }: HttpRoutes[RIO[R, *]] // TODO find a better way
-    ) <+> createNew.toRoutes { toCreate => 
+    ) <+> createNew.toRoutes { toCreate =>
       handleUnexpectedError(todoService.createNew(toCreate))
     }<+> switchStatus.toRoutes {
       id => handleError(todoService.switchStatus(id))

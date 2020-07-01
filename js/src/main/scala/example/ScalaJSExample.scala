@@ -7,7 +7,6 @@ import slinky.web.ReactDOM
 import scala.scalajs.LinkingInfo
 import example.modules.MainRouter
 import example.bridges.reactrouter.HashRouter
-import example.bridges.reactrouter.ReactRouterDOM.withRouter
 
 object ScalaJSExample {
 
@@ -24,6 +23,6 @@ object ScalaJSExample {
       println("dev mode")
     }
 
-    ReactDOM.render(HashRouter(withRouter(MainRouter.component)(js.Object)), target)
+    ReactDOM.render(HashRouter(MainRouter()), target)
   }
 }

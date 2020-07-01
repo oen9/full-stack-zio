@@ -15,7 +15,7 @@ import example.services.AppCircuit
 import example.services.ReactDiode
 
 @react object MainRouter {
-  type Props = RouteProps
+  type Props = Unit
 
   val component = FunctionalComponent[Props] { _ =>
     val (auth, _) = ReactDiode.useDiode(AppCircuit.zoom(_.auth))
