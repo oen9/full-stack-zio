@@ -3,13 +3,7 @@ package example.modules.services
 import cats.implicits._
 import example.model.ChatData.User
 import example.shared.Dto
-import example.shared.Dto.ChangeChatName
-import example.shared.Dto.ChatMsg
-import example.shared.Dto.ChatUserLeft
-import example.shared.Dto.NewChatUser
-import example.shared.Dto.UnknownData
 import fs2.concurrent.Queue
-import io.scalaland.chimney.dsl._
 import zio._
 import zio.logging.Logger
 import zio.logging.Logging

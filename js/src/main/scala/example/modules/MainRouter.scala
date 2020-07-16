@@ -10,7 +10,6 @@ import slinky.reactrouter.Route
 import slinky.reactrouter.Switch
 
 import example.bridges.PathToRegexp
-import example.bridges.reactrouter.RouteProps
 import example.services.AppCircuit
 import example.services.ReactDiode
 

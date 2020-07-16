@@ -10,7 +10,6 @@ import reactivemongo.api.commands.WriteResult
 import reactivemongo.api.Cursor
 import zio._
 import zio.logging.Logger
-import zio.logging.Logging
 import zio.logging.LogLevel
 
 object todoRepository {

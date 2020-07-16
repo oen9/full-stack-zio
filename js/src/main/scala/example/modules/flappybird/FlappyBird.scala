@@ -10,7 +10,6 @@ import com.github.oen9.slinky.bridge.reactkonva.Operations
 import com.github.oen9.slinky.bridge.reactkonva.Stage
 import com.github.oen9.slinky.bridge.useimage.UseImage._
 import com.softwaremill.quicklens._
-import org.scalajs.dom.raw.Event
 import org.scalajs.dom.{html, Event}
 import slinky.core.annotations.react
 import slinky.core.facade.Hooks._

@@ -2,7 +2,6 @@ package example.modules.db
 
 import cats.effect.Blocker
 import cats.implicits._
-import doobie.hikari._
 import doobie.hikari.HikariTransactor
 import doobie.util.transactor.Transactor
 import example.modules.appConfig

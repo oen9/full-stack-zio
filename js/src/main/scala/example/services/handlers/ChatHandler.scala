@@ -3,7 +3,6 @@ package example.services.handlers
 import cats.implicits._
 import com.softwaremill.quicklens._
 import diode.ActionHandler
-import diode.Effect
 import diode.ModelRW
 import example.services.AddNewMsg
 import example.services.AddUser
@@ -11,15 +10,10 @@ import example.services.ChangeMyChatName
 import example.services.ChangeUser
 import example.services.ChatConnection
 import example.services.ChatWebsock
-import example.services.Connect
-import example.services.Connected
-import example.services.Disconnect
-import example.services.Disconnected
 import example.services.InitChatUsers
 import example.services.RemoveUser
 import example.shared.Dto
 import example.shared.Dto.ChangeChatName
-import scala.concurrent.duration.DurationInt
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ChatHandler[M](modelRW: ModelRW[M, ChatConnection]) extends ActionHandler(modelRW) {

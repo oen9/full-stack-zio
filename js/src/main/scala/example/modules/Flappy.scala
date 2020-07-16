@@ -10,12 +10,10 @@ import example.services.ClearScoreboard
 import example.services.ReactDiode
 import example.services.TryGetScoreboard
 import example.shared.Dto.ScoreboardRecord
-import org.scalajs.dom.{html, Event}
 import slinky.core.annotations.react
 import slinky.core.facade.Fragment
 import slinky.core.facade.Hooks._
 import slinky.core.FunctionalComponent
-import slinky.core.SyntheticEvent
 import slinky.web.html._
 
 @react object Flappy {

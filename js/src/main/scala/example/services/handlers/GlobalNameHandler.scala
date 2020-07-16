@@ -1,7 +1,6 @@
 package example.services.handlers
 
 import diode.ActionHandler
-import diode.ActionResult
 import diode.Effect
 import diode.ModelRW
 import example.services.ChangeMyChatName

@@ -2,10 +2,7 @@ package example.components.chat
 
 import example.services.AppCircuit
 import example.services.ReactDiode
-import org.scalajs.dom.{html, Event}
 import slinky.core.annotations.react
-import slinky.core.facade.Hooks._
-import slinky.core.facade.React
 import slinky.core.FunctionalComponent
 import slinky.web.html._
 import example.shared.Dto

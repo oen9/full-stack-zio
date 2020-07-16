@@ -16,7 +16,6 @@ import example.services.RefreshGlobalName
 import example.shared.Dto
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class WebsockLifecycleHandler[M](modelRW: ModelRW[M, ChatConnection]) extends ActionHandler(modelRW) {
 

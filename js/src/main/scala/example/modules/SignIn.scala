@@ -5,7 +5,6 @@ import diode.data.PotState.PotPending
 import diode.data.PotState.PotReady
 import org.scalajs.dom.{html, Event}
 import slinky.core.annotations.react
-import slinky.core.facade.Fragment
 import slinky.core.facade.Hooks._
 import slinky.core.facade.ReactElement
 import slinky.core.FunctionalComponent

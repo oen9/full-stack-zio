@@ -2,8 +2,6 @@ package example.bridges.reactrouter
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
-import slinky.core.facade.ReactElement
-import slinky.core.ReactComponentClass
 
 @JSImport("react-router-dom", JSImport.Default)
 @js.native
