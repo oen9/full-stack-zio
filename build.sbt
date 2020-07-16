@@ -34,7 +34,7 @@ lazy val sharedSettings = Seq(
     "-Ywarn-unused:imports"
   ),
   semanticdbEnabled := true,
-  semanticdbVersion := "4.3.10" // scalafixSemanticdb.revision, // https://github.com/scalacenter/scalafix/issues/1109
+  semanticdbVersion := scalafixSemanticdb.revision
 )
 
 lazy val jsSettings = Seq(
