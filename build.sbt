@@ -6,8 +6,9 @@ val Ver = new {
   val logback = "1.2.3"
   val zio     = "1.0.0-RC21-2"
   val circe   = "0.13.0"
-  val tapir   = "0.14.2"
+  val tapir   = "0.16.10"
   val doobie  = "0.9.0"
+  val caliban = "0.9.0"
 }
 
 lazy val sharedSettings = Seq(
@@ -39,10 +40,11 @@ lazy val sharedSettings = Seq(
 
 lazy val jsSettings = Seq(
   libraryDependencies ++= Seq(
-    "me.shadaj"       %%% "slinky-web"                % Ver.slinky,
-    "me.shadaj"       %%% "slinky-react-router"       % Ver.slinky,
-    "io.suzaku"       %%% "diode"                     % "1.1.11",
-    "com.github.oen9" %%% "slinky-bridge-react-konva" % "0.1.1"
+    "me.shadaj"                  %%% "slinky-web"                % Ver.slinky,
+    "me.shadaj"                  %%% "slinky-react-router"       % Ver.slinky,
+    "io.suzaku"                  %%% "diode"                     % "1.1.11",
+    "com.github.oen9"            %%% "slinky-bridge-react-konva" % "0.1.1",
+    "com.github.ghostdogpr"      %%% "caliban-client"            % Ver.caliban
   ),
   npmDependencies in Compile ++= Seq(
     "react"            -> "16.13.1",
@@ -72,6 +74,8 @@ lazy val jvmSettings = Seq(
     "org.http4s"                  %% "http4s-circe"             % Ver.http4s,
     "org.http4s"                  %% "http4s-dsl"               % Ver.http4s,
     "org.http4s"                  %% "http4s-blaze-client"      % Ver.http4s,
+    "com.github.ghostdogpr"       %% "caliban"                  % Ver.caliban,
+    "com.github.ghostdogpr"       %% "caliban-http4s"           % Ver.caliban,
     "com.softwaremill.sttp.tapir" %% "tapir-core"               % Ver.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-http4s-server"      % Ver.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-http4s"  % Ver.tapir,

@@ -32,6 +32,7 @@ import example.services.ReactDiode
       Route(exact = true, path = Loc.simpleExamples, component = SimpleExamples.component),
       Route(exact = true, path = Loc.dynPage, component = DynamicPage.component),
       Route(exact = true, path = Loc.chat, component = Chat.component),
+      Route(exact = true, path = Loc.graphQL, component = GraphQL.component),
       Route(exact = true, path = Loc.todos, component = Todos.component),
       Route(exact = true, path = Loc.flappy, component = Flappy.component),
       securedRoute(path = Loc.secured, component = Secured.component),
@@ -53,6 +54,7 @@ import example.services.ReactDiode
     val simpleExamples = "/simple-examples"
     val dynPage        = "/dyn/:foo(\\d+)/:bar(.*)"
     val chat           = "/chat"
+    val graphQL        = "/graphql"
     val todos          = "/todos"
     val flappy         = "/flappy"
     val secured        = "/secured"
@@ -84,7 +86,8 @@ import example.services.ReactDiode
       Seq(
         RegularMenuItem("301", "Simple examples", Loc.simpleExamples),
         RegularMenuItem("302", "Dynamic page", pathToDynPage(678, "a/b/c")),
-        RegularMenuItem("303", "Chat", Loc.chat)
+        RegularMenuItem("303", "Chat", Loc.chat),
+        RegularMenuItem("304", "GraphQL", Loc.graphQL)
       )
     ),
     RegularMenuItem("1000", "About", Loc.about)

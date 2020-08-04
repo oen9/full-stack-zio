@@ -6,10 +6,12 @@ import zio.blocking.Blocking
 import zio.interop.catz._
 import zio.logging._
 
+import caliban.Http4sAdapter
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.middleware.CORSConfig
+import org.http4s.server.Router
 import sttp.tapir.docs.openapi._
 import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
@@ -20,6 +22,7 @@ import example.endpoints.RestEndpoints
 import example.endpoints.ScoreboardEndpoints
 import example.endpoints.StaticEndpoints
 import example.endpoints.TodoEndpoints
+import example.model.GQLData
 import example.modules.appConfig
 import example.modules.db.doobieTransactor
 import example.modules.db.flywayHandler
@@ -37,6 +40,7 @@ import example.modules.services.todoService
 import java.io.PrintWriter
 import java.io.StringWriter
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext
 import zio.clock.Clock
 
 object Hello extends App {
@@ -53,7 +57,7 @@ object Hello extends App {
   type AppTask[A] = ZIO[AppEnv, Throwable, A]
 
   def run(args: List[String]): ZIO[zio.ZEnv, Nothing, ExitCode] =
-    app.provideCustomLayer {
+    app().provideCustomLayer {
       val appConf    = appConfig.AppConfig.live
       val logging    = slf4j.Slf4jLogger.make((_, msg) => msg)
       val randomServ = randomService.RandomService.live
@@ -99,6 +103,7 @@ object Hello extends App {
       ec <- ZIO.accessM[Blocking](b => ZIO.succeed(b.get.blockingExecutor.asEC))
       catsBlocker = cats.effect.Blocker.liftExecutionContext(ec)
 
+      gqlInterpreter <- GQLData.api.interpreter
       yamlDocs = (
         RestEndpoints.endpoints
           ++ TodoEndpoints.endpoints
@@ -114,10 +119,11 @@ object Hello extends App {
           <+> new SwaggerHttp4s(yamlDocs).routes[RIO[AppEnv, *]]
           <+> ChatEndpoints.routes[AppEnv]
           <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker)
+          <+> Router("/api/graphql" -> Http4sAdapter.makeHttpService(gqlInterpreter))
       ).orNotFound
 
       server <- ZIO.runtime[AppEnv].flatMap { implicit rts =>
-        BlazeServerBuilder[AppTask]
+        BlazeServerBuilder[AppTask](ExecutionContext.global)
           .bindHttp(conf.http.port, conf.http.host)
           .withHttpApp(CORS(httpApp, originConfig))
           .serve

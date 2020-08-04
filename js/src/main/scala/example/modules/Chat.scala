@@ -114,7 +114,7 @@ import example.components.GlobalName
       ),
       div(
         className := "card-body",
-        h5(className := "card-title", "Open in new tab/window to test (this is in progress)"),
+        h5(className := "card-title", "Open in new tab/window to test"),
         GlobalName(),
         chatForm()
       )
