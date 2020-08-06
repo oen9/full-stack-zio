@@ -9,7 +9,7 @@ import org.http4s.{HttpRoutes, Request, StaticFile}
 
 object StaticEndpoints {
 
-  def routes[R](assetsPath: String, catsBlocker: Blocker): HttpRoutes[RIO[R, *]] = {
+  def routes[R](assetsPath: String, catsBlocker: Blocker, gqlSchema: String): HttpRoutes[RIO[R, *]] = {
     val dsl = Http4sDsl[RIO[R, *]]
     import dsl._
 
@@ -33,6 +33,9 @@ object StaticEndpoints {
       case request @ GET -> "assets" /: path =>
         val fullPath = path.toList.mkString("/")
         staticAssets(fullPath, catsBlocker, request)
+
+      case GET -> Root / "api" / "schema.graphql" =>
+        Ok(gqlSchema)
     }
   }
 

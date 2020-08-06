@@ -131,3 +131,4 @@ lazy val appJVM = app.jvm
   )
 
 disablePlugins(RevolverPlugin)
+enablePlugins(CodegenPlugin)

@@ -4,10 +4,13 @@ import diode.data.Empty
 import diode.data.Pot
 import diode.data.PotAction
 import diode.{Action, Circuit}
+import example.services.GraphQLClient.ItemBaseView
+import example.services.GraphQLClient.ItemFullView
 import example.services.handlers.AuthHandler
 import example.services.handlers.ChatHandler
 import example.services.handlers.ClicksHandler
 import example.services.handlers.GlobalNameHandler
+import example.services.handlers.GraphQLHandlers
 import example.services.handlers.RandomNumberHandler
 import example.services.handlers.ScoreboardHandler
 import example.services.handlers.SecuredTextHandler
@@ -28,6 +31,7 @@ case class ChatConnection(
   users: Dto.ChatUsers = Dto.ChatUsers(),
   msgs: Vector[Dto.ChatMsg] = Vector()
 )
+case class GraphQLItems(items: Pot[List[ItemBaseView]] = Empty, selectedItem: Pot[Option[ItemFullView]] = Empty)
 case class RootModel(
   clicks: Clicks,
   randomNumber: Pot[Foo] = Empty,
@@ -36,7 +40,8 @@ case class RootModel(
   auth: Pot[Auth] = Empty,
   securedText: Pot[String] = Empty,
   chatConn: ChatConnection = ChatConnection(),
-  globalName: String = "unknown"
+  globalName: String = "unknown",
+  graphQLItems: GraphQLItems = GraphQLItems()
 )
 
 case object IncreaseClicks extends Action
@@ -93,6 +98,14 @@ case class ChangeUser(change: Dto.ChangeChatName) extends Action
 case class SetGlobalName(newName: String) extends Action
 case object RefreshGlobalName             extends Action
 
+case class GetGQLItems(potResult: Pot[List[ItemBaseView]] = Empty) extends PotAction[List[ItemBaseView], GetGQLItems] {
+  def next(newResult: Pot[List[ItemBaseView]]) = copy(potResult = newResult)
+}
+case class GetGQLItem(name: String, potResult: Pot[Option[ItemFullView]] = Empty)
+    extends PotAction[Option[ItemFullView], GetGQLItem] {
+  def next(newResult: Pot[Option[ItemFullView]]) = copy(potResult = newResult)
+}
+
 object AppCircuit extends Circuit[RootModel] {
   override protected def initialModel: RootModel = RootModel(Clicks(0))
 
@@ -105,6 +118,8 @@ object AppCircuit extends Circuit[RootModel] {
     new SecuredTextHandler(zoomTo(_.securedText)),
     new WebsockLifecycleHandler(zoomTo(_.chatConn)),
     new ChatHandler(zoomTo(_.chatConn)),
-    new GlobalNameHandler(zoomTo(_.globalName))
+    new GlobalNameHandler(zoomTo(_.globalName)),
+    new GraphQLHandlers.ItemHandler(zoomTo(_.graphQLItems.selectedItem)),
+    new GraphQLHandlers.ItemsHandler(zoomTo(_.graphQLItems.items))
   )
 }

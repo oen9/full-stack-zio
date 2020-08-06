@@ -118,7 +118,7 @@ object Hello extends App {
           <+> AuthEndpoints.routes[AppEnv]
           <+> new SwaggerHttp4s(yamlDocs).routes[RIO[AppEnv, *]]
           <+> ChatEndpoints.routes[AppEnv]
-          <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker)
+          <+> StaticEndpoints.routes[AppEnv](conf.assets, catsBlocker, GQLData.api.render)
           <+> Router("/api/graphql" -> Http4sAdapter.makeHttpService(gqlInterpreter))
       ).orNotFound
 
