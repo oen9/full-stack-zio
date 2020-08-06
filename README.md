@@ -16,6 +16,7 @@ It is just my demo focusing on react with scalajs.
 1. Auth example (register, singin, signout, secured endpoint) - Postgres
 1. API documentation - Swagger
 1. Small chat with websockets
+1. GraphQL example
 
 ## Live
 
@@ -35,6 +36,7 @@ https://full-stack-zio.herokuapp.com/
 1. reactivemongo
 1. doobie
 1. flyway
+1. caliban
 
 ### frontend
 
