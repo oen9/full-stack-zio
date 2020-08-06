@@ -1,16 +1,19 @@
 package example.services
 
-import GraphQLClientData._
-import sttp.client._
-import scala.concurrent.ExecutionContext.Implicits.global
 import caliban.client.CalibanClientError
-import scala.concurrent.Future
-import caliban.client.SelectionBuilder
 import caliban.client.Operations
+import caliban.client.SelectionBuilder
+import GraphQLClientData._
+import org.scalajs.dom
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.scalajs.LinkingInfo
+import sttp.client._
 
 object GraphQLClient {
   lazy val sttpBackend = FetchBackend()
-  val uri              = uri"${AjaxClient.baseUrl}/api/graphql"
+  val baseUrl          = if (LinkingInfo.developmentMode) "http://localhost:8080" else dom.window.location.origin
+  val uri              = uri"$baseUrl/api/graphql"
 
   case class ItemBaseView(name: String)
   case class ItemFullView(name: String, amount: Int, features: List[FeatureFullView])
