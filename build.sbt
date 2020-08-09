@@ -4,11 +4,11 @@ val Ver = new {
   val http4s  = "0.21.6"
   val slinky  = "0.6.5"
   val logback = "1.2.3"
-  val zio     = "1.0.0-RC21-2"
+  val zio     = "1.0.0"
   val circe   = "0.13.0"
   val tapir   = "0.16.10"
   val doobie  = "0.9.0"
-  val caliban = "0.9.0"
+  val caliban = "0.9.1"
 }
 
 lazy val sharedSettings = Seq(
@@ -67,8 +67,8 @@ lazy val jsSettings = Seq(
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
     "dev.zio"                     %% "zio"                      % Ver.zio,
-    "dev.zio"                     %% "zio-interop-cats"         % "2.1.4.0-RC17",
-    "dev.zio"                     %% "zio-logging-slf4j"        % "0.3.2",
+    "dev.zio"                     %% "zio-interop-cats"         % "2.1.4.0",
+    "dev.zio"                     %% "zio-logging-slf4j"        % "0.4.0",
 
     "org.http4s"                  %% "http4s-blaze-server"      % Ver.http4s,
     "org.http4s"                  %% "http4s-circe"             % Ver.http4s,
