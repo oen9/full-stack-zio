@@ -35,7 +35,7 @@ class ScoreboardHandler[M](modelRW: ModelRW[M, Pot[Vector[ScoreboardRecord]]]) e
       updated(newValue)
 
     case ClearScoreboard =>
-      val deleteEffect = Effect(AjaxClient.deleteAllScores.map(_ => ScoreboardCleared))
+      val deleteEffect = Effect(AjaxClient.deleteAllScores().map(_ => ScoreboardCleared))
       effectOnly(deleteEffect)
     case ScoreboardCleared =>
       val newValue = value.fold(value)(_ => Ready(Vector()))

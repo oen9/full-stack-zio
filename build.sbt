@@ -32,7 +32,8 @@ lazy val sharedSettings = Seq(
     "-feature",
     "-language:higherKinds",
     "-Ymacro-annotations",
-    "-Ywarn-unused:imports"
+    "-Ywarn-unused:imports",
+    "-Xlint:-byname-implicit" // github.com/scala/bug/issues/12072 TODO
   ),
   semanticdbEnabled := true,
   semanticdbVersion := scalafixSemanticdb.revision

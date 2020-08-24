@@ -56,12 +56,12 @@ object ScoreboardEndpoints {
   def routes[R <: ScoreboardService with Logging]: HttpRoutes[RIO[R, *]] =
     (
       listScores.toRoutes { _ =>
-          handleUnexpectedError(scoreboardService.listScores)
+          handleUnexpectedError(scoreboardService.listScores())
       }: HttpRoutes[RIO[R, *]] // TODO find a better way
     ) <+> createNew.toRoutes { toCreate =>
       handleUnexpectedError(scoreboardService.addNew(toCreate))
     } <+> deleteAll.toRoutes { _ =>
-      handleUnexpectedError(scoreboardService.deleteAll)
+      handleUnexpectedError(scoreboardService.deleteAll())
     }
   // format: on
 

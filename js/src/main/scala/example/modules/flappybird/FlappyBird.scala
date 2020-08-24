@@ -39,11 +39,11 @@ import slinky.web.html._
     val lowerPipe2 = React.createRef[Operations.ShapeRef]
 
     def checkCollision(): Boolean = { // do not use it inside timer
-      val birdRect   = birdRef.current.getClientRect
-      val upper1Rect = upperPipe1.current.getClientRect
-      val lower1Rect = lowerPipe1.current.getClientRect
-      val upper2Rect = upperPipe2.current.getClientRect
-      val lower2Rect = lowerPipe2.current.getClientRect
+      val birdRect   = birdRef.current.getClientRect()
+      val upper1Rect = upperPipe1.current.getClientRect()
+      val lower1Rect = lowerPipe1.current.getClientRect()
+      val upper2Rect = upperPipe2.current.getClientRect()
+      val lower2Rect = lowerPipe2.current.getClientRect()
 
       import Konva.Util.haveIntersection
 
@@ -78,7 +78,7 @@ import slinky.web.html._
     useLayoutEffect(
       () =>
         if (!gs.gameOver) {
-          if (checkCollision) {
+          if (checkCollision()) {
             setGs(gs => gs.modify(_.gameOver).setTo(true))
             anim match {
               case Some(value) => value.stop()
