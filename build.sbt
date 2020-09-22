@@ -1,14 +1,14 @@
 scalaVersion := "2.13.3"
 
 val Ver = new {
-  val http4s  = "0.21.6"
-  val slinky  = "0.6.5"
+  val http4s  = "0.21.7"
+  val slinky  = "0.6.6"
   val logback = "1.2.3"
-  val zio     = "1.0.0"
+  val zio     = "1.0.1"
   val circe   = "0.13.0"
   val tapir   = "0.16.10"
   val doobie  = "0.9.0"
-  val caliban = "0.9.1"
+  val caliban = "0.9.2"
 }
 
 lazy val sharedSettings = Seq(
@@ -17,7 +17,7 @@ lazy val sharedSettings = Seq(
   organization     := "com.github.oen9",
   organizationName := "oen9",
   libraryDependencies ++= Seq(
-    "org.typelevel"              %% "cats-core"             % "2.1.1",
+    "org.typelevel"              %% "cats-core"             % "2.2.0",
     "io.circe"                   %%% "circe-parser"         % Ver.circe,
     "io.circe"                   %%% "circe-generic-extras" % Ver.circe,
     "io.circe"                   %%% "circe-generic"        % Ver.circe,
@@ -43,7 +43,7 @@ lazy val jsSettings = Seq(
   libraryDependencies ++= Seq(
     "me.shadaj"                  %%% "slinky-web"                % Ver.slinky,
     "me.shadaj"                  %%% "slinky-react-router"       % Ver.slinky,
-    "io.suzaku"                  %%% "diode"                     % "1.1.11",
+    "io.suzaku"                  %%% "diode"                     % "1.1.13",
     "com.github.oen9"            %%% "slinky-bridge-react-konva" % "0.1.1",
     "com.github.ghostdogpr"      %%% "caliban-client"            % Ver.caliban
   ),
@@ -51,16 +51,16 @@ lazy val jsSettings = Seq(
     "react"            -> "16.13.1",
     "react-dom"        -> "16.13.1",
     "react-popper"     -> "1.3.7",
-    "react-router-dom" -> "5.1.2",
+    "react-router-dom" -> "5.2.0",
     "path-to-regexp"   -> "6.1.0",
-    "bootstrap"        -> "4.5.0",
+    "bootstrap"        -> "4.5.2",
     "jquery"           -> "3.5.1",
     "konva"            -> "4.2.2",
     "react-konva"      -> "16.13.0-3",
     "use-image"        -> "1.0.6"
   ),
   scalaJSUseMainModuleInitializer := true,
-  version.in(webpack) := "4.43.0",
+  version.in(webpack) := "4.44.2",
   webpackBundlingMode := BundlingMode.Application,
   webpackBundlingMode.in(fastOptJS) := BundlingMode.LibraryOnly()
 )
