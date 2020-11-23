@@ -1,14 +1,14 @@
 scalaVersion := "2.13.3"
 
 val Ver = new {
-  val http4s  = "0.21.7"
+  val http4s  = "0.21.11"
   val slinky  = "0.6.6"
   val logback = "1.2.3"
-  val zio     = "1.0.1"
+  val zio     = "1.0.3"
   val circe   = "0.13.0"
   val tapir   = "0.16.10"
-  val doobie  = "0.9.0"
-  val caliban = "0.9.2"
+  val doobie  = "0.9.2"
+  val caliban = "0.9.3"
 }
 
 lazy val sharedSettings = Seq(
@@ -22,8 +22,8 @@ lazy val sharedSettings = Seq(
     "io.circe"                   %%% "circe-generic-extras" % Ver.circe,
     "io.circe"                   %%% "circe-generic"        % Ver.circe,
     "io.circe"                   %%% "circe-literal"        % Ver.circe,
-    "com.softwaremill.quicklens" %%% "quicklens"            % "1.6.0",
-    "io.scalaland"               %%% "chimney"              % "0.5.2"
+    "com.softwaremill.quicklens" %%% "quicklens"            % "1.6.1",
+    "io.scalaland"               %%% "chimney"              % "0.6.1"
   ),
   scalacOptions ++= Seq(
     "-Xlint",
@@ -68,8 +68,8 @@ lazy val jsSettings = Seq(
 lazy val jvmSettings = Seq(
   libraryDependencies ++= Seq(
     "dev.zio"                     %% "zio"                      % Ver.zio,
-    "dev.zio"                     %% "zio-interop-cats"         % "2.1.4.0",
-    "dev.zio"                     %% "zio-logging-slf4j"        % "0.4.0",
+    "dev.zio"                     %% "zio-interop-cats"         % "2.2.0.1",
+    "dev.zio"                     %% "zio-logging-slf4j"        % "0.5.3",
 
     "org.http4s"                  %% "http4s-blaze-server"      % Ver.http4s,
     "org.http4s"                  %% "http4s-circe"             % Ver.http4s,
@@ -84,10 +84,10 @@ lazy val jvmSettings = Seq(
     "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % Ver.tapir,
     "com.softwaremill.sttp.tapir" %% "tapir-json-circe"         % Ver.tapir,
     "ch.qos.logback"              % "logback-classic"           % Ver.logback,
-    "com.github.pureconfig"       %% "pureconfig"               % "0.13.0",
+    "com.github.pureconfig"       %% "pureconfig"               % "0.14.0",
 
-    "org.reactivemongo"           %% "reactivemongo"            % "0.20.3",
-    "org.flywaydb"                % "flyway-core"               % "6.3.3",
+    "org.reactivemongo"           %% "reactivemongo"            % "1.0.1",
+    "org.flywaydb"                % "flyway-core"               % "7.2.1",
     "org.postgresql"              % "postgresql"                % "42.2.12",
     "org.tpolecat"                %% "doobie-core"              % Ver.doobie,
     "org.tpolecat"                %% "doobie-h2"                % Ver.doobie,

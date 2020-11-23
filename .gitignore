@@ -4,6 +4,7 @@
 .idea/
 .bloop/
 .metals/
+.bsp/
 target/
 cache/
 sess.vim

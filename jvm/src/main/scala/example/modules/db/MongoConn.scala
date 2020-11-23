@@ -3,14 +3,14 @@ package example.modules.db
 import example.modules.appConfig.AppConfig
 import example.modules.AppConfigData
 import reactivemongo.api.AsyncDriver
-import reactivemongo.api.DefaultDB
+import reactivemongo.api.DB
 import reactivemongo.api.FailoverStrategy
 import reactivemongo.api.MongoConnection
 import scala.concurrent.duration._
 import zio._
 
 object MongoConn {
-  case class MongoConn(conn: MongoConnection, defaultDb: DefaultDB)
+  case class MongoConn(conn: MongoConnection, defaultDb: DB)
 
   def createDriver() = ZIO.effect(new AsyncDriver)
   def makeConnection(mongoUri: String) =
@@ -19,7 +19,7 @@ object MongoConn {
       mongoConnection <- ZIO.fromFuture(_ => driver.connect(mongoUri))
     } yield mongoConnection
 
-  def loadDefaultDb(mongoConnection: MongoConnection, appConfigData: AppConfigData): ZIO[Any, Throwable, DefaultDB] =
+  def loadDefaultDb(mongoConnection: MongoConnection, appConfigData: AppConfigData): ZIO[Any, Throwable, DB] =
     for {
       uri       <- ZIO.fromFuture(implicit ec => MongoConnection.fromString(appConfigData.mongo.uri))
       dbName    <- ZIO.fromOption(uri.db).mapError(_ => new Exception("Can't read default db name"))
