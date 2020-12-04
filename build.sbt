@@ -1,4 +1,4 @@
-scalaVersion := "2.13.3"
+scalaVersion := "2.13.4"
 
 val Ver = new {
   val http4s  = "0.21.11"
@@ -12,7 +12,7 @@ val Ver = new {
 }
 
 lazy val sharedSettings = Seq(
-  scalaVersion     := "2.13.3",
+  scalaVersion     := "2.13.4",
   version          := "0.1.0-SNAPSHOT",
   organization     := "com.github.oen9",
   organizationName := "oen9",
@@ -35,8 +35,7 @@ lazy val sharedSettings = Seq(
     "-Ywarn-unused:imports",
     "-Xlint:-byname-implicit" // github.com/scala/bug/issues/12072 TODO
   ),
-  semanticdbEnabled := true,
-  semanticdbVersion := scalafixSemanticdb.revision
+  semanticdbEnabled := true
 )
 
 lazy val jsSettings = Seq(
@@ -101,7 +100,7 @@ lazy val jvmSettings = Seq(
   ),
   testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
   target := baseDirectory.value / ".." / "target",
-  addCompilerPlugin(("org.typelevel" %% "kind-projector" % "0.11.0").cross(CrossVersion.full))
+  addCompilerPlugin(("org.typelevel" %% "kind-projector" % "0.11.2").cross(CrossVersion.full))
 )
 
 lazy val app =
