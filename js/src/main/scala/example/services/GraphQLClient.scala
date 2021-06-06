@@ -8,7 +8,7 @@ import org.scalajs.dom
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.scalajs.LinkingInfo
-import sttp.client._
+import sttp.client3._
 
 object GraphQLClient {
   lazy val sttpBackend = FetchBackend()

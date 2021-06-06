@@ -91,7 +91,7 @@ object Hello extends App {
       case e: Throwable =>
         val sw = new StringWriter
         e.printStackTrace(new PrintWriter(sw))
-        zio.console.putStrLn(sw.toString())
+        zio.console.putStrLnErr(sw.toString()).orElse(ZIO.unit)
     }.fold(_ => ExitCode.failure, _ => ExitCode.success)
 
   def app(): ZIO[AppEnv, Throwable, Unit] =
