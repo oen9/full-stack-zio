@@ -29,8 +29,8 @@ object appConfig {
         ZIO.effectTotal(
           AppConfigData(
             Http(8080, "localhost"),
-            Mongo("mongo://test:test@localhost/test"),
-            SQLDB(url = "postgres://test:test@localhost:5432/test", driver = "postgres"),
+            Mongo("mongo://root:secret@mongo:27017/admin"),
+            SQLDB(url = "postgres://localhost:5432/fullstackzio?user=root&password=secret", driver = "postgres"),
             Encryption(salt = "super-secret", bcryptLogRounds = 10),
             "/tmp"
           )

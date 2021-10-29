@@ -2,12 +2,12 @@ version: '3'
 services:
 
   web:
-    image: oracle/graalvm-ce:20.0.0-java11
+    image: ghcr.io/graalvm/graalvm-ce:java11-21.3.0
     ports:
       - 8080:8080
       - 8000:8000
     env_file:
-      - /etc/environment
+      - ./.env
     environment:
       MONGO_URL_FULL_STACK_ZIO: mongodb://root:secret@mongo:27017/admin
       DATABASE_URL_FULL_STACK_ZIO: jdbc:postgresql://postgres:5432/fullstackzio?user=root&password=secret
